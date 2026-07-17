@@ -7,7 +7,11 @@ layout: default
     <span> / </span>
     <a href="{{ '/references/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▧</span>References</a>
     <span> / </span>
-    <span><span class="crumb-icon" aria-hidden="true">▧</span>{{ page.title }}</span>
+    {% if page.syscalls_arch %}
+    <a href="{{ '/references/syscalls/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▧</span>Linux Syscalls</a>
+    <span> / </span>
+    {% endif %}
+    <span><span class="crumb-icon" aria-hidden="true">▧</span>{{ page.crumb_title | default: page.title }}</span>
 </div>
 
 <div class="post-header reference-header">

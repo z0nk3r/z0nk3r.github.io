@@ -3,10 +3,13 @@ layout: null
 permalink: /search-index.json
 ---
 [
+{% assign first = true %}
 {% for post in site.posts %}
+  {% unless first %},{% endunless %}{% assign first = false %}
   {% assign result_author = post.author | default: site.author %}
   {% assign author_doc = site.authors | where: "name", result_author | first %}
   {
+    "type": "post",
     "title": {{ post.title | jsonify }},
     "url": {{ post.url | relative_url | jsonify }},
     "date": {{ post.date | date: site.date_format | jsonify }},
@@ -15,6 +18,20 @@ permalink: /search-index.json
     "image": {{ post.image | relative_url | jsonify }},
     "excerpt": {{ post.excerpt | strip_html | jsonify }},
     "content": {{ post.content | strip_html | jsonify }}
-  }{% unless forloop.last %},{% endunless %}
+  }
+{% endfor %}
+{% for reference in site.references %}
+  {% unless first %},{% endunless %}{% assign first = false %}
+  {
+    "type": "reference",
+    "title": {{ reference.title | jsonify }},
+    "url": {{ reference.url | relative_url | jsonify }},
+    "date": null,
+    "author": null,
+    "authorAvatar": null,
+    "image": {{ reference.image | relative_url | jsonify }},
+    "excerpt": {{ reference.excerpt | strip_html | jsonify }},
+    "content": {{ reference.content | strip_html | jsonify }}
+  }
 {% endfor %}
 ]
