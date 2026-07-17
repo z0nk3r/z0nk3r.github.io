@@ -1,0 +1,22 @@
+{% assign byline_author = include.post.author | default: site.author %}
+{% assign author_doc = site.authors | where: "name", byline_author | first %}
+<div class="byline">
+  {% if author_doc.avatar %}
+  <div class="avatar avatar--photo">
+    <img src="{{ author_doc.avatar }}" alt="{{ byline_author }}">
+  </div>
+  {% else %}
+  <div class="avatar">{{ byline_author | slice: 0, 1 | upcase }}</div>
+  {% endif %}
+  {% if author_doc and include.link_author %}
+  <a href="{{ author_doc.url | relative_url }}" class="byline-author-link">{{ byline_author }}</a>
+  {% else %}
+  <span>{{ byline_author }}</span>
+  {% endif %}
+  <span class="byline-sep">|</span>
+  <time datetime="{{ include.post.date | date_to_xmlschema }}">{{ include.post.date | date: site.date_format }}</time>
+  {% if include.show_read_time and include.post.read_time %}
+    <span class="byline-sep">|</span>
+    <span>{{ include.post.read_time }} min read</span>
+  {% endif %}
+</div>

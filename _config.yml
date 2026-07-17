@@ -1,2 +1,49 @@
 title: z0nk3r
-description: Description goes here!
+description: "Security research, CTF writeups, and technical notes"
+url: "https://z0nk3r.github.io"
+baseurl: ""
+author: "z0nk3r"
+logo: /assets/images/social-preview.png
+
+# Jekyll settings
+markdown: kramdown
+date_format: "%B %d, %Y"
+permalink: /blog/:title/
+
+collections:
+  authors:
+    output: true
+    permalink: /authors/:name/
+  references:
+    output: true
+    permalink: /references/:name/
+  tag_pages:
+    output: true
+    permalink: /tags/:name/
+
+# Hosted references don't need `layout: reference` repeated in every file - scoped to just
+# this collection (not path: "" globally) so it can't leak into other content by accident.
+defaults:
+  - scope:
+      path: ""
+      type: references
+    values:
+      layout: reference
+
+# Build settings
+plugins:
+  - jekyll-feed
+  - jekyll-seo-tag
+  - jekyll-sitemap
+
+# Exclude from processing
+exclude:
+  - .jekyll-cache/
+  - .sassc/
+  - Gemfile
+  - Gemfile.lock
+  - node_modules/
+  - vendor/
+  - README.md
+  - SETUP.md
+  - CLAUDE.md

@@ -1,0 +1,25 @@
+<li class="post-card">
+  <a class="post-card-link" href="{{ include.post.url | relative_url }}">
+    {% if include.post.image %}
+    <div class="post-card__image-wrap">
+      <img src="{{ include.post.image | relative_url }}" alt="{{ include.post.title }}" loading="lazy">
+    </div>
+    {% else %}
+    <div class="post-card__image-wrap post-card__image-wrap--placeholder">
+      <span>No Image Found</span>
+    </div>
+    {% endif %}
+    <div class="post-card__body">
+      <h2>{{ include.post.title }}</h2>
+      <p class="post-card__excerpt">
+        {% if include.post.excerpt %}{{ include.post.excerpt | strip_html }}{% else %}{{ include.post.content | strip_html | truncatewords: 30 }}{% endif %}
+      </p>
+      {% include byline.html post=include.post show_read_time=false %}
+    </div>
+  </a>
+  {% if include.post.categories or include.post.tags %}
+  <div class="badge-row">
+    {% include tags.html post=include.post %}
+  </div>
+  {% endif %}
+</li>

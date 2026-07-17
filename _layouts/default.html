@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
+    <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
+    <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Michroma&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+    <script src="{{ '/assets/js/ascii-background.js' | relative_url }}" defer></script>
+    {% feed_meta %}
+    {% seo %}
+    {% unless page.image %}
+    <meta property="og:image" content="{{ '/assets/images/social-preview.png' | absolute_url }}">
+    <meta name="twitter:image" content="{{ '/assets/images/social-preview.png' | absolute_url }}">
+    {% endunless %}
+    <script>
+        // Measure the real scrollbar/gutter width so header/footer can extend under it
+        // without shifting their inner content (CSS calc() alone can't be trusted here
+        // across browsers, so this is measured directly).
+        (function () {
+            function setScrollbarWidth() {
+                var width = window.innerWidth - document.documentElement.clientWidth;
+                document.documentElement.style.setProperty('--scrollbar-width', width + 'px');
+            }
+            setScrollbarWidth();
+            window.addEventListener('resize', setScrollbarWidth);
+        })();
+    </script>
+</head>
+<body>
+    <canvas id="ascii-bg" aria-hidden="true"></canvas>
+    <header>
+        <div class="header-wrapper">
+            <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
+            <nav>
+                <div class="nav-search">
+                    <input type="search" id="navSearchInput" class="nav-search-input" placeholder="Search…" aria-label="Search posts" autocomplete="off">
+                    <button type="button" id="navSearchToggle" class="nav-search-toggle" aria-label="Search">
+                        {% include icon-search.html %}
+                    </button>
+                </div>
+                <a href="{{ '/' | relative_url }}">Home</a>
+                <a href="{{ '/references/' | relative_url }}">References</a>
+                <a href="{{ '/blog/' | relative_url }}">Blog</a>
+                <a href="{{ '/about/' | relative_url }}">About</a>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+            </nav>
+        </div>
+    </header>
+
+    <div class="page-content">
+        {{ content }}
+    </div>
+
+    <footer>
+        <div class="footer-wrapper">
+            <p>&copy; {{ site.time | date: "%Y" }} {{ site.title }}. All rights reserved.</p>
+            <div class="footer-icons">
+                <a href="{{ '/feed.xml' | relative_url }}" class="footer-github" aria-label="RSS feed">
+                    {% include icon-rss.html %}
+                </a>
+                <a href="https://github.com/z0nk3r" class="footer-github" target="_blank" rel="noopener" aria-label="GitHub">
+                    {% include icon-github.html %}
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Theme toggle
+        const themeToggle = document.getElementById('themeToggle');
+        const html = document.documentElement;
+
+        // Check localStorage for saved theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        html.setAttribute('data-theme', savedTheme);
+        updateThemeButton();
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeButton();
+            window.dispatchEvent(new Event('themechange'));
+        });
+
+        function updateThemeButton() {
+            const theme = html.getAttribute('data-theme');
+            themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+        }
+
+        // Header search toggle
+        const navSearch = document.querySelector('.nav-search');
+        const navSearchToggle = document.getElementById('navSearchToggle');
+        const navSearchInput = document.getElementById('navSearchInput');
+
+        navSearchToggle.addEventListener('click', () => {
+            const isOpen = navSearch.classList.toggle('open');
+            if (isOpen) {
+                navSearchInput.focus();
+            }
+        });
+
+        navSearchInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && navSearchInput.value.trim()) {
+                window.location.href = '{{ "/search/" | relative_url }}?q=' + encodeURIComponent(navSearchInput.value.trim());
+            } else if (e.key === 'Escape') {
+                navSearch.classList.remove('open');
+                navSearchInput.value = '';
+                navSearchInput.blur();
+            }
+        });
+
+        document.addEventListener('click', (e) => {
+            if (navSearch.classList.contains('open') && !navSearch.contains(e.target)) {
+                navSearch.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+</html>

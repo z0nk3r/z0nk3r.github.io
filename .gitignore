@@ -1,0 +1,32 @@
+# Build output / caches
+_site/
+.jekyll-cache/
+
+# Local dev tooling
+vendor/
+.bundle/
+.claude/
+
+# Internal-only (kept local, not published)
+CLAUDE.md
+SETUP.md
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
+*.swp
+*.bak
+*~
+
+# Editor/IDE folders
+.vscode/
+.idea/
+
+# Common JS tooling (none in use today, but this project has zero npm
+# tooling per SETUP.md/CLAUDE.md - anything that shows up here later is
+# almost certainly local scratch, not site source)
+node_modules/
+npm-debug.log*
+
+# General log files
+*.log

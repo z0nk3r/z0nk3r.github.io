@@ -1,0 +1,28 @@
+---
+layout: default
+---
+
+<div class="breadcrumbs">
+    <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
+    <span> / </span>
+    <a href="{{ '/references/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▧</span>References</a>
+    <span> / </span>
+    <span><span class="crumb-icon" aria-hidden="true">▧</span>{{ page.title }}</span>
+</div>
+
+<div class="post-header reference-header">
+    <h1>{{ page.title }}</h1>
+    {% if page.categories or page.tags %}
+    <div class="post-meta reference-meta">
+        <div class="badge-row" style="margin-top: 0.75rem;">
+            {% include tags.html post=page %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="reference-content">
+    <article>
+        {{ content }}
+    </article>
+</div>
