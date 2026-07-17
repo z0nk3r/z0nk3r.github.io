@@ -25,7 +25,6 @@
     var cols, rows, dpr, cssWidth, cssHeight;
     var columns = []; // { y, speed, active, lastRow, resetAt }
     var fgRgb = '253, 246, 227';
-    var bgRgb = '0, 0, 0';
     var tickTimer = null;
 
     function randomChar() {
@@ -43,7 +42,6 @@
     function readThemeColors() {
         var style = getComputedStyle(document.documentElement);
         fgRgb = style.getPropertyValue('--foreground-rgb').trim() || fgRgb;
-        bgRgb = style.getPropertyValue('--background-rgb').trim() || bgRgb;
     }
 
     function randomLifetime() {
@@ -103,10 +101,18 @@
         readThemeColors();
         var now = performance.now();
 
-        // Fade the previous frame toward the page background instead of clearing,
-        // which is what leaves each column's falling glyph trailing behind it.
-        ctx.fillStyle = 'rgba(' + bgRgb + ', ' + FADE_ALPHA + ')';
+        // Fade the previous frame by eroding its own alpha (destination-out) instead
+        // of compositing a low-alpha fill of the page background color on top of it.
+        // Fading *toward a color* means every partial-alpha step is a color blend, and
+        // if that color's channels aren't neutral (e.g. a near-black with a nonzero red
+        // channel), repeated blending visibly skews warm/red right as a glyph finishes
+        // fading out. Eroding alpha only touches transparency, never mixes in a color,
+        // so the true page background (painted underneath by CSS) just shows through
+        // cleanly regardless of what that background color actually is.
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.fillStyle = 'rgba(0, 0, 0, ' + FADE_ALPHA + ')';
         ctx.fillRect(0, 0, cssWidth, cssHeight);
+        ctx.globalCompositeOperation = 'source-over';
 
         ctx.fillStyle = 'rgba(' + fgRgb + ', ' + GLYPH_ALPHA + ')';
         for (var c = 0; c < cols; c++) {
@@ -194,13 +200,12 @@
             drawStaticFrame();
             return;
         }
-        // The canvas's own alpha channel only ever increases via the per-tick fade-fill
-        // (nothing resets it except a column's periodic wipe passing through), so a
-        // region that's sat near-opaque for a while has the *old* theme's background
-        // color effectively baked in. Left alone, that only repaints through the slow
-        // fade, which reads as a visible "ghosting"/striping artifact for a few seconds
-        // right after a toggle. Clearing immediately avoids that - the next tick just
-        // starts drawing fresh with the new theme's colors already in place.
+        // Existing glyphs on the canvas are still painted in the *old* theme's
+        // --foreground-rgb (nothing repaints their color, only their alpha erodes over
+        // time via the fade), so left alone they'd linger on screen in the wrong color
+        // for several seconds after a toggle until they naturally fade out or a column's
+        // periodic wipe passes through. Clearing immediately avoids that - the next tick
+        // just starts drawing fresh glyphs already in the new theme's color.
         ctx.clearRect(0, 0, cssWidth, cssHeight);
     });
 

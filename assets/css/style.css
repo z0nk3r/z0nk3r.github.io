@@ -3,8 +3,8 @@
    ========================================================================== */
 
 :root {
-  --background: #000000;
-  --background-rgb: 0, 0, 0;
+  --background: #060000;
+  --background-rgb: 6, 0, 0;
   --foreground: #fdf6e3;
   --foreground-rgb: 253, 246, 227;
 
@@ -53,6 +53,7 @@ html {
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   font-size: 14px;
+  zoom: 1.1;
 }
 
 ::-webkit-scrollbar {
