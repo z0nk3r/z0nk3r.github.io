@@ -433,3 +433,10 @@ Invoked via `swi #0` / `svc #0`.
 | 983044 | `ARM_usr32` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ARM_usr32&type=code) | `0xf0004` | *ARM private syscall (kernel-internal, no man page)* | - | - | - | - | - |
 | 983045 | `ARM_set_tls` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ARM_set_tls&type=code) | `0xf0005` | *ARM private syscall (kernel-internal, no man page)* | - | - | - | - | - |
 {: style="--table-col-1: 5%; --table-col-2: 14%; --table-col-3: 9%; --table-col-4: 7%; --table-col-5: 12%; --table-col-6: 12%; --table-col-7: 12%; --table-col-8: 11%; --table-col-9: 9%; --table-col-10: 9%;"}
+
+---
+
+### Sources
+
+- [torvalds/linux — arch/arm/tools/syscall.tbl](https://github.com/torvalds/linux/blob/master/arch/arm/tools/syscall.tbl)
+- [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)
