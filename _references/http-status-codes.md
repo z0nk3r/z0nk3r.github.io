@@ -103,3 +103,4 @@ tags: [http, lookup, web]
 
 - [MDN — HTTP response status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status)
 - [IANA HTTP Status Code Registry](https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml)
+- [Wikipedia — List of HTTP status codes](https://en.wikipedia.org/wiki/List_of_HTTP_status_codes)
