@@ -220,19 +220,19 @@ Invoked via `sc`. Errors are signaled via the SO (summary overflow) bit of the C
 | 189 | `vfork` | [man](https://man7.org/linux/man-pages/man2/vfork.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+vfork&type=code) | `0xbd` | - | - | - | - | - | - |
 | 190 | `ugetrlimit` | [man](https://man7.org/linux/man-pages/man2/ugetrlimit.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ugetrlimit&type=code) | `0xbe` | `int resource` | `struct rlimit *rlim` | - | - | - | - |
 | 191 | `readahead` | [man](https://man7.org/linux/man-pages/man2/readahead.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+readahead&type=code) | `0xbf` | `int fd` | `off64_t offset` | `size_t count` | - | - | - |
-| 192 | `not implemented` | - | `0xc0` | *reserved, unimplemented* | - | - | - | - | - |
-| 193 | `not implemented` | - | `0xc1` | *reserved, unimplemented* | - | - | - | - | - |
-| 194 | `not implemented` | - | `0xc2` | *reserved, unimplemented* | - | - | - | - | - |
-| 195 | `not implemented` | - | `0xc3` | *reserved, unimplemented* | - | - | - | - | - |
-| 196 | `not implemented` | - | `0xc4` | *reserved, unimplemented* | - | - | - | - | - |
-| 197 | `not implemented` | - | `0xc5` | *reserved, unimplemented* | - | - | - | - | - |
+| 192 | *Not Implemented* | - | `0xc0` | *reserved* | - | - | - | - | - |
+| 193 | *Not Implemented* | - | `0xc1` | *reserved* | - | - | - | - | - |
+| 194 | *Not Implemented* | - | `0xc2` | *reserved* | - | - | - | - | - |
+| 195 | *Not Implemented* | - | `0xc3` | *reserved* | - | - | - | - | - |
+| 196 | *Not Implemented* | - | `0xc4` | *reserved* | - | - | - | - | - |
+| 197 | *Not Implemented* | - | `0xc5` | *reserved* | - | - | - | - | - |
 | 198 | `pciconfig_read` | [man](https://man7.org/linux/man-pages/man2/pciconfig_read.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pciconfig_read&type=code) | `0xc6` | `unsigned long bus` | `unsigned long dfn` | `unsigned long off` | `unsigned long len` | `unsigned char *buf` | - |
 | 199 | `pciconfig_write` | [man](https://man7.org/linux/man-pages/man2/pciconfig_write.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pciconfig_write&type=code) | `0xc7` | `unsigned long bus` | `unsigned long dfn` | `unsigned long off` | `unsigned long len` | `unsigned char *buf` | - |
 | 200 | `pciconfig_iobase` | [man](https://man7.org/linux/man-pages/man2/pciconfig_iobase.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pciconfig_iobase&type=code) | `0xc8` | `int which` | `unsigned long bus` | `unsigned long devfn` | - | - | - |
 | 201 | `multiplexer` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+multiplexer&type=code) | `0xc9` | *PowerPC syscall-multiplexer entry point, kernel-internal, no man page* | - | - | - | - | - |
 | 202 | `getdents64` | [man](https://man7.org/linux/man-pages/man2/getdents64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getdents64&type=code) | `0xca` | `int fd` | `void *dirp` | `size_t count` | - | - | - |
 | 203 | `pivot_root` | [man](https://man7.org/linux/man-pages/man2/pivot_root.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pivot_root&type=code) | `0xcb` | `const char *new_root` | `const char *put_old` | - | - | - | - |
-| 204 | `not implemented` | - | `0xcc` | *reserved, unimplemented* | - | - | - | - | - |
+| 204 | *Not Implemented* | - | `0xcc` | *reserved* | - | - | - | - | - |
 | 205 | `madvise` | [man](https://man7.org/linux/man-pages/man2/madvise.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+madvise&type=code) | `0xcd` | `void *addr` | `size_t length` | `int advice` | - | - | - |
 | 206 | `mincore` | [man](https://man7.org/linux/man-pages/man2/mincore.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mincore&type=code) | `0xce` | `void *addr` | `size_t length` | `unsigned char *vec` | - | - | - |
 | 207 | `gettid` | [man](https://man7.org/linux/man-pages/man2/gettid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+gettid&type=code) | `0xcf` | - | - | - | - | - | - |
@@ -252,9 +252,9 @@ Invoked via `sc`. Errors are signaled via the SO (summary overflow) bit of the C
 | 221 | `futex` | [man](https://man7.org/linux/man-pages/man2/futex.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex&type=code) | `0xdd` | `uint32_t *uaddr` | `int futex_op` | `uint32_t val` | `const struct timespec *timeout` | `uint32_t *uaddr2` | `uint32_t val3` |
 | 222 | `sched_setaffinity` | [man](https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sched_setaffinity&type=code) | `0xde` | `pid_t pid` | `size_t cpusetsize` | `const cpu_set_t *mask` | - | - | - |
 | 223 | `sched_getaffinity` | [man](https://man7.org/linux/man-pages/man2/sched_getaffinity.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sched_getaffinity&type=code) | `0xdf` | `pid_t pid` | `size_t cpusetsize` | `cpu_set_t *mask` | - | - | - |
-| 224 | `not implemented` | - | `0xe0` | *reserved, unimplemented* | - | - | - | - | - |
+| 224 | *Not Implemented* | - | `0xe0` | *reserved* | - | - | - | - | - |
 | 225 | `tuxcall` | - | `0xe1` | *reserved, unimplemented* | - | - | - | - | - |
-| 226 | `not implemented` | - | `0xe2` | *reserved, unimplemented* | - | - | - | - | - |
+| 226 | *Not Implemented* | - | `0xe2` | *reserved* | - | - | - | - | - |
 | 227 | `io_setup` | [man](https://man7.org/linux/man-pages/man2/io_setup.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_setup&type=code) | `0xe3` | `unsigned int nr_events` | `aio_context_t *ctx_idp` | - | - | - | - |
 | 228 | `io_destroy` | [man](https://man7.org/linux/man-pages/man2/io_destroy.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_destroy&type=code) | `0xe4` | `aio_context_t ctx_id` | - | - | - | - | - |
 | 229 | `io_getevents` | [man](https://man7.org/linux/man-pages/man2/io_getevents.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_getevents&type=code) | `0xe5` | `aio_context_t ctx_id` | `long min_nr` | `long nr` | `struct io_event *events` | `struct timespec *timeout` | - |
@@ -282,10 +282,10 @@ Invoked via `sc`. Errors are signaled via the SO (summary overflow) bit of the C
 | 251 | `utimes` | [man](https://man7.org/linux/man-pages/man2/utimes.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+utimes&type=code) | `0xfb` | `const char *filename` | `const struct timeval times[2]` | - | - | - | - |
 | 252 | `statfs64` | [man](https://man7.org/linux/man-pages/man2/statfs64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+statfs64&type=code) | `0xfc` | `const char *path` | `struct statfs *buf` | - | - | - | - |
 | 253 | `fstatfs64` | [man](https://man7.org/linux/man-pages/man2/fstatfs64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fstatfs64&type=code) | `0xfd` | `int fd` | `struct statfs *buf` | - | - | - | - |
-| 254 | `not implemented` | - | `0xfe` | *reserved, unimplemented* | - | - | - | - | - |
+| 254 | *Not Implemented* | - | `0xfe` | *reserved* | - | - | - | - | - |
 | 255 | `rtas` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rtas&type=code) | `0xff` | *PowerPC Run-Time Abstraction Services (RTAS) firmware call, kernel-internal, no man page* | - | - | - | - | - |
 | 256 | `sys_debug_setcontext` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sys_debug_setcontext&type=code) | `0x100` | *PowerPC-private debugger register-context syscall, kernel-internal, no man page* | - | - | - | - | - |
-| 257 | `not implemented` | - | `0x101` | *reserved, unimplemented* | - | - | - | - | - |
+| 257 | *Not Implemented* | - | `0x101` | *reserved* | - | - | - | - | - |
 | 258 | `migrate_pages` | [man](https://man7.org/linux/man-pages/man2/migrate_pages.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+migrate_pages&type=code) | `0x102` | `int pid` | `unsigned long maxnode` | `const unsigned long *old_nodes` | `const unsigned long *new_nodes` | - | - |
 | 259 | `mbind` | [man](https://man7.org/linux/man-pages/man2/mbind.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mbind&type=code) | `0x103` | `void *addr` | `unsigned long len` | `int mode` | `const unsigned long *nodemask` | `unsigned long maxnode` | `unsigned int flags` |
 | 260 | `get_mempolicy` | [man](https://man7.org/linux/man-pages/man2/get_mempolicy.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+get_mempolicy&type=code) | `0x104` | `int *mode` | `unsigned long *nodemask` | `unsigned long maxnode` | `void *addr` | `unsigned long flags` | - |
@@ -394,18 +394,18 @@ Invoked via `sc`. Errors are signaled via the SO (summary overflow) bit of the C
 | 363 | `switch_endian` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+switch_endian&type=code) | `0x16b` | *PowerPC runtime endianness-switch syscall, kernel-internal, no man page* | - | - | - | - | - |
 | 364 | `userfaultfd` | [man](https://man7.org/linux/man-pages/man2/userfaultfd.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+userfaultfd&type=code) | `0x16c` | `int flags` | - | - | - | - | - |
 | 365 | `membarrier` | [man](https://man7.org/linux/man-pages/man2/membarrier.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+membarrier&type=code) | `0x16d` | `int cmd` | `unsigned int flags` | `int cpu_id` | - | - | - |
-| 366 | `not implemented` | - | `0x16e` | *reserved, unimplemented* | - | - | - | - | - |
-| 367 | `not implemented` | - | `0x16f` | *reserved, unimplemented* | - | - | - | - | - |
-| 368 | `not implemented` | - | `0x170` | *reserved, unimplemented* | - | - | - | - | - |
-| 369 | `not implemented` | - | `0x171` | *reserved, unimplemented* | - | - | - | - | - |
-| 370 | `not implemented` | - | `0x172` | *reserved, unimplemented* | - | - | - | - | - |
-| 371 | `not implemented` | - | `0x173` | *reserved, unimplemented* | - | - | - | - | - |
-| 372 | `not implemented` | - | `0x174` | *reserved, unimplemented* | - | - | - | - | - |
-| 373 | `not implemented` | - | `0x175` | *reserved, unimplemented* | - | - | - | - | - |
-| 374 | `not implemented` | - | `0x176` | *reserved, unimplemented* | - | - | - | - | - |
-| 375 | `not implemented` | - | `0x177` | *reserved, unimplemented* | - | - | - | - | - |
-| 376 | `not implemented` | - | `0x178` | *reserved, unimplemented* | - | - | - | - | - |
-| 377 | `not implemented` | - | `0x179` | *reserved, unimplemented* | - | - | - | - | - |
+| 366 | *Not Implemented* | - | `0x16e` | *reserved* | - | - | - | - | - |
+| 367 | *Not Implemented* | - | `0x16f` | *reserved* | - | - | - | - | - |
+| 368 | *Not Implemented* | - | `0x170` | *reserved* | - | - | - | - | - |
+| 369 | *Not Implemented* | - | `0x171` | *reserved* | - | - | - | - | - |
+| 370 | *Not Implemented* | - | `0x172` | *reserved* | - | - | - | - | - |
+| 371 | *Not Implemented* | - | `0x173` | *reserved* | - | - | - | - | - |
+| 372 | *Not Implemented* | - | `0x174` | *reserved* | - | - | - | - | - |
+| 373 | *Not Implemented* | - | `0x175` | *reserved* | - | - | - | - | - |
+| 374 | *Not Implemented* | - | `0x176` | *reserved* | - | - | - | - | - |
+| 375 | *Not Implemented* | - | `0x177` | *reserved* | - | - | - | - | - |
+| 376 | *Not Implemented* | - | `0x178` | *reserved* | - | - | - | - | - |
+| 377 | *Not Implemented* | - | `0x179` | *reserved* | - | - | - | - | - |
 | 378 | `mlock2` | [man](https://man7.org/linux/man-pages/man2/mlock2.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mlock2&type=code) | `0x17a` | `const void *addr` | `size_t len` | `unsigned int flags` | - | - | - |
 | 379 | `copy_file_range` | [man](https://man7.org/linux/man-pages/man2/copy_file_range.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+copy_file_range&type=code) | `0x17b` | `int fd_in` | `off64_t *off_in` | `int fd_out` | `off64_t *off_out` | `size_t len` | `unsigned int flags` |
 | 380 | `preadv2` | [man](https://man7.org/linux/man-pages/man2/preadv2.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+preadv2&type=code) | `0x17c` | `int fd` | `const struct iovec *iov` | `int iovcnt` | `off_t offset` | `int flags` | - |
@@ -417,9 +417,9 @@ Invoked via `sc`. Errors are signaled via the SO (summary overflow) bit of the C
 | 386 | `pkey_mprotect` | [man](https://man7.org/linux/man-pages/man2/pkey_mprotect.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pkey_mprotect&type=code) | `0x182` | `void *addr` | `size_t len` | `int prot` | `int pkey` | - | - |
 | 387 | `rseq` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rseq&type=code) | `0x183` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 388 | `io_pgetevents` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_pgetevents&type=code) | `0x184` | *undocumented (no published man page yet)* | - | - | - | - | - |
-| 389 | `not implemented` | - | `0x185` | *reserved, unimplemented* | - | - | - | - | - |
-| 390 | `not implemented` | - | `0x186` | *reserved, unimplemented* | - | - | - | - | - |
-| 391 | `not implemented` | - | `0x187` | *reserved, unimplemented* | - | - | - | - | - |
+| 389 | *Not Implemented* | - | `0x185` | *reserved* | - | - | - | - | - |
+| 390 | *Not Implemented* | - | `0x186` | *reserved* | - | - | - | - | - |
+| 391 | *Not Implemented* | - | `0x187` | *reserved* | - | - | - | - | - |
 | 392 | `semtimedop` | [man](https://man7.org/linux/man-pages/man2/semtimedop.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+semtimedop&type=code) | `0x188` | `int semid` | `struct sembuf *sops` | `size_t nsops` | `const struct timespec *timeout` | - | - |
 | 393 | `semget` | [man](https://man7.org/linux/man-pages/man2/semget.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+semget&type=code) | `0x189` | `key_t key` | `int nsems` | `int semflg` | - | - | - |
 | 394 | `semctl` | [man](https://man7.org/linux/man-pages/man2/semctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+semctl&type=code) | `0x18a` | `int semid` | `int semnum` | `int cmd` | `...` | - | - |
@@ -431,27 +431,27 @@ Invoked via `sc`. Errors are signaled via the SO (summary overflow) bit of the C
 | 400 | `msgsnd` | [man](https://man7.org/linux/man-pages/man2/msgsnd.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+msgsnd&type=code) | `0x190` | `int msqid` | `const void *msgp` | `size_t msgsz` | `int msgflg` | - | - |
 | 401 | `msgrcv` | [man](https://man7.org/linux/man-pages/man2/msgrcv.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+msgrcv&type=code) | `0x191` | `int msqid` | `void *msgp` | `size_t msgsz` | `long msgtyp` | `int msgflg` | - |
 | 402 | `msgctl` | [man](https://man7.org/linux/man-pages/man2/msgctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+msgctl&type=code) | `0x192` | `int msqid` | `int cmd` | `struct msqid_ds *buf` | - | - | - |
-| 403 | `not implemented` | - | `0x193` | *reserved, unimplemented* | - | - | - | - | - |
-| 404 | `not implemented` | - | `0x194` | *reserved, unimplemented* | - | - | - | - | - |
-| 405 | `not implemented` | - | `0x195` | *reserved, unimplemented* | - | - | - | - | - |
-| 406 | `not implemented` | - | `0x196` | *reserved, unimplemented* | - | - | - | - | - |
-| 407 | `not implemented` | - | `0x197` | *reserved, unimplemented* | - | - | - | - | - |
-| 408 | `not implemented` | - | `0x198` | *reserved, unimplemented* | - | - | - | - | - |
-| 409 | `not implemented` | - | `0x199` | *reserved, unimplemented* | - | - | - | - | - |
-| 410 | `not implemented` | - | `0x19a` | *reserved, unimplemented* | - | - | - | - | - |
-| 411 | `not implemented` | - | `0x19b` | *reserved, unimplemented* | - | - | - | - | - |
-| 412 | `not implemented` | - | `0x19c` | *reserved, unimplemented* | - | - | - | - | - |
-| 413 | `not implemented` | - | `0x19d` | *reserved, unimplemented* | - | - | - | - | - |
-| 414 | `not implemented` | - | `0x19e` | *reserved, unimplemented* | - | - | - | - | - |
-| 415 | `not implemented` | - | `0x19f` | *reserved, unimplemented* | - | - | - | - | - |
-| 416 | `not implemented` | - | `0x1a0` | *reserved, unimplemented* | - | - | - | - | - |
-| 417 | `not implemented` | - | `0x1a1` | *reserved, unimplemented* | - | - | - | - | - |
-| 418 | `not implemented` | - | `0x1a2` | *reserved, unimplemented* | - | - | - | - | - |
-| 419 | `not implemented` | - | `0x1a3` | *reserved, unimplemented* | - | - | - | - | - |
-| 420 | `not implemented` | - | `0x1a4` | *reserved, unimplemented* | - | - | - | - | - |
-| 421 | `not implemented` | - | `0x1a5` | *reserved, unimplemented* | - | - | - | - | - |
-| 422 | `not implemented` | - | `0x1a6` | *reserved, unimplemented* | - | - | - | - | - |
-| 423 | `not implemented` | - | `0x1a7` | *reserved, unimplemented* | - | - | - | - | - |
+| 403 | *Not Implemented* | - | `0x193` | *reserved* | - | - | - | - | - |
+| 404 | *Not Implemented* | - | `0x194` | *reserved* | - | - | - | - | - |
+| 405 | *Not Implemented* | - | `0x195` | *reserved* | - | - | - | - | - |
+| 406 | *Not Implemented* | - | `0x196` | *reserved* | - | - | - | - | - |
+| 407 | *Not Implemented* | - | `0x197` | *reserved* | - | - | - | - | - |
+| 408 | *Not Implemented* | - | `0x198` | *reserved* | - | - | - | - | - |
+| 409 | *Not Implemented* | - | `0x199` | *reserved* | - | - | - | - | - |
+| 410 | *Not Implemented* | - | `0x19a` | *reserved* | - | - | - | - | - |
+| 411 | *Not Implemented* | - | `0x19b` | *reserved* | - | - | - | - | - |
+| 412 | *Not Implemented* | - | `0x19c` | *reserved* | - | - | - | - | - |
+| 413 | *Not Implemented* | - | `0x19d` | *reserved* | - | - | - | - | - |
+| 414 | *Not Implemented* | - | `0x19e` | *reserved* | - | - | - | - | - |
+| 415 | *Not Implemented* | - | `0x19f` | *reserved* | - | - | - | - | - |
+| 416 | *Not Implemented* | - | `0x1a0` | *reserved* | - | - | - | - | - |
+| 417 | *Not Implemented* | - | `0x1a1` | *reserved* | - | - | - | - | - |
+| 418 | *Not Implemented* | - | `0x1a2` | *reserved* | - | - | - | - | - |
+| 419 | *Not Implemented* | - | `0x1a3` | *reserved* | - | - | - | - | - |
+| 420 | *Not Implemented* | - | `0x1a4` | *reserved* | - | - | - | - | - |
+| 421 | *Not Implemented* | - | `0x1a5` | *reserved* | - | - | - | - | - |
+| 422 | *Not Implemented* | - | `0x1a6` | *reserved* | - | - | - | - | - |
+| 423 | *Not Implemented* | - | `0x1a7` | *reserved* | - | - | - | - | - |
 | 424 | `pidfd_send_signal` | [man](https://man7.org/linux/man-pages/man2/pidfd_send_signal.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pidfd_send_signal&type=code) | `0x1a8` | `int pidfd` | `int sig` | `siginfo_t *_Nullable info` | `unsigned int flags` | - | - |
 | 425 | `io_uring_setup` | [man](https://man7.org/linux/man-pages/man2/io_uring_setup.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_uring_setup&type=code) | `0x1a9` | `u32 entries` | `struct io_uring_params *params` | - | - | - | - |
 | 426 | `io_uring_enter` | [man](https://man7.org/linux/man-pages/man2/io_uring_enter.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_uring_enter&type=code) | `0x1aa` | `unsigned int fd` | `unsigned int to_submit` | `unsigned int min_complete` | `unsigned int flags` | `sigset_t *sig` | - |
@@ -475,7 +475,7 @@ Invoked via `sc`. Errors are signaled via the SO (summary overflow) bit of the C
 | 444 | `landlock_create_ruleset` | [man](https://man7.org/linux/man-pages/man2/landlock_create_ruleset.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_create_ruleset&type=code) | `0x1bc` | `const struct landlock_ruleset_attr *attr` | `size_t size` | `uint32_t flags` | - | - | - |
 | 445 | `landlock_add_rule` | [man](https://man7.org/linux/man-pages/man2/landlock_add_rule.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_add_rule&type=code) | `0x1bd` | `int ruleset_fd` | `enum landlock_rule_type rule_type` | `const void *rule_attr` | `uint32_t flags` | - | - |
 | 446 | `landlock_restrict_self` | [man](https://man7.org/linux/man-pages/man2/landlock_restrict_self.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_restrict_self&type=code) | `0x1be` | `int ruleset_fd` | `uint32_t flags` | - | - | - | - |
-| 447 | `not implemented` | - | `0x1bf` | *reserved, unimplemented* | - | - | - | - | - |
+| 447 | *Not Implemented* | - | `0x1bf` | *reserved* | - | - | - | - | - |
 | 448 | `process_mrelease` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+process_mrelease&type=code) | `0x1c0` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 449 | `futex_waitv` | [man](https://man7.org/linux/man-pages/man2/futex_waitv.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex_waitv&type=code) | `0x1c1` | `struct futex_waitv *waiters` | `unsigned int n` | `unsigned int flags` | `const struct timespec *_Nullable timeout` | `clockid_t clockid` | - |
 | 450 | `set_mempolicy_home_node` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+set_mempolicy_home_node&type=code) | `0x1c2` | *undocumented (no published man page yet)* | - | - | - | - | - |

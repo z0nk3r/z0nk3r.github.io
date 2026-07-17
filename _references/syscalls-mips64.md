@@ -205,7 +205,7 @@ Invoked via `syscall`. Unlike the 32-bit o32 ABI, n64 fits all 6 args in registe
 | 5174 | `getpmsg` | - | `0x1436` | *reserved, unimplemented* | - | - | - | - | - |
 | 5175 | `putpmsg` | - | `0x1437` | *reserved, unimplemented* | - | - | - | - | - |
 | 5176 | `afs_syscall` | - | `0x1438` | *reserved, unimplemented* | - | - | - | - | - |
-| 5177 | `not implemented` | - | `0x1439` | *reserved, unimplemented* | - | - | - | - | - |
+| 5177 | *Not Implemented* | - | `0x1439` | *reserved* | - | - | - | - | - |
 | 5178 | `gettid` | [man](https://man7.org/linux/man-pages/man2/gettid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+gettid&type=code) | `0x143a` | - | - | - | - | - | - |
 | 5179 | `readahead` | [man](https://man7.org/linux/man-pages/man2/readahead.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+readahead&type=code) | `0x143b` | `int fd` | `off64_t offset` | `size_t count` | - | - | - |
 | 5180 | `setxattr` | [man](https://man7.org/linux/man-pages/man2/setxattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setxattr&type=code) | `0x143c` | `const char\ *path` | `const char\ *name` | `const void\ *value` | `size_t size` | `int flags` | - |
@@ -221,7 +221,7 @@ Invoked via `syscall`. Unlike the 32-bit o32 ABI, n64 fits all 6 args in registe
 | 5190 | `lremovexattr` | [man](https://man7.org/linux/man-pages/man2/lremovexattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lremovexattr&type=code) | `0x1446` | `const char\ *path` | `const char\ *name` | - | - | - | - |
 | 5191 | `fremovexattr` | [man](https://man7.org/linux/man-pages/man2/fremovexattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fremovexattr&type=code) | `0x1447` | `int fd` | `const char\ *name` | - | - | - | - |
 | 5192 | `tkill` | [man](https://man7.org/linux/man-pages/man2/tkill.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+tkill&type=code) | `0x1448` | `pid_t tid` | `int sig` | - | - | - | - |
-| 5193 | `not implemented` | - | `0x1449` | *reserved, unimplemented* | - | - | - | - | - |
+| 5193 | *Not Implemented* | - | `0x1449` | *reserved* | - | - | - | - | - |
 | 5194 | `futex` | [man](https://man7.org/linux/man-pages/man2/futex.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex&type=code) | `0x144a` | `uint32_t *uaddr` | `int futex_op` | `uint32_t val` | `const struct timespec *timeout` | `uint32_t *uaddr2` | `uint32_t val3` |
 | 5195 | `sched_setaffinity` | [man](https://man7.org/linux/man-pages/man2/sched_setaffinity.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sched_setaffinity&type=code) | `0x144b` | `pid_t pid` | `size_t cpusetsize` | `const cpu_set_t *mask` | - | - | - |
 | 5196 | `sched_getaffinity` | [man](https://man7.org/linux/man-pages/man2/sched_getaffinity.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sched_getaffinity&type=code) | `0x144c` | `pid_t pid` | `size_t cpusetsize` | `cpu_set_t *mask` | - | - | - |
@@ -266,7 +266,7 @@ Invoked via `syscall`. Unlike the 32-bit o32 ABI, n64 fits all 6 args in registe
 | 5235 | `mq_getsetattr` | [man](https://man7.org/linux/man-pages/man2/mq_getsetattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mq_getsetattr&type=code) | `0x1473` | `mqd_t mqdes` | `const struct mq_attr *newattr` | `struct mq_attr *oldattr` | - | - | - |
 | 5236 | `vserver` | - | `0x1474` | *reserved, unimplemented* | - | - | - | - | - |
 | 5237 | `waitid` | [man](https://man7.org/linux/man-pages/man2/waitid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+waitid&type=code) | `0x1475` | `idtype_t idtype` | `id_t id` | `siginfo_t *infop` | `int options` | - | - |
-| 5238 | `not implemented` | - | `0x1476` | *reserved, unimplemented* | - | - | - | - | - |
+| 5238 | *Not Implemented* | - | `0x1476` | *reserved* | - | - | - | - | - |
 | 5239 | `add_key` | [man](https://man7.org/linux/man-pages/man2/add_key.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+add_key&type=code) | `0x1477` | `const char *type` | `const char *description` | `const void *payload` | `size_t plen` | `key_serial_t keyring` | - |
 | 5240 | `request_key` | [man](https://man7.org/linux/man-pages/man2/request_key.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+request_key&type=code) | `0x1478` | `const char *type` | `const char *description` | `const char *callout_info` | `key_serial_t dest_keyring` | - | - |
 | 5241 | `keyctl` | [man](https://man7.org/linux/man-pages/man2/keyctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+keyctl&type=code) | `0x1479` | `int operation` | `unsigned long arg2` | `unsigned long arg3` | `unsigned long arg4` | `unsigned long arg5` | - |
@@ -357,101 +357,101 @@ Invoked via `syscall`. Unlike the 32-bit o32 ABI, n64 fits all 6 args in registe
 | 5326 | `statx` | [man](https://man7.org/linux/man-pages/man2/statx.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+statx&type=code) | `0x14ce` | `int dirfd` | `const char *restrict pathname` | `int flags` | `unsigned int mask` | `struct statx *restrict statxbuf` | - |
 | 5327 | `rseq` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rseq&type=code) | `0x14cf` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 5328 | `io_pgetevents` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_pgetevents&type=code) | `0x14d0` | *undocumented (no published man page yet)* | - | - | - | - | - |
-| 5329 | `not implemented` | - | `0x14d1` | *reserved, unimplemented* | - | - | - | - | - |
-| 5330 | `not implemented` | - | `0x14d2` | *reserved, unimplemented* | - | - | - | - | - |
-| 5331 | `not implemented` | - | `0x14d3` | *reserved, unimplemented* | - | - | - | - | - |
-| 5332 | `not implemented` | - | `0x14d4` | *reserved, unimplemented* | - | - | - | - | - |
-| 5333 | `not implemented` | - | `0x14d5` | *reserved, unimplemented* | - | - | - | - | - |
-| 5334 | `not implemented` | - | `0x14d6` | *reserved, unimplemented* | - | - | - | - | - |
-| 5335 | `not implemented` | - | `0x14d7` | *reserved, unimplemented* | - | - | - | - | - |
-| 5336 | `not implemented` | - | `0x14d8` | *reserved, unimplemented* | - | - | - | - | - |
-| 5337 | `not implemented` | - | `0x14d9` | *reserved, unimplemented* | - | - | - | - | - |
-| 5338 | `not implemented` | - | `0x14da` | *reserved, unimplemented* | - | - | - | - | - |
-| 5339 | `not implemented` | - | `0x14db` | *reserved, unimplemented* | - | - | - | - | - |
-| 5340 | `not implemented` | - | `0x14dc` | *reserved, unimplemented* | - | - | - | - | - |
-| 5341 | `not implemented` | - | `0x14dd` | *reserved, unimplemented* | - | - | - | - | - |
-| 5342 | `not implemented` | - | `0x14de` | *reserved, unimplemented* | - | - | - | - | - |
-| 5343 | `not implemented` | - | `0x14df` | *reserved, unimplemented* | - | - | - | - | - |
-| 5344 | `not implemented` | - | `0x14e0` | *reserved, unimplemented* | - | - | - | - | - |
-| 5345 | `not implemented` | - | `0x14e1` | *reserved, unimplemented* | - | - | - | - | - |
-| 5346 | `not implemented` | - | `0x14e2` | *reserved, unimplemented* | - | - | - | - | - |
-| 5347 | `not implemented` | - | `0x14e3` | *reserved, unimplemented* | - | - | - | - | - |
-| 5348 | `not implemented` | - | `0x14e4` | *reserved, unimplemented* | - | - | - | - | - |
-| 5349 | `not implemented` | - | `0x14e5` | *reserved, unimplemented* | - | - | - | - | - |
-| 5350 | `not implemented` | - | `0x14e6` | *reserved, unimplemented* | - | - | - | - | - |
-| 5351 | `not implemented` | - | `0x14e7` | *reserved, unimplemented* | - | - | - | - | - |
-| 5352 | `not implemented` | - | `0x14e8` | *reserved, unimplemented* | - | - | - | - | - |
-| 5353 | `not implemented` | - | `0x14e9` | *reserved, unimplemented* | - | - | - | - | - |
-| 5354 | `not implemented` | - | `0x14ea` | *reserved, unimplemented* | - | - | - | - | - |
-| 5355 | `not implemented` | - | `0x14eb` | *reserved, unimplemented* | - | - | - | - | - |
-| 5356 | `not implemented` | - | `0x14ec` | *reserved, unimplemented* | - | - | - | - | - |
-| 5357 | `not implemented` | - | `0x14ed` | *reserved, unimplemented* | - | - | - | - | - |
-| 5358 | `not implemented` | - | `0x14ee` | *reserved, unimplemented* | - | - | - | - | - |
-| 5359 | `not implemented` | - | `0x14ef` | *reserved, unimplemented* | - | - | - | - | - |
-| 5360 | `not implemented` | - | `0x14f0` | *reserved, unimplemented* | - | - | - | - | - |
-| 5361 | `not implemented` | - | `0x14f1` | *reserved, unimplemented* | - | - | - | - | - |
-| 5362 | `not implemented` | - | `0x14f2` | *reserved, unimplemented* | - | - | - | - | - |
-| 5363 | `not implemented` | - | `0x14f3` | *reserved, unimplemented* | - | - | - | - | - |
-| 5364 | `not implemented` | - | `0x14f4` | *reserved, unimplemented* | - | - | - | - | - |
-| 5365 | `not implemented` | - | `0x14f5` | *reserved, unimplemented* | - | - | - | - | - |
-| 5366 | `not implemented` | - | `0x14f6` | *reserved, unimplemented* | - | - | - | - | - |
-| 5367 | `not implemented` | - | `0x14f7` | *reserved, unimplemented* | - | - | - | - | - |
-| 5368 | `not implemented` | - | `0x14f8` | *reserved, unimplemented* | - | - | - | - | - |
-| 5369 | `not implemented` | - | `0x14f9` | *reserved, unimplemented* | - | - | - | - | - |
-| 5370 | `not implemented` | - | `0x14fa` | *reserved, unimplemented* | - | - | - | - | - |
-| 5371 | `not implemented` | - | `0x14fb` | *reserved, unimplemented* | - | - | - | - | - |
-| 5372 | `not implemented` | - | `0x14fc` | *reserved, unimplemented* | - | - | - | - | - |
-| 5373 | `not implemented` | - | `0x14fd` | *reserved, unimplemented* | - | - | - | - | - |
-| 5374 | `not implemented` | - | `0x14fe` | *reserved, unimplemented* | - | - | - | - | - |
-| 5375 | `not implemented` | - | `0x14ff` | *reserved, unimplemented* | - | - | - | - | - |
-| 5376 | `not implemented` | - | `0x1500` | *reserved, unimplemented* | - | - | - | - | - |
-| 5377 | `not implemented` | - | `0x1501` | *reserved, unimplemented* | - | - | - | - | - |
-| 5378 | `not implemented` | - | `0x1502` | *reserved, unimplemented* | - | - | - | - | - |
-| 5379 | `not implemented` | - | `0x1503` | *reserved, unimplemented* | - | - | - | - | - |
-| 5380 | `not implemented` | - | `0x1504` | *reserved, unimplemented* | - | - | - | - | - |
-| 5381 | `not implemented` | - | `0x1505` | *reserved, unimplemented* | - | - | - | - | - |
-| 5382 | `not implemented` | - | `0x1506` | *reserved, unimplemented* | - | - | - | - | - |
-| 5383 | `not implemented` | - | `0x1507` | *reserved, unimplemented* | - | - | - | - | - |
-| 5384 | `not implemented` | - | `0x1508` | *reserved, unimplemented* | - | - | - | - | - |
-| 5385 | `not implemented` | - | `0x1509` | *reserved, unimplemented* | - | - | - | - | - |
-| 5386 | `not implemented` | - | `0x150a` | *reserved, unimplemented* | - | - | - | - | - |
-| 5387 | `not implemented` | - | `0x150b` | *reserved, unimplemented* | - | - | - | - | - |
-| 5388 | `not implemented` | - | `0x150c` | *reserved, unimplemented* | - | - | - | - | - |
-| 5389 | `not implemented` | - | `0x150d` | *reserved, unimplemented* | - | - | - | - | - |
-| 5390 | `not implemented` | - | `0x150e` | *reserved, unimplemented* | - | - | - | - | - |
-| 5391 | `not implemented` | - | `0x150f` | *reserved, unimplemented* | - | - | - | - | - |
-| 5392 | `not implemented` | - | `0x1510` | *reserved, unimplemented* | - | - | - | - | - |
-| 5393 | `not implemented` | - | `0x1511` | *reserved, unimplemented* | - | - | - | - | - |
-| 5394 | `not implemented` | - | `0x1512` | *reserved, unimplemented* | - | - | - | - | - |
-| 5395 | `not implemented` | - | `0x1513` | *reserved, unimplemented* | - | - | - | - | - |
-| 5396 | `not implemented` | - | `0x1514` | *reserved, unimplemented* | - | - | - | - | - |
-| 5397 | `not implemented` | - | `0x1515` | *reserved, unimplemented* | - | - | - | - | - |
-| 5398 | `not implemented` | - | `0x1516` | *reserved, unimplemented* | - | - | - | - | - |
-| 5399 | `not implemented` | - | `0x1517` | *reserved, unimplemented* | - | - | - | - | - |
-| 5400 | `not implemented` | - | `0x1518` | *reserved, unimplemented* | - | - | - | - | - |
-| 5401 | `not implemented` | - | `0x1519` | *reserved, unimplemented* | - | - | - | - | - |
-| 5402 | `not implemented` | - | `0x151a` | *reserved, unimplemented* | - | - | - | - | - |
-| 5403 | `not implemented` | - | `0x151b` | *reserved, unimplemented* | - | - | - | - | - |
-| 5404 | `not implemented` | - | `0x151c` | *reserved, unimplemented* | - | - | - | - | - |
-| 5405 | `not implemented` | - | `0x151d` | *reserved, unimplemented* | - | - | - | - | - |
-| 5406 | `not implemented` | - | `0x151e` | *reserved, unimplemented* | - | - | - | - | - |
-| 5407 | `not implemented` | - | `0x151f` | *reserved, unimplemented* | - | - | - | - | - |
-| 5408 | `not implemented` | - | `0x1520` | *reserved, unimplemented* | - | - | - | - | - |
-| 5409 | `not implemented` | - | `0x1521` | *reserved, unimplemented* | - | - | - | - | - |
-| 5410 | `not implemented` | - | `0x1522` | *reserved, unimplemented* | - | - | - | - | - |
-| 5411 | `not implemented` | - | `0x1523` | *reserved, unimplemented* | - | - | - | - | - |
-| 5412 | `not implemented` | - | `0x1524` | *reserved, unimplemented* | - | - | - | - | - |
-| 5413 | `not implemented` | - | `0x1525` | *reserved, unimplemented* | - | - | - | - | - |
-| 5414 | `not implemented` | - | `0x1526` | *reserved, unimplemented* | - | - | - | - | - |
-| 5415 | `not implemented` | - | `0x1527` | *reserved, unimplemented* | - | - | - | - | - |
-| 5416 | `not implemented` | - | `0x1528` | *reserved, unimplemented* | - | - | - | - | - |
-| 5417 | `not implemented` | - | `0x1529` | *reserved, unimplemented* | - | - | - | - | - |
-| 5418 | `not implemented` | - | `0x152a` | *reserved, unimplemented* | - | - | - | - | - |
-| 5419 | `not implemented` | - | `0x152b` | *reserved, unimplemented* | - | - | - | - | - |
-| 5420 | `not implemented` | - | `0x152c` | *reserved, unimplemented* | - | - | - | - | - |
-| 5421 | `not implemented` | - | `0x152d` | *reserved, unimplemented* | - | - | - | - | - |
-| 5422 | `not implemented` | - | `0x152e` | *reserved, unimplemented* | - | - | - | - | - |
-| 5423 | `not implemented` | - | `0x152f` | *reserved, unimplemented* | - | - | - | - | - |
+| 5329 | *Not Implemented* | - | `0x14d1` | *reserved* | - | - | - | - | - |
+| 5330 | *Not Implemented* | - | `0x14d2` | *reserved* | - | - | - | - | - |
+| 5331 | *Not Implemented* | - | `0x14d3` | *reserved* | - | - | - | - | - |
+| 5332 | *Not Implemented* | - | `0x14d4` | *reserved* | - | - | - | - | - |
+| 5333 | *Not Implemented* | - | `0x14d5` | *reserved* | - | - | - | - | - |
+| 5334 | *Not Implemented* | - | `0x14d6` | *reserved* | - | - | - | - | - |
+| 5335 | *Not Implemented* | - | `0x14d7` | *reserved* | - | - | - | - | - |
+| 5336 | *Not Implemented* | - | `0x14d8` | *reserved* | - | - | - | - | - |
+| 5337 | *Not Implemented* | - | `0x14d9` | *reserved* | - | - | - | - | - |
+| 5338 | *Not Implemented* | - | `0x14da` | *reserved* | - | - | - | - | - |
+| 5339 | *Not Implemented* | - | `0x14db` | *reserved* | - | - | - | - | - |
+| 5340 | *Not Implemented* | - | `0x14dc` | *reserved* | - | - | - | - | - |
+| 5341 | *Not Implemented* | - | `0x14dd` | *reserved* | - | - | - | - | - |
+| 5342 | *Not Implemented* | - | `0x14de` | *reserved* | - | - | - | - | - |
+| 5343 | *Not Implemented* | - | `0x14df` | *reserved* | - | - | - | - | - |
+| 5344 | *Not Implemented* | - | `0x14e0` | *reserved* | - | - | - | - | - |
+| 5345 | *Not Implemented* | - | `0x14e1` | *reserved* | - | - | - | - | - |
+| 5346 | *Not Implemented* | - | `0x14e2` | *reserved* | - | - | - | - | - |
+| 5347 | *Not Implemented* | - | `0x14e3` | *reserved* | - | - | - | - | - |
+| 5348 | *Not Implemented* | - | `0x14e4` | *reserved* | - | - | - | - | - |
+| 5349 | *Not Implemented* | - | `0x14e5` | *reserved* | - | - | - | - | - |
+| 5350 | *Not Implemented* | - | `0x14e6` | *reserved* | - | - | - | - | - |
+| 5351 | *Not Implemented* | - | `0x14e7` | *reserved* | - | - | - | - | - |
+| 5352 | *Not Implemented* | - | `0x14e8` | *reserved* | - | - | - | - | - |
+| 5353 | *Not Implemented* | - | `0x14e9` | *reserved* | - | - | - | - | - |
+| 5354 | *Not Implemented* | - | `0x14ea` | *reserved* | - | - | - | - | - |
+| 5355 | *Not Implemented* | - | `0x14eb` | *reserved* | - | - | - | - | - |
+| 5356 | *Not Implemented* | - | `0x14ec` | *reserved* | - | - | - | - | - |
+| 5357 | *Not Implemented* | - | `0x14ed` | *reserved* | - | - | - | - | - |
+| 5358 | *Not Implemented* | - | `0x14ee` | *reserved* | - | - | - | - | - |
+| 5359 | *Not Implemented* | - | `0x14ef` | *reserved* | - | - | - | - | - |
+| 5360 | *Not Implemented* | - | `0x14f0` | *reserved* | - | - | - | - | - |
+| 5361 | *Not Implemented* | - | `0x14f1` | *reserved* | - | - | - | - | - |
+| 5362 | *Not Implemented* | - | `0x14f2` | *reserved* | - | - | - | - | - |
+| 5363 | *Not Implemented* | - | `0x14f3` | *reserved* | - | - | - | - | - |
+| 5364 | *Not Implemented* | - | `0x14f4` | *reserved* | - | - | - | - | - |
+| 5365 | *Not Implemented* | - | `0x14f5` | *reserved* | - | - | - | - | - |
+| 5366 | *Not Implemented* | - | `0x14f6` | *reserved* | - | - | - | - | - |
+| 5367 | *Not Implemented* | - | `0x14f7` | *reserved* | - | - | - | - | - |
+| 5368 | *Not Implemented* | - | `0x14f8` | *reserved* | - | - | - | - | - |
+| 5369 | *Not Implemented* | - | `0x14f9` | *reserved* | - | - | - | - | - |
+| 5370 | *Not Implemented* | - | `0x14fa` | *reserved* | - | - | - | - | - |
+| 5371 | *Not Implemented* | - | `0x14fb` | *reserved* | - | - | - | - | - |
+| 5372 | *Not Implemented* | - | `0x14fc` | *reserved* | - | - | - | - | - |
+| 5373 | *Not Implemented* | - | `0x14fd` | *reserved* | - | - | - | - | - |
+| 5374 | *Not Implemented* | - | `0x14fe` | *reserved* | - | - | - | - | - |
+| 5375 | *Not Implemented* | - | `0x14ff` | *reserved* | - | - | - | - | - |
+| 5376 | *Not Implemented* | - | `0x1500` | *reserved* | - | - | - | - | - |
+| 5377 | *Not Implemented* | - | `0x1501` | *reserved* | - | - | - | - | - |
+| 5378 | *Not Implemented* | - | `0x1502` | *reserved* | - | - | - | - | - |
+| 5379 | *Not Implemented* | - | `0x1503` | *reserved* | - | - | - | - | - |
+| 5380 | *Not Implemented* | - | `0x1504` | *reserved* | - | - | - | - | - |
+| 5381 | *Not Implemented* | - | `0x1505` | *reserved* | - | - | - | - | - |
+| 5382 | *Not Implemented* | - | `0x1506` | *reserved* | - | - | - | - | - |
+| 5383 | *Not Implemented* | - | `0x1507` | *reserved* | - | - | - | - | - |
+| 5384 | *Not Implemented* | - | `0x1508` | *reserved* | - | - | - | - | - |
+| 5385 | *Not Implemented* | - | `0x1509` | *reserved* | - | - | - | - | - |
+| 5386 | *Not Implemented* | - | `0x150a` | *reserved* | - | - | - | - | - |
+| 5387 | *Not Implemented* | - | `0x150b` | *reserved* | - | - | - | - | - |
+| 5388 | *Not Implemented* | - | `0x150c` | *reserved* | - | - | - | - | - |
+| 5389 | *Not Implemented* | - | `0x150d` | *reserved* | - | - | - | - | - |
+| 5390 | *Not Implemented* | - | `0x150e` | *reserved* | - | - | - | - | - |
+| 5391 | *Not Implemented* | - | `0x150f` | *reserved* | - | - | - | - | - |
+| 5392 | *Not Implemented* | - | `0x1510` | *reserved* | - | - | - | - | - |
+| 5393 | *Not Implemented* | - | `0x1511` | *reserved* | - | - | - | - | - |
+| 5394 | *Not Implemented* | - | `0x1512` | *reserved* | - | - | - | - | - |
+| 5395 | *Not Implemented* | - | `0x1513` | *reserved* | - | - | - | - | - |
+| 5396 | *Not Implemented* | - | `0x1514` | *reserved* | - | - | - | - | - |
+| 5397 | *Not Implemented* | - | `0x1515` | *reserved* | - | - | - | - | - |
+| 5398 | *Not Implemented* | - | `0x1516` | *reserved* | - | - | - | - | - |
+| 5399 | *Not Implemented* | - | `0x1517` | *reserved* | - | - | - | - | - |
+| 5400 | *Not Implemented* | - | `0x1518` | *reserved* | - | - | - | - | - |
+| 5401 | *Not Implemented* | - | `0x1519` | *reserved* | - | - | - | - | - |
+| 5402 | *Not Implemented* | - | `0x151a` | *reserved* | - | - | - | - | - |
+| 5403 | *Not Implemented* | - | `0x151b` | *reserved* | - | - | - | - | - |
+| 5404 | *Not Implemented* | - | `0x151c` | *reserved* | - | - | - | - | - |
+| 5405 | *Not Implemented* | - | `0x151d` | *reserved* | - | - | - | - | - |
+| 5406 | *Not Implemented* | - | `0x151e` | *reserved* | - | - | - | - | - |
+| 5407 | *Not Implemented* | - | `0x151f` | *reserved* | - | - | - | - | - |
+| 5408 | *Not Implemented* | - | `0x1520` | *reserved* | - | - | - | - | - |
+| 5409 | *Not Implemented* | - | `0x1521` | *reserved* | - | - | - | - | - |
+| 5410 | *Not Implemented* | - | `0x1522` | *reserved* | - | - | - | - | - |
+| 5411 | *Not Implemented* | - | `0x1523` | *reserved* | - | - | - | - | - |
+| 5412 | *Not Implemented* | - | `0x1524` | *reserved* | - | - | - | - | - |
+| 5413 | *Not Implemented* | - | `0x1525` | *reserved* | - | - | - | - | - |
+| 5414 | *Not Implemented* | - | `0x1526` | *reserved* | - | - | - | - | - |
+| 5415 | *Not Implemented* | - | `0x1527` | *reserved* | - | - | - | - | - |
+| 5416 | *Not Implemented* | - | `0x1528` | *reserved* | - | - | - | - | - |
+| 5417 | *Not Implemented* | - | `0x1529` | *reserved* | - | - | - | - | - |
+| 5418 | *Not Implemented* | - | `0x152a` | *reserved* | - | - | - | - | - |
+| 5419 | *Not Implemented* | - | `0x152b` | *reserved* | - | - | - | - | - |
+| 5420 | *Not Implemented* | - | `0x152c` | *reserved* | - | - | - | - | - |
+| 5421 | *Not Implemented* | - | `0x152d` | *reserved* | - | - | - | - | - |
+| 5422 | *Not Implemented* | - | `0x152e` | *reserved* | - | - | - | - | - |
+| 5423 | *Not Implemented* | - | `0x152f` | *reserved* | - | - | - | - | - |
 | 5424 | `pidfd_send_signal` | [man](https://man7.org/linux/man-pages/man2/pidfd_send_signal.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pidfd_send_signal&type=code) | `0x1530` | `int pidfd` | `int sig` | `siginfo_t *_Nullable info` | `unsigned int flags` | - | - |
 | 5425 | `io_uring_setup` | [man](https://man7.org/linux/man-pages/man2/io_uring_setup.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_uring_setup&type=code) | `0x1531` | `u32 entries` | `struct io_uring_params *params` | - | - | - | - |
 | 5426 | `io_uring_enter` | [man](https://man7.org/linux/man-pages/man2/io_uring_enter.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_uring_enter&type=code) | `0x1532` | `unsigned int fd` | `unsigned int to_submit` | `unsigned int min_complete` | `unsigned int flags` | `sigset_t *sig` | - |
@@ -475,7 +475,7 @@ Invoked via `syscall`. Unlike the 32-bit o32 ABI, n64 fits all 6 args in registe
 | 5444 | `landlock_create_ruleset` | [man](https://man7.org/linux/man-pages/man2/landlock_create_ruleset.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_create_ruleset&type=code) | `0x1544` | `const struct landlock_ruleset_attr *attr` | `size_t size` | `uint32_t flags` | - | - | - |
 | 5445 | `landlock_add_rule` | [man](https://man7.org/linux/man-pages/man2/landlock_add_rule.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_add_rule&type=code) | `0x1545` | `int ruleset_fd` | `enum landlock_rule_type rule_type` | `const void *rule_attr` | `uint32_t flags` | - | - |
 | 5446 | `landlock_restrict_self` | [man](https://man7.org/linux/man-pages/man2/landlock_restrict_self.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_restrict_self&type=code) | `0x1546` | `int ruleset_fd` | `uint32_t flags` | - | - | - | - |
-| 5447 | `not implemented` | - | `0x1547` | *reserved, unimplemented* | - | - | - | - | - |
+| 5447 | *Not Implemented* | - | `0x1547` | *reserved* | - | - | - | - | - |
 | 5448 | `process_mrelease` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+process_mrelease&type=code) | `0x1548` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 5449 | `futex_waitv` | [man](https://man7.org/linux/man-pages/man2/futex_waitv.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex_waitv&type=code) | `0x1549` | `struct futex_waitv *waiters` | `unsigned int n` | `unsigned int flags` | `const struct timespec *_Nullable timeout` | `clockid_t clockid` | - |
 | 5450 | `set_mempolicy_home_node` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+set_mempolicy_home_node&type=code) | `0x154a` | *undocumented (no published man page yet)* | - | - | - | - | - |

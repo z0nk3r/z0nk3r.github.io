@@ -250,8 +250,8 @@ Invoked via `int $0x80`.
 | 219 | `madvise` | [man](https://man7.org/linux/man-pages/man2/madvise.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+madvise&type=code) | `0xdb` | `void *addr` | `size_t length` | `int advice` | - | - | - |
 | 220 | `getdents64` | [man](https://man7.org/linux/man-pages/man2/getdents64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getdents64&type=code) | `0xdc` | `int fd` | `void *dirp` | `size_t count` | - | - | - |
 | 221 | `fcntl64` | [man](https://man7.org/linux/man-pages/man2/fcntl64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fcntl64&type=code) | `0xdd` | `int fd` | `int cmd` | `...` | - | - | - |
-| 222 | `not implemented` | - | `0xde` | *reserved, unimplemented* | - | - | - | - | - |
-| 223 | `not implemented` | - | `0xdf` | *reserved, unimplemented* | - | - | - | - | - |
+| 222 | *Not Implemented* | - | `0xde` | *reserved* | - | - | - | - | - |
+| 223 | *Not Implemented* | - | `0xdf` | *reserved* | - | - | - | - | - |
 | 224 | `gettid` | [man](https://man7.org/linux/man-pages/man2/gettid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+gettid&type=code) | `0xe0` | - | - | - | - | - | - |
 | 225 | `readahead` | [man](https://man7.org/linux/man-pages/man2/readahead.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+readahead&type=code) | `0xe1` | `int fd` | `off64_t offset` | `size_t count` | - | - | - |
 | 226 | `setxattr` | [man](https://man7.org/linux/man-pages/man2/setxattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setxattr&type=code) | `0xe2` | `const char\ *path` | `const char\ *name` | `const void\ *value` | `size_t size` | `int flags` | - |
@@ -279,7 +279,7 @@ Invoked via `int $0x80`.
 | 248 | `io_submit` | [man](https://man7.org/linux/man-pages/man2/io_submit.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_submit&type=code) | `0xf8` | `aio_context_t ctx_id` | `long nr` | `struct iocb **iocbpp` | - | - | - |
 | 249 | `io_cancel` | [man](https://man7.org/linux/man-pages/man2/io_cancel.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_cancel&type=code) | `0xf9` | `aio_context_t ctx_id` | `struct iocb *iocb` | `struct io_event *result` | - | - | - |
 | 250 | `fadvise64` | [man](https://man7.org/linux/man-pages/man2/fadvise64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fadvise64&type=code) | `0xfa` | `int fd` | `off_t offset` | `off_t len` | `int advice` | - | - |
-| 251 | `not implemented` | - | `0xfb` | *reserved, unimplemented* | - | - | - | - | - |
+| 251 | *Not Implemented* | - | `0xfb` | *reserved* | - | - | - | - | - |
 | 252 | `exit_group` | [man](https://man7.org/linux/man-pages/man2/exit_group.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+exit_group&type=code) | `0xfc` | `int status` | - | - | - | - | - |
 | 253 | `lookup_dcookie` | [man](https://man7.org/linux/man-pages/man2/lookup_dcookie.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lookup_dcookie&type=code) | `0xfd` | `uint64_t cookie` | `char *buffer` | `size_t len` | - | - | - |
 | 254 | `epoll_create` | [man](https://man7.org/linux/man-pages/man2/epoll_create.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+epoll_create&type=code) | `0xfe` | `int size` | - | - | - | - | - |
@@ -313,7 +313,7 @@ Invoked via `int $0x80`.
 | 282 | `mq_getsetattr` | [man](https://man7.org/linux/man-pages/man2/mq_getsetattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mq_getsetattr&type=code) | `0x11a` | `mqd_t mqdes` | `const struct mq_attr *newattr` | `struct mq_attr *oldattr` | - | - | - |
 | 283 | `kexec_load` | [man](https://man7.org/linux/man-pages/man2/kexec_load.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+kexec_load&type=code) | `0x11b` | `unsigned long entry` | `unsigned long nr_segments` | `struct kexec_segment *segments` | `unsigned long flags` | - | - |
 | 284 | `waitid` | [man](https://man7.org/linux/man-pages/man2/waitid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+waitid&type=code) | `0x11c` | `idtype_t idtype` | `id_t id` | `siginfo_t *infop` | `int options` | - | - |
-| 285 | `not implemented` | - | `0x11d` | *reserved, unimplemented* | - | - | - | - | - |
+| 285 | *Not Implemented* | - | `0x11d` | *reserved* | - | - | - | - | - |
 | 286 | `add_key` | [man](https://man7.org/linux/man-pages/man2/add_key.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+add_key&type=code) | `0x11e` | `const char *type` | `const char *description` | `const void *payload` | `size_t plen` | `key_serial_t keyring` | - |
 | 287 | `request_key` | [man](https://man7.org/linux/man-pages/man2/request_key.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+request_key&type=code) | `0x11f` | `const char *type` | `const char *description` | `const char *callout_info` | `key_serial_t dest_keyring` | - | - |
 | 288 | `keyctl` | [man](https://man7.org/linux/man-pages/man2/keyctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+keyctl&type=code) | `0x120` | `int operation` | `unsigned long arg2` | `unsigned long arg3` | `unsigned long arg4` | `unsigned long arg5` | - |
