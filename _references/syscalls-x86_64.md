@@ -362,3 +362,10 @@ Invoked via `syscall`.
 | 331 | `pkey_free` | [man](https://man7.org/linux/man-pages/man2/pkey_free.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pkey_free&type=code) | `0x14b` | `int pkey` | - | - | - | - | - |
 | 332 | `statx` | [man](https://man7.org/linux/man-pages/man2/statx.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+statx&type=code) | `0x14c` | `int dirfd` | `const char *restrict pathname` | `int flags` | `unsigned int mask` | `struct statx *restrict statxbuf` | - |
 {: style="--table-col-1: 5%; --table-col-2: 14%; --table-col-3: 9%; --table-col-4: 7%; --table-col-5: 12%; --table-col-6: 12%; --table-col-7: 12%; --table-col-8: 11%; --table-col-9: 9%; --table-col-10: 9%;"}
+
+---
+
+### Sources
+
+- [torvalds/linux — syscall_64.tbl](https://github.com/torvalds/linux/blob/master/arch/x86/entry/syscalls/syscall_64.tbl)
+- [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)

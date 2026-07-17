@@ -501,3 +501,10 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4470 | `listns` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+listns&type=code) | `0x1176` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 4471 | `rseq_slice_yield` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rseq_slice_yield&type=code) | `0x1177` | *undocumented (no published man page yet)* | - | - | - | - | - |
 {: style="--table-col-1: 5%; --table-col-2: 14%; --table-col-3: 9%; --table-col-4: 7%; --table-col-5: 12%; --table-col-6: 12%; --table-col-7: 12%; --table-col-8: 11%; --table-col-9: 9%; --table-col-10: 9%;"}
+
+---
+
+### Sources
+
+- [torvalds/linux — syscall_o32.tbl](https://github.com/torvalds/linux/blob/master/arch/mips/kernel/syscalls/syscall_o32.tbl)
+- [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)

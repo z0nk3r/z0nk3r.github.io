@@ -1,15 +1,1 @@
-- title: "CTFtime"
-  link: "https://ctftime.org/"
-  excerpt: "Archive and calendar of CTF competitions, team rankings, and event writeups."
-  tags: [ctf]
-
-- title: "GitHub"
-  link: "https://github.com"
-  excerpt: "Where the code, the writeups, and the receipts all live."
-  image: "https://github.com/z0nk3r.png"
-  tags: [tools]
-
-- title: "OWASP Top 10"
-  link: "https://owasp.org/www-project-top-ten/"
-  excerpt: "The standard awareness document for the most critical security risks to web applications."
-  tags: [web, appsec]
+[]

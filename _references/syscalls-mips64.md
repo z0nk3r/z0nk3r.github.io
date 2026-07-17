@@ -501,3 +501,10 @@ Invoked via `syscall`. Unlike the 32-bit o32 ABI, n64 fits all 6 args in registe
 | 5470 | `listns` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+listns&type=code) | `0x155e` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 5471 | `rseq_slice_yield` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rseq_slice_yield&type=code) | `0x155f` | *undocumented (no published man page yet)* | - | - | - | - | - |
 {: style="--table-col-1: 5%; --table-col-2: 14%; --table-col-3: 9%; --table-col-4: 7%; --table-col-5: 12%; --table-col-6: 12%; --table-col-7: 12%; --table-col-8: 11%; --table-col-9: 9%; --table-col-10: 9%;"}
+
+---
+
+### Sources
+
+- [torvalds/linux — syscall_n64.tbl](https://github.com/torvalds/linux/blob/master/arch/mips/kernel/syscalls/syscall_n64.tbl)
+- [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)
