@@ -508,3 +508,4 @@ Invoked via `syscall`. Unlike the 32-bit o32 ABI, n64 fits all 6 args in registe
 
 - [torvalds/linux — syscall_n64.tbl](https://github.com/torvalds/linux/blob/master/arch/mips/kernel/syscalls/syscall_n64.tbl)
 - [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)
+- [Wikipedia — MIPS architecture](https://en.wikipedia.org/wiki/MIPS_architecture)

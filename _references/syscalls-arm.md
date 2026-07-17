@@ -440,3 +440,4 @@ Invoked via `swi #0` / `svc #0`.
 
 - [torvalds/linux — arch/arm/tools/syscall.tbl](https://github.com/torvalds/linux/blob/master/arch/arm/tools/syscall.tbl)
 - [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)
+- [Wikipedia — ARM architecture family](https://en.wikipedia.org/wiki/ARM_architecture_family)

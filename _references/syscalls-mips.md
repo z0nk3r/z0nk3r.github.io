@@ -508,3 +508,4 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 
 - [torvalds/linux — syscall_o32.tbl](https://github.com/torvalds/linux/blob/master/arch/mips/kernel/syscalls/syscall_o32.tbl)
 - [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)
+- [Wikipedia — MIPS architecture](https://en.wikipedia.org/wiki/MIPS_architecture)
