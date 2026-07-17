@@ -46,7 +46,7 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4015 | `chmod` | [man](https://man7.org/linux/man-pages/man2/chmod.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+chmod&type=code) | `0xfaf` | `const char *pathname` | `mode_t mode` | - | - | - | - |
 | 4016 | `lchown` | [man](https://man7.org/linux/man-pages/man2/lchown.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lchown&type=code) | `0xfb0` | `const char *pathname` | `uid_t owner` | `gid_t group` | - | - | - |
 | 4017 | `break` | - | `0xfb1` | *reserved, unimplemented* | - | - | - | - | - |
-| 4018 | `not implemented` | - | `0xfb2` | *reserved, unimplemented* | - | - | - | - | - |
+| 4018 | *Not Implemented* | - | `0xfb2` | *reserved* | - | - | - | - | - |
 | 4019 | `lseek` | [man](https://man7.org/linux/man-pages/man2/lseek.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lseek&type=code) | `0xfb3` | `int fd` | `off_t offset` | `int whence` | - | - | - |
 | 4020 | `getpid` | [man](https://man7.org/linux/man-pages/man2/getpid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getpid&type=code) | `0xfb4` | - | - | - | - | - | - |
 | 4021 | `mount` | [man](https://man7.org/linux/man-pages/man2/mount.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mount&type=code) | `0xfb5` | `const char *source` | `const char *target` | `const char *filesystemtype` | `unsigned long mountflags` | `const void *data` | - |
@@ -56,7 +56,7 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4025 | `stime` | [man](https://man7.org/linux/man-pages/man2/stime.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+stime&type=code) | `0xfb9` | `const time_t *t` | - | - | - | - | - |
 | 4026 | `ptrace` | [man](https://man7.org/linux/man-pages/man2/ptrace.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ptrace&type=code) | `0xfba` | `enum __ptrace_request request` | `pid_t pid` | `void *addr` | `void *data` | - | - |
 | 4027 | `alarm` | [man](https://man7.org/linux/man-pages/man2/alarm.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+alarm&type=code) | `0xfbb` | `unsigned int seconds` | - | - | - | - | - |
-| 4028 | `not implemented` | - | `0xfbc` | *reserved, unimplemented* | - | - | - | - | - |
+| 4028 | *Not Implemented* | - | `0xfbc` | *reserved* | - | - | - | - | - |
 | 4029 | `pause` | [man](https://man7.org/linux/man-pages/man2/pause.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pause&type=code) | `0xfbd` | - | - | - | - | - | - |
 | 4030 | `utime` | [man](https://man7.org/linux/man-pages/man2/utime.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+utime&type=code) | `0xfbe` | `const char *filename` | `const struct utimbuf *times` | - | - | - | - |
 | 4031 | `stty` | - | `0xfbf` | *reserved, unimplemented* | - | - | - | - | - |
@@ -110,9 +110,9 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4079 | `settimeofday` | [man](https://man7.org/linux/man-pages/man2/settimeofday.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+settimeofday&type=code) | `0xfef` | `const struct timeval *tv` | `const struct timezone *tz` | - | - | - | - |
 | 4080 | `getgroups` | [man](https://man7.org/linux/man-pages/man2/getgroups.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getgroups&type=code) | `0xff0` | `int size` | `gid_t list[]` | - | - | - | - |
 | 4081 | `setgroups` | [man](https://man7.org/linux/man-pages/man2/setgroups.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setgroups&type=code) | `0xff1` | `size_t size` | `const gid_t *list` | - | - | - | - |
-| 4082 | `not implemented` | - | `0xff2` | *reserved, unimplemented* | - | - | - | - | - |
+| 4082 | *Not Implemented* | - | `0xff2` | *reserved* | - | - | - | - | - |
 | 4083 | `symlink` | [man](https://man7.org/linux/man-pages/man2/symlink.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+symlink&type=code) | `0xff3` | `const char *target` | `const char *linkpath` | - | - | - | - |
-| 4084 | `not implemented` | - | `0xff4` | *reserved, unimplemented* | - | - | - | - | - |
+| 4084 | *Not Implemented* | - | `0xff4` | *reserved* | - | - | - | - | - |
 | 4085 | `readlink` | [man](https://man7.org/linux/man-pages/man2/readlink.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+readlink&type=code) | `0xff5` | `const char *restrict pathname` | `char *restrict buf` | `size_t bufsiz` | - | - | - |
 | 4086 | `uselib` | [man](https://man7.org/linux/man-pages/man2/uselib.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+uselib&type=code) | `0xff6` | `const char *library` | - | - | - | - | - |
 | 4087 | `swapon` | [man](https://man7.org/linux/man-pages/man2/swapon.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+swapon&type=code) | `0xff7` | `const char *path` | `int swapflags` | - | - | - | - |
@@ -178,7 +178,7 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4147 | `cacheflush` | [man](https://man7.org/linux/man-pages/man2/cacheflush.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+cacheflush&type=code) | `0x1033` | `void *addr` | `int nbytes` | `int cache` | - | - | - |
 | 4148 | `cachectl` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+cachectl&type=code) | `0x1034` | *MIPS legacy cache-control syscall (superseded by `cacheflush`), kernel-internal, no man page* | - | - | - | - | - |
 | 4149 | `sysmips` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sysmips&type=code) | `0x1035` | *MIPS-private control syscall, kernel-internal, no man page* | - | - | - | - | - |
-| 4150 | `not implemented` | - | `0x1036` | *reserved, unimplemented* | - | - | - | - | - |
+| 4150 | *Not Implemented* | - | `0x1036` | *reserved* | - | - | - | - | - |
 | 4151 | `getsid` | [man](https://man7.org/linux/man-pages/man2/getsid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getsid&type=code) | `0x1037` | `pid_t pid` | - | - | - | - | - |
 | 4152 | `fdatasync` | [man](https://man7.org/linux/man-pages/man2/fdatasync.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fdatasync&type=code) | `0x1038` | `int fd` | - | - | - | - | - |
 | 4153 | `_sysctl` | [man](https://man7.org/linux/man-pages/man2/_sysctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+_sysctl&type=code) | `0x1039` | `struct __sysctl_args *args` | - | - | - | - | - |
@@ -249,7 +249,7 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4218 | `madvise` | [man](https://man7.org/linux/man-pages/man2/madvise.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+madvise&type=code) | `0x107a` | `void *addr` | `size_t length` | `int advice` | - | - | - |
 | 4219 | `getdents64` | [man](https://man7.org/linux/man-pages/man2/getdents64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getdents64&type=code) | `0x107b` | `int fd` | `void *dirp` | `size_t count` | - | - | - |
 | 4220 | `fcntl64` | [man](https://man7.org/linux/man-pages/man2/fcntl64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fcntl64&type=code) | `0x107c` | `int fd` | `int cmd` | `...` | - | - | - |
-| 4221 | `not implemented` | - | `0x107d` | *reserved, unimplemented* | - | - | - | - | - |
+| 4221 | *Not Implemented* | - | `0x107d` | *reserved* | - | - | - | - | - |
 | 4222 | `gettid` | [man](https://man7.org/linux/man-pages/man2/gettid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+gettid&type=code) | `0x107e` | - | - | - | - | - | - |
 | 4223 | `readahead` | [man](https://man7.org/linux/man-pages/man2/readahead.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+readahead&type=code) | `0x107f` | `int fd` | `off64_t offset` | `size_t count` | - | - | - |
 | 4224 | `setxattr` | [man](https://man7.org/linux/man-pages/man2/setxattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setxattr&type=code) | `0x1080` | `const char\ *path` | `const char\ *name` | `const void\ *value` | `size_t size` | `int flags` | - |
@@ -307,7 +307,7 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4276 | `mq_getsetattr` | [man](https://man7.org/linux/man-pages/man2/mq_getsetattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mq_getsetattr&type=code) | `0x10b4` | `mqd_t mqdes` | `const struct mq_attr *newattr` | `struct mq_attr *oldattr` | - | - | - |
 | 4277 | `vserver` | - | `0x10b5` | *reserved, unimplemented* | - | - | - | - | - |
 | 4278 | `waitid` | [man](https://man7.org/linux/man-pages/man2/waitid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+waitid&type=code) | `0x10b6` | `idtype_t idtype` | `id_t id` | `siginfo_t *infop` | `int options` | - | - |
-| 4279 | `not implemented` | - | `0x10b7` | *reserved, unimplemented* | - | - | - | - | - |
+| 4279 | *Not Implemented* | - | `0x10b7` | *reserved* | - | - | - | - | - |
 | 4280 | `add_key` | [man](https://man7.org/linux/man-pages/man2/add_key.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+add_key&type=code) | `0x10b8` | `const char *type` | `const char *description` | `const void *payload` | `size_t plen` | `key_serial_t keyring` | - |
 | 4281 | `request_key` | [man](https://man7.org/linux/man-pages/man2/request_key.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+request_key&type=code) | `0x10b9` | `const char *type` | `const char *description` | `const char *callout_info` | `key_serial_t dest_keyring` | - | - |
 | 4282 | `keyctl` | [man](https://man7.org/linux/man-pages/man2/keyctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+keyctl&type=code) | `0x10ba` | `int operation` | `unsigned long arg2` | `unsigned long arg3` | `unsigned long arg4` | `unsigned long arg5` | - |
@@ -397,30 +397,30 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4366 | `statx` | [man](https://man7.org/linux/man-pages/man2/statx.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+statx&type=code) | `0x110e` | `int dirfd` | `const char *restrict pathname` | `int flags` | `unsigned int mask` | `struct statx *restrict statxbuf` | - |
 | 4367 | `rseq` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rseq&type=code) | `0x110f` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 4368 | `io_pgetevents` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_pgetevents&type=code) | `0x1110` | *undocumented (no published man page yet)* | - | - | - | - | - |
-| 4369 | `not implemented` | - | `0x1111` | *reserved, unimplemented* | - | - | - | - | - |
-| 4370 | `not implemented` | - | `0x1112` | *reserved, unimplemented* | - | - | - | - | - |
-| 4371 | `not implemented` | - | `0x1113` | *reserved, unimplemented* | - | - | - | - | - |
-| 4372 | `not implemented` | - | `0x1114` | *reserved, unimplemented* | - | - | - | - | - |
-| 4373 | `not implemented` | - | `0x1115` | *reserved, unimplemented* | - | - | - | - | - |
-| 4374 | `not implemented` | - | `0x1116` | *reserved, unimplemented* | - | - | - | - | - |
-| 4375 | `not implemented` | - | `0x1117` | *reserved, unimplemented* | - | - | - | - | - |
-| 4376 | `not implemented` | - | `0x1118` | *reserved, unimplemented* | - | - | - | - | - |
-| 4377 | `not implemented` | - | `0x1119` | *reserved, unimplemented* | - | - | - | - | - |
-| 4378 | `not implemented` | - | `0x111a` | *reserved, unimplemented* | - | - | - | - | - |
-| 4379 | `not implemented` | - | `0x111b` | *reserved, unimplemented* | - | - | - | - | - |
-| 4380 | `not implemented` | - | `0x111c` | *reserved, unimplemented* | - | - | - | - | - |
-| 4381 | `not implemented` | - | `0x111d` | *reserved, unimplemented* | - | - | - | - | - |
-| 4382 | `not implemented` | - | `0x111e` | *reserved, unimplemented* | - | - | - | - | - |
-| 4383 | `not implemented` | - | `0x111f` | *reserved, unimplemented* | - | - | - | - | - |
-| 4384 | `not implemented` | - | `0x1120` | *reserved, unimplemented* | - | - | - | - | - |
-| 4385 | `not implemented` | - | `0x1121` | *reserved, unimplemented* | - | - | - | - | - |
-| 4386 | `not implemented` | - | `0x1122` | *reserved, unimplemented* | - | - | - | - | - |
-| 4387 | `not implemented` | - | `0x1123` | *reserved, unimplemented* | - | - | - | - | - |
-| 4388 | `not implemented` | - | `0x1124` | *reserved, unimplemented* | - | - | - | - | - |
-| 4389 | `not implemented` | - | `0x1125` | *reserved, unimplemented* | - | - | - | - | - |
-| 4390 | `not implemented` | - | `0x1126` | *reserved, unimplemented* | - | - | - | - | - |
-| 4391 | `not implemented` | - | `0x1127` | *reserved, unimplemented* | - | - | - | - | - |
-| 4392 | `not implemented` | - | `0x1128` | *reserved, unimplemented* | - | - | - | - | - |
+| 4369 | *Not Implemented* | - | `0x1111` | *reserved* | - | - | - | - | - |
+| 4370 | *Not Implemented* | - | `0x1112` | *reserved* | - | - | - | - | - |
+| 4371 | *Not Implemented* | - | `0x1113` | *reserved* | - | - | - | - | - |
+| 4372 | *Not Implemented* | - | `0x1114` | *reserved* | - | - | - | - | - |
+| 4373 | *Not Implemented* | - | `0x1115` | *reserved* | - | - | - | - | - |
+| 4374 | *Not Implemented* | - | `0x1116` | *reserved* | - | - | - | - | - |
+| 4375 | *Not Implemented* | - | `0x1117` | *reserved* | - | - | - | - | - |
+| 4376 | *Not Implemented* | - | `0x1118` | *reserved* | - | - | - | - | - |
+| 4377 | *Not Implemented* | - | `0x1119` | *reserved* | - | - | - | - | - |
+| 4378 | *Not Implemented* | - | `0x111a` | *reserved* | - | - | - | - | - |
+| 4379 | *Not Implemented* | - | `0x111b` | *reserved* | - | - | - | - | - |
+| 4380 | *Not Implemented* | - | `0x111c` | *reserved* | - | - | - | - | - |
+| 4381 | *Not Implemented* | - | `0x111d` | *reserved* | - | - | - | - | - |
+| 4382 | *Not Implemented* | - | `0x111e` | *reserved* | - | - | - | - | - |
+| 4383 | *Not Implemented* | - | `0x111f` | *reserved* | - | - | - | - | - |
+| 4384 | *Not Implemented* | - | `0x1120` | *reserved* | - | - | - | - | - |
+| 4385 | *Not Implemented* | - | `0x1121` | *reserved* | - | - | - | - | - |
+| 4386 | *Not Implemented* | - | `0x1122` | *reserved* | - | - | - | - | - |
+| 4387 | *Not Implemented* | - | `0x1123` | *reserved* | - | - | - | - | - |
+| 4388 | *Not Implemented* | - | `0x1124` | *reserved* | - | - | - | - | - |
+| 4389 | *Not Implemented* | - | `0x1125` | *reserved* | - | - | - | - | - |
+| 4390 | *Not Implemented* | - | `0x1126` | *reserved* | - | - | - | - | - |
+| 4391 | *Not Implemented* | - | `0x1127` | *reserved* | - | - | - | - | - |
+| 4392 | *Not Implemented* | - | `0x1128` | *reserved* | - | - | - | - | - |
 | 4393 | `semget` | [man](https://man7.org/linux/man-pages/man2/semget.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+semget&type=code) | `0x1129` | `key_t key` | `int nsems` | `int semflg` | - | - | - |
 | 4394 | `semctl` | [man](https://man7.org/linux/man-pages/man2/semctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+semctl&type=code) | `0x112a` | `int semid` | `int semnum` | `int cmd` | `...` | - | - |
 | 4395 | `shmget` | [man](https://man7.org/linux/man-pages/man2/shmget.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+shmget&type=code) | `0x112b` | `key_t key` | `size_t size` | `int shmflg` | - | - | - |
@@ -443,7 +443,7 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4412 | `utimensat_time64` | [man](https://man7.org/linux/man-pages/man2/utimensat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+utimensat_time64&type=code) | `0x113c` | `int dirfd` | `const char *pathname` | `const struct timespec times[2]` | `int flags` | - | - |
 | 4413 | `pselect6_time64` | [man](https://man7.org/linux/man-pages/man2/pselect6.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pselect6_time64&type=code) | `0x113d` | `int nfds` | `fd_set *restrict readfds` | `fd_set *restrict writefds` | `fd_set *restrict exceptfds` | `const struct timespec *restrict timeout` | `const sigset_t *restrict sigmask` |
 | 4414 | `ppoll_time64` | [man](https://man7.org/linux/man-pages/man2/ppoll.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ppoll_time64&type=code) | `0x113e` | `struct pollfd *fds` | `nfds_t nfds` | `const struct timespec *tmo_p` | `const sigset_t *sigmask` | - | - |
-| 4415 | `not implemented` | - | `0x113f` | *reserved, unimplemented* | - | - | - | - | - |
+| 4415 | *Not Implemented* | - | `0x113f` | *reserved* | - | - | - | - | - |
 | 4416 | `io_pgetevents_time64` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_pgetevents_time64&type=code) | `0x1140` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 4417 | `recvmmsg_time64` | [man](https://man7.org/linux/man-pages/man2/recvmmsg.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+recvmmsg_time64&type=code) | `0x1141` | `int sockfd` | `struct mmsghdr *msgvec` | `unsigned int vlen` | `int flags` | `struct timespec *timeout` | - |
 | 4418 | `mq_timedsend_time64` | [man](https://man7.org/linux/man-pages/man2/mq_timedsend.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mq_timedsend_time64&type=code) | `0x1142` | `mqd_t mqdes` | `const char *msg_ptr` | `size_t msg_len` | `unsigned int msg_prio` | `const struct timespec *abs_timeout` | - |
@@ -475,7 +475,7 @@ Invoked via `syscall`. Only 4 args fit in registers under the o32 ABI — arg4 a
 | 4444 | `landlock_create_ruleset` | [man](https://man7.org/linux/man-pages/man2/landlock_create_ruleset.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_create_ruleset&type=code) | `0x115c` | `const struct landlock_ruleset_attr *attr` | `size_t size` | `uint32_t flags` | - | - | - |
 | 4445 | `landlock_add_rule` | [man](https://man7.org/linux/man-pages/man2/landlock_add_rule.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_add_rule&type=code) | `0x115d` | `int ruleset_fd` | `enum landlock_rule_type rule_type` | `const void *rule_attr` | `uint32_t flags` | - | - |
 | 4446 | `landlock_restrict_self` | [man](https://man7.org/linux/man-pages/man2/landlock_restrict_self.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_restrict_self&type=code) | `0x115e` | `int ruleset_fd` | `uint32_t flags` | - | - | - | - |
-| 4447 | `not implemented` | - | `0x115f` | *reserved, unimplemented* | - | - | - | - | - |
+| 4447 | *Not Implemented* | - | `0x115f` | *reserved* | - | - | - | - | - |
 | 4448 | `process_mrelease` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+process_mrelease&type=code) | `0x1160` | *undocumented (no published man page yet)* | - | - | - | - | - |
 | 4449 | `futex_waitv` | [man](https://man7.org/linux/man-pages/man2/futex_waitv.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex_waitv&type=code) | `0x1161` | `struct futex_waitv *waiters` | `unsigned int n` | `unsigned int flags` | `const struct timespec *_Nullable timeout` | `clockid_t clockid` | - |
 | 4450 | `set_mempolicy_home_node` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+set_mempolicy_home_node&type=code) | `0x1162` | *undocumented (no published man page yet)* | - | - | - | - | - |

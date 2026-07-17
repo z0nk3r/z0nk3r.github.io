@@ -35,35 +35,35 @@ Invoked via `swi #0` / `svc #0`.
 | 4 | `write` | [man](https://man7.org/linux/man-pages/man2/write.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+write&type=code) | `0x04` | `int fd` | `const void *buf` | `size_t count` | - | - | - |
 | 5 | `open` | [man](https://man7.org/linux/man-pages/man2/open.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+open&type=code) | `0x05` | `const char *pathname` | `int flags` | - | - | - | - |
 | 6 | `close` | [man](https://man7.org/linux/man-pages/man2/close.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+close&type=code) | `0x06` | `int fd` | - | - | - | - | - |
-| 7 | `not implemented` | - | `0x07` | *reserved, unimplemented* | - | - | - | - | - |
+| 7 | *Not Implemented* | - | `0x07` | *reserved* | - | - | - | - | - |
 | 8 | `creat` | [man](https://man7.org/linux/man-pages/man2/creat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+creat&type=code) | `0x08` | `const char *pathname` | `mode_t mode` | - | - | - | - |
 | 9 | `link` | [man](https://man7.org/linux/man-pages/man2/link.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+link&type=code) | `0x09` | `const char *oldpath` | `const char *newpath` | - | - | - | - |
 | 10 | `unlink` | [man](https://man7.org/linux/man-pages/man2/unlink.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+unlink&type=code) | `0x0a` | `const char *pathname` | - | - | - | - | - |
 | 11 | `execve` | [man](https://man7.org/linux/man-pages/man2/execve.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+execve&type=code) | `0x0b` | `const char *pathname` | `char *const argv[]` | `char *const envp[]` | - | - | - |
 | 12 | `chdir` | [man](https://man7.org/linux/man-pages/man2/chdir.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+chdir&type=code) | `0x0c` | `const char *path` | - | - | - | - | - |
-| 13 | `not implemented` | - | `0x0d` | *reserved, unimplemented* | - | - | - | - | - |
+| 13 | *Not Implemented* | - | `0x0d` | *reserved* | - | - | - | - | - |
 | 14 | `mknod` | [man](https://man7.org/linux/man-pages/man2/mknod.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mknod&type=code) | `0x0e` | `const char *pathname` | `mode_t mode` | `dev_t dev` | - | - | - |
 | 15 | `chmod` | [man](https://man7.org/linux/man-pages/man2/chmod.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+chmod&type=code) | `0x0f` | `const char *pathname` | `mode_t mode` | - | - | - | - |
 | 16 | `lchown` | [man](https://man7.org/linux/man-pages/man2/lchown.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lchown&type=code) | `0x10` | `const char *pathname` | `uid_t owner` | `gid_t group` | - | - | - |
-| 17 | `not implemented` | - | `0x11` | *reserved, unimplemented* | - | - | - | - | - |
-| 18 | `not implemented` | - | `0x12` | *reserved, unimplemented* | - | - | - | - | - |
+| 17 | *Not Implemented* | - | `0x11` | *reserved* | - | - | - | - | - |
+| 18 | *Not Implemented* | - | `0x12` | *reserved* | - | - | - | - | - |
 | 19 | `lseek` | [man](https://man7.org/linux/man-pages/man2/lseek.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lseek&type=code) | `0x13` | `int fd` | `off_t offset` | `int whence` | - | - | - |
 | 20 | `getpid` | [man](https://man7.org/linux/man-pages/man2/getpid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getpid&type=code) | `0x14` | - | - | - | - | - | - |
 | 21 | `mount` | [man](https://man7.org/linux/man-pages/man2/mount.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mount&type=code) | `0x15` | `const char *source` | `const char *target` | `const char *filesystemtype` | `unsigned long mountflags` | `const void *data` | - |
-| 22 | `not implemented` | - | `0x16` | *reserved, unimplemented* | - | - | - | - | - |
+| 22 | *Not Implemented* | - | `0x16` | *reserved* | - | - | - | - | - |
 | 23 | `setuid` | [man](https://man7.org/linux/man-pages/man2/setuid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setuid&type=code) | `0x17` | `uid_t uid` | - | - | - | - | - |
 | 24 | `getuid` | [man](https://man7.org/linux/man-pages/man2/getuid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getuid&type=code) | `0x18` | - | - | - | - | - | - |
-| 25 | `not implemented` | - | `0x19` | *reserved, unimplemented* | - | - | - | - | - |
+| 25 | *Not Implemented* | - | `0x19` | *reserved* | - | - | - | - | - |
 | 26 | `ptrace` | [man](https://man7.org/linux/man-pages/man2/ptrace.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ptrace&type=code) | `0x1a` | `enum __ptrace_request request` | `pid_t pid` | `void *addr` | `void *data` | - | - |
-| 27 | `not implemented` | - | `0x1b` | *reserved, unimplemented* | - | - | - | - | - |
-| 28 | `not implemented` | - | `0x1c` | *reserved, unimplemented* | - | - | - | - | - |
+| 27 | *Not Implemented* | - | `0x1b` | *reserved* | - | - | - | - | - |
+| 28 | *Not Implemented* | - | `0x1c` | *reserved* | - | - | - | - | - |
 | 29 | `pause` | [man](https://man7.org/linux/man-pages/man2/pause.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pause&type=code) | `0x1d` | - | - | - | - | - | - |
-| 30 | `not implemented` | - | `0x1e` | *reserved, unimplemented* | - | - | - | - | - |
-| 31 | `not implemented` | - | `0x1f` | *reserved, unimplemented* | - | - | - | - | - |
-| 32 | `not implemented` | - | `0x20` | *reserved, unimplemented* | - | - | - | - | - |
+| 30 | *Not Implemented* | - | `0x1e` | *reserved* | - | - | - | - | - |
+| 31 | *Not Implemented* | - | `0x1f` | *reserved* | - | - | - | - | - |
+| 32 | *Not Implemented* | - | `0x20` | *reserved* | - | - | - | - | - |
 | 33 | `access` | [man](https://man7.org/linux/man-pages/man2/access.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+access&type=code) | `0x21` | `const char *pathname` | `int mode` | - | - | - | - |
 | 34 | `nice` | [man](https://man7.org/linux/man-pages/man2/nice.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+nice&type=code) | `0x22` | `int inc` | - | - | - | - | - |
-| 35 | `not implemented` | - | `0x23` | *reserved, unimplemented* | - | - | - | - | - |
+| 35 | *Not Implemented* | - | `0x23` | *reserved* | - | - | - | - | - |
 | 36 | `sync` | [man](https://man7.org/linux/man-pages/man2/sync.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sync&type=code) | `0x24` | - | - | - | - | - | - |
 | 37 | `kill` | [man](https://man7.org/linux/man-pages/man2/kill.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+kill&type=code) | `0x25` | `pid_t pid` | `int sig` | - | - | - | - |
 | 38 | `rename` | [man](https://man7.org/linux/man-pages/man2/rename.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rename&type=code) | `0x26` | `const char *oldpath` | `const char *newpath` | - | - | - | - |
@@ -72,22 +72,22 @@ Invoked via `swi #0` / `svc #0`.
 | 41 | `dup` | [man](https://man7.org/linux/man-pages/man2/dup.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+dup&type=code) | `0x29` | `int oldfd` | - | - | - | - | - |
 | 42 | `pipe` | [man](https://man7.org/linux/man-pages/man2/pipe.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pipe&type=code) | `0x2a` | `int pipefd[2]` | - | - | - | - | - |
 | 43 | `times` | [man](https://man7.org/linux/man-pages/man2/times.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+times&type=code) | `0x2b` | `struct tms *buf` | - | - | - | - | - |
-| 44 | `not implemented` | - | `0x2c` | *reserved, unimplemented* | - | - | - | - | - |
+| 44 | *Not Implemented* | - | `0x2c` | *reserved* | - | - | - | - | - |
 | 45 | `brk` | [man](https://man7.org/linux/man-pages/man2/brk.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+brk&type=code) | `0x2d` | `void *addr` | - | - | - | - | - |
 | 46 | `setgid` | [man](https://man7.org/linux/man-pages/man2/setgid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setgid&type=code) | `0x2e` | `gid_t gid` | - | - | - | - | - |
 | 47 | `getgid` | [man](https://man7.org/linux/man-pages/man2/getgid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getgid&type=code) | `0x2f` | - | - | - | - | - | - |
-| 48 | `not implemented` | - | `0x30` | *reserved, unimplemented* | - | - | - | - | - |
+| 48 | *Not Implemented* | - | `0x30` | *reserved* | - | - | - | - | - |
 | 49 | `geteuid` | [man](https://man7.org/linux/man-pages/man2/geteuid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+geteuid&type=code) | `0x31` | - | - | - | - | - | - |
 | 50 | `getegid` | [man](https://man7.org/linux/man-pages/man2/getegid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getegid&type=code) | `0x32` | - | - | - | - | - | - |
 | 51 | `acct` | [man](https://man7.org/linux/man-pages/man2/acct.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+acct&type=code) | `0x33` | `const char *filename` | - | - | - | - | - |
 | 52 | `umount2` | [man](https://man7.org/linux/man-pages/man2/umount2.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+umount2&type=code) | `0x34` | `const char *target` | `int flags` | - | - | - | - |
-| 53 | `not implemented` | - | `0x35` | *reserved, unimplemented* | - | - | - | - | - |
+| 53 | *Not Implemented* | - | `0x35` | *reserved* | - | - | - | - | - |
 | 54 | `ioctl` | [man](https://man7.org/linux/man-pages/man2/ioctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ioctl&type=code) | `0x36` | `int fd` | `unsigned long request` | `...` | - | - | - |
 | 55 | `fcntl` | [man](https://man7.org/linux/man-pages/man2/fcntl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fcntl&type=code) | `0x37` | `int fd` | `int cmd` | `...` | - | - | - |
-| 56 | `not implemented` | - | `0x38` | *reserved, unimplemented* | - | - | - | - | - |
+| 56 | *Not Implemented* | - | `0x38` | *reserved* | - | - | - | - | - |
 | 57 | `setpgid` | [man](https://man7.org/linux/man-pages/man2/setpgid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setpgid&type=code) | `0x39` | `pid_t pid` | `pid_t pgid` | - | - | - | - |
-| 58 | `not implemented` | - | `0x3a` | *reserved, unimplemented* | - | - | - | - | - |
-| 59 | `not implemented` | - | `0x3b` | *reserved, unimplemented* | - | - | - | - | - |
+| 58 | *Not Implemented* | - | `0x3a` | *reserved* | - | - | - | - | - |
+| 59 | *Not Implemented* | - | `0x3b` | *reserved* | - | - | - | - | - |
 | 60 | `umask` | [man](https://man7.org/linux/man-pages/man2/umask.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+umask&type=code) | `0x3c` | `mode_t mask` | - | - | - | - | - |
 | 61 | `chroot` | [man](https://man7.org/linux/man-pages/man2/chroot.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+chroot&type=code) | `0x3d` | `const char *path` | - | - | - | - | - |
 | 62 | `ustat` | [man](https://man7.org/linux/man-pages/man2/ustat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ustat&type=code) | `0x3e` | `dev_t dev` | `struct ustat *ubuf` | - | - | - | - |
@@ -96,29 +96,29 @@ Invoked via `swi #0` / `svc #0`.
 | 65 | `getpgrp` | [man](https://man7.org/linux/man-pages/man2/getpgrp.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getpgrp&type=code) | `0x41` | - | - | - | - | - | - |
 | 66 | `setsid` | [man](https://man7.org/linux/man-pages/man2/setsid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setsid&type=code) | `0x42` | - | - | - | - | - | - |
 | 67 | `sigaction` | [man](https://man7.org/linux/man-pages/man2/sigaction.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sigaction&type=code) | `0x43` | `int signum` | `const struct sigaction *restrict act` | `struct sigaction *restrict oldact` | - | - | - |
-| 68 | `not implemented` | - | `0x44` | *reserved, unimplemented* | - | - | - | - | - |
-| 69 | `not implemented` | - | `0x45` | *reserved, unimplemented* | - | - | - | - | - |
+| 68 | *Not Implemented* | - | `0x44` | *reserved* | - | - | - | - | - |
+| 69 | *Not Implemented* | - | `0x45` | *reserved* | - | - | - | - | - |
 | 70 | `setreuid` | [man](https://man7.org/linux/man-pages/man2/setreuid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setreuid&type=code) | `0x46` | `uid_t ruid` | `uid_t euid` | - | - | - | - |
 | 71 | `setregid` | [man](https://man7.org/linux/man-pages/man2/setregid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setregid&type=code) | `0x47` | `gid_t rgid` | `gid_t egid` | - | - | - | - |
 | 72 | `sigsuspend` | [man](https://man7.org/linux/man-pages/man2/sigsuspend.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sigsuspend&type=code) | `0x48` | `const sigset_t *mask` | - | - | - | - | - |
 | 73 | `sigpending` | [man](https://man7.org/linux/man-pages/man2/sigpending.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sigpending&type=code) | `0x49` | `sigset_t *set` | - | - | - | - | - |
 | 74 | `sethostname` | [man](https://man7.org/linux/man-pages/man2/sethostname.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sethostname&type=code) | `0x4a` | `const char *name` | `size_t len` | - | - | - | - |
 | 75 | `setrlimit` | [man](https://man7.org/linux/man-pages/man2/setrlimit.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setrlimit&type=code) | `0x4b` | `int resource` | `const struct rlimit *rlim` | - | - | - | - |
-| 76 | `not implemented` | - | `0x4c` | *reserved, unimplemented* | - | - | - | - | - |
+| 76 | *Not Implemented* | - | `0x4c` | *reserved* | - | - | - | - | - |
 | 77 | `getrusage` | [man](https://man7.org/linux/man-pages/man2/getrusage.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getrusage&type=code) | `0x4d` | `int who` | `struct rusage *usage` | - | - | - | - |
 | 78 | `gettimeofday` | [man](https://man7.org/linux/man-pages/man2/gettimeofday.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+gettimeofday&type=code) | `0x4e` | `struct timeval *restrict tv` | `struct timezone *restrict tz` | - | - | - | - |
 | 79 | `settimeofday` | [man](https://man7.org/linux/man-pages/man2/settimeofday.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+settimeofday&type=code) | `0x4f` | `const struct timeval *tv` | `const struct timezone *tz` | - | - | - | - |
 | 80 | `getgroups` | [man](https://man7.org/linux/man-pages/man2/getgroups.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getgroups&type=code) | `0x50` | `int size` | `gid_t list[]` | - | - | - | - |
 | 81 | `setgroups` | [man](https://man7.org/linux/man-pages/man2/setgroups.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setgroups&type=code) | `0x51` | `size_t size` | `const gid_t *list` | - | - | - | - |
-| 82 | `not implemented` | - | `0x52` | *reserved, unimplemented* | - | - | - | - | - |
+| 82 | *Not Implemented* | - | `0x52` | *reserved* | - | - | - | - | - |
 | 83 | `symlink` | [man](https://man7.org/linux/man-pages/man2/symlink.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+symlink&type=code) | `0x53` | `const char *target` | `const char *linkpath` | - | - | - | - |
-| 84 | `not implemented` | - | `0x54` | *reserved, unimplemented* | - | - | - | - | - |
+| 84 | *Not Implemented* | - | `0x54` | *reserved* | - | - | - | - | - |
 | 85 | `readlink` | [man](https://man7.org/linux/man-pages/man2/readlink.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+readlink&type=code) | `0x55` | `const char *restrict pathname` | `char *restrict buf` | `size_t bufsiz` | - | - | - |
 | 86 | `uselib` | [man](https://man7.org/linux/man-pages/man2/uselib.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+uselib&type=code) | `0x56` | `const char *library` | - | - | - | - | - |
 | 87 | `swapon` | [man](https://man7.org/linux/man-pages/man2/swapon.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+swapon&type=code) | `0x57` | `const char *path` | `int swapflags` | - | - | - | - |
 | 88 | `reboot` | [man](https://man7.org/linux/man-pages/man2/reboot.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+reboot&type=code) | `0x58` | `int cmd` | - | - | - | - | - |
-| 89 | `not implemented` | - | `0x59` | *reserved, unimplemented* | - | - | - | - | - |
-| 90 | `not implemented` | - | `0x5a` | *reserved, unimplemented* | - | - | - | - | - |
+| 89 | *Not Implemented* | - | `0x59` | *reserved* | - | - | - | - | - |
+| 90 | *Not Implemented* | - | `0x5a` | *reserved* | - | - | - | - | - |
 | 91 | `munmap` | [man](https://man7.org/linux/man-pages/man2/munmap.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+munmap&type=code) | `0x5b` | `void *addr` | `size_t length` | - | - | - | - |
 | 92 | `truncate` | [man](https://man7.org/linux/man-pages/man2/truncate.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+truncate&type=code) | `0x5c` | `const char *path` | `off_t length` | - | - | - | - |
 | 93 | `ftruncate` | [man](https://man7.org/linux/man-pages/man2/ftruncate.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ftruncate&type=code) | `0x5d` | `int fd` | `off_t length` | - | - | - | - |
@@ -126,46 +126,46 @@ Invoked via `swi #0` / `svc #0`.
 | 95 | `fchown` | [man](https://man7.org/linux/man-pages/man2/fchown.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fchown&type=code) | `0x5f` | `int fd` | `uid_t owner` | `gid_t group` | - | - | - |
 | 96 | `getpriority` | [man](https://man7.org/linux/man-pages/man2/getpriority.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getpriority&type=code) | `0x60` | `int which` | `id_t who` | - | - | - | - |
 | 97 | `setpriority` | [man](https://man7.org/linux/man-pages/man2/setpriority.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setpriority&type=code) | `0x61` | `int which` | `id_t who` | `int prio` | - | - | - |
-| 98 | `not implemented` | - | `0x62` | *reserved, unimplemented* | - | - | - | - | - |
+| 98 | *Not Implemented* | - | `0x62` | *reserved* | - | - | - | - | - |
 | 99 | `statfs` | [man](https://man7.org/linux/man-pages/man2/statfs.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+statfs&type=code) | `0x63` | `const char *path` | `struct statfs *buf` | - | - | - | - |
 | 100 | `fstatfs` | [man](https://man7.org/linux/man-pages/man2/fstatfs.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fstatfs&type=code) | `0x64` | `int fd` | `struct statfs *buf` | - | - | - | - |
-| 101 | `not implemented` | - | `0x65` | *reserved, unimplemented* | - | - | - | - | - |
-| 102 | `not implemented` | - | `0x66` | *reserved, unimplemented* | - | - | - | - | - |
+| 101 | *Not Implemented* | - | `0x65` | *reserved* | - | - | - | - | - |
+| 102 | *Not Implemented* | - | `0x66` | *reserved* | - | - | - | - | - |
 | 103 | `syslog` | [man](https://man7.org/linux/man-pages/man2/syslog.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+syslog&type=code) | `0x67` | `int type` | `char *bufp` | `int len` | - | - | - |
 | 104 | `setitimer` | [man](https://man7.org/linux/man-pages/man2/setitimer.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setitimer&type=code) | `0x68` | `int which` | `const struct itimerval *restrict new_value` | `struct itimerval *restrict old_value` | - | - | - |
 | 105 | `getitimer` | [man](https://man7.org/linux/man-pages/man2/getitimer.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getitimer&type=code) | `0x69` | `int which` | `struct itimerval *curr_value` | - | - | - | - |
 | 106 | `stat` | [man](https://man7.org/linux/man-pages/man2/stat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+stat&type=code) | `0x6a` | `const char *restrict pathname` | `struct stat *restrict statbuf` | - | - | - | - |
 | 107 | `lstat` | [man](https://man7.org/linux/man-pages/man2/lstat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lstat&type=code) | `0x6b` | `const char *restrict pathname` | `struct stat *restrict statbuf` | - | - | - | - |
 | 108 | `fstat` | [man](https://man7.org/linux/man-pages/man2/fstat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fstat&type=code) | `0x6c` | `int fd` | `struct stat *statbuf` | - | - | - | - |
-| 109 | `not implemented` | - | `0x6d` | *reserved, unimplemented* | - | - | - | - | - |
-| 110 | `not implemented` | - | `0x6e` | *reserved, unimplemented* | - | - | - | - | - |
+| 109 | *Not Implemented* | - | `0x6d` | *reserved* | - | - | - | - | - |
+| 110 | *Not Implemented* | - | `0x6e` | *reserved* | - | - | - | - | - |
 | 111 | `vhangup` | [man](https://man7.org/linux/man-pages/man2/vhangup.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+vhangup&type=code) | `0x6f` | - | - | - | - | - | - |
-| 112 | `not implemented` | - | `0x70` | *reserved, unimplemented* | - | - | - | - | - |
-| 113 | `not implemented` | - | `0x71` | *reserved, unimplemented* | - | - | - | - | - |
+| 112 | *Not Implemented* | - | `0x70` | *reserved* | - | - | - | - | - |
+| 113 | *Not Implemented* | - | `0x71` | *reserved* | - | - | - | - | - |
 | 114 | `wait4` | [man](https://man7.org/linux/man-pages/man2/wait4.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+wait4&type=code) | `0x72` | `pid_t pid` | `int *wstatus` | `int options` | `struct rusage *rusage` | - | - |
 | 115 | `swapoff` | [man](https://man7.org/linux/man-pages/man2/swapoff.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+swapoff&type=code) | `0x73` | `const char *path` | - | - | - | - | - |
 | 116 | `sysinfo` | [man](https://man7.org/linux/man-pages/man2/sysinfo.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sysinfo&type=code) | `0x74` | `struct sysinfo *info` | - | - | - | - | - |
-| 117 | `not implemented` | - | `0x75` | *reserved, unimplemented* | - | - | - | - | - |
+| 117 | *Not Implemented* | - | `0x75` | *reserved* | - | - | - | - | - |
 | 118 | `fsync` | [man](https://man7.org/linux/man-pages/man2/fsync.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fsync&type=code) | `0x76` | `int fd` | - | - | - | - | - |
 | 119 | `sigreturn` | [man](https://man7.org/linux/man-pages/man2/sigreturn.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sigreturn&type=code) | `0x77` | `...` | - | - | - | - | - |
 | 120 | `clone` | [man](https://man7.org/linux/man-pages/man2/clone.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+clone&type=code) | `0x78` | `int (*fn)(void *)` | `void *stack` | `int flags` | `void *arg` | `...` | - |
 | 121 | `setdomainname` | [man](https://man7.org/linux/man-pages/man2/setdomainname.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setdomainname&type=code) | `0x79` | `const char *name` | `size_t len` | - | - | - | - |
 | 122 | `uname` | [man](https://man7.org/linux/man-pages/man2/uname.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+uname&type=code) | `0x7a` | `struct utsname *buf` | - | - | - | - | - |
-| 123 | `not implemented` | - | `0x7b` | *reserved, unimplemented* | - | - | - | - | - |
+| 123 | *Not Implemented* | - | `0x7b` | *reserved* | - | - | - | - | - |
 | 124 | `adjtimex` | [man](https://man7.org/linux/man-pages/man2/adjtimex.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+adjtimex&type=code) | `0x7c` | `struct timex *buf` | - | - | - | - | - |
 | 125 | `mprotect` | [man](https://man7.org/linux/man-pages/man2/mprotect.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mprotect&type=code) | `0x7d` | `void *addr` | `size_t len` | `int prot` | - | - | - |
 | 126 | `sigprocmask` | [man](https://man7.org/linux/man-pages/man2/sigprocmask.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sigprocmask&type=code) | `0x7e` | `int how` | `const sigset_t *restrict set` | `sigset_t *restrict oldset` | - | - | - |
-| 127 | `not implemented` | - | `0x7f` | *reserved, unimplemented* | - | - | - | - | - |
+| 127 | *Not Implemented* | - | `0x7f` | *reserved* | - | - | - | - | - |
 | 128 | `init_module` | [man](https://man7.org/linux/man-pages/man2/init_module.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+init_module&type=code) | `0x80` | `void *module_image` | `unsigned long len` | `const char *param_values` | - | - | - |
 | 129 | `delete_module` | [man](https://man7.org/linux/man-pages/man2/delete_module.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+delete_module&type=code) | `0x81` | `const char *name` | `unsigned int flags` | - | - | - | - |
-| 130 | `not implemented` | - | `0x82` | *reserved, unimplemented* | - | - | - | - | - |
+| 130 | *Not Implemented* | - | `0x82` | *reserved* | - | - | - | - | - |
 | 131 | `quotactl` | [man](https://man7.org/linux/man-pages/man2/quotactl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+quotactl&type=code) | `0x83` | `int cmd` | `const char *special` | `int id` | `caddr_t addr` | - | - |
 | 132 | `getpgid` | [man](https://man7.org/linux/man-pages/man2/getpgid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getpgid&type=code) | `0x84` | `pid_t pid` | - | - | - | - | - |
 | 133 | `fchdir` | [man](https://man7.org/linux/man-pages/man2/fchdir.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fchdir&type=code) | `0x85` | `int fd` | - | - | - | - | - |
 | 134 | `bdflush` | [man](https://man7.org/linux/man-pages/man2/bdflush.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+bdflush&type=code) | `0x86` | `int func` | `long *address` | - | - | - | - |
 | 135 | `sysfs` | [man](https://man7.org/linux/man-pages/man2/sysfs.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sysfs&type=code) | `0x87` | `int option` | `const char *fsname` | - | - | - | - |
 | 136 | `personality` | [man](https://man7.org/linux/man-pages/man2/personality.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+personality&type=code) | `0x88` | `unsigned long persona` | - | - | - | - | - |
-| 137 | `not implemented` | - | `0x89` | *reserved, unimplemented* | - | - | - | - | - |
+| 137 | *Not Implemented* | - | `0x89` | *reserved* | - | - | - | - | - |
 | 138 | `setfsuid` | [man](https://man7.org/linux/man-pages/man2/setfsuid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setfsuid&type=code) | `0x8a` | `uid_t fsuid` | - | - | - | - | - |
 | 139 | `setfsgid` | [man](https://man7.org/linux/man-pages/man2/setfsgid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setfsgid&type=code) | `0x8b` | `gid_t fsgid` | - | - | - | - | - |
 | 140 | `_llseek` | [man](https://man7.org/linux/man-pages/man2/_llseek.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+_llseek&type=code) | `0x8c` | `unsigned int fd` | `unsigned long offset_high` | `unsigned long offset_low` | `loff_t *result` | `unsigned int whence` | - |
@@ -194,8 +194,8 @@ Invoked via `swi #0` / `svc #0`.
 | 163 | `mremap` | [man](https://man7.org/linux/man-pages/man2/mremap.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mremap&type=code) | `0xa3` | `void *old_address` | `size_t old_size` | `size_t new_size` | `int flags` | `...` | - |
 | 164 | `setresuid` | [man](https://man7.org/linux/man-pages/man2/setresuid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setresuid&type=code) | `0xa4` | `uid_t ruid` | `uid_t euid` | `uid_t suid` | - | - | - |
 | 165 | `getresuid` | [man](https://man7.org/linux/man-pages/man2/getresuid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getresuid&type=code) | `0xa5` | `uid_t *ruid` | `uid_t *euid` | `uid_t *suid` | - | - | - |
-| 166 | `not implemented` | - | `0xa6` | *reserved, unimplemented* | - | - | - | - | - |
-| 167 | `not implemented` | - | `0xa7` | *reserved, unimplemented* | - | - | - | - | - |
+| 166 | *Not Implemented* | - | `0xa6` | *reserved* | - | - | - | - | - |
+| 167 | *Not Implemented* | - | `0xa7` | *reserved* | - | - | - | - | - |
 | 168 | `poll` | [man](https://man7.org/linux/man-pages/man2/poll.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+poll&type=code) | `0xa8` | `struct pollfd *fds` | `nfds_t nfds` | `int timeout` | - | - | - |
 | 169 | `nfsservctl` | [man](https://man7.org/linux/man-pages/man2/nfsservctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+nfsservctl&type=code) | `0xa9` | `int cmd` | `struct nfsctl_arg *argp` | `union nfsctl_res *resp` | - | - | - |
 | 170 | `setresgid` | [man](https://man7.org/linux/man-pages/man2/setresgid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setresgid&type=code) | `0xaa` | `gid_t rgid` | `gid_t egid` | `gid_t sgid` | - | - | - |
@@ -216,8 +216,8 @@ Invoked via `swi #0` / `svc #0`.
 | 185 | `capset` | [man](https://man7.org/linux/man-pages/man2/capset.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+capset&type=code) | `0xb9` | `cap_user_header_t hdrp` | `const cap_user_data_t datap` | - | - | - | - |
 | 186 | `sigaltstack` | [man](https://man7.org/linux/man-pages/man2/sigaltstack.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sigaltstack&type=code) | `0xba` | `const stack_t *restrict ss` | `stack_t *restrict old_ss` | - | - | - | - |
 | 187 | `sendfile` | [man](https://man7.org/linux/man-pages/man2/sendfile.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+sendfile&type=code) | `0xbb` | `int out_fd` | `int in_fd` | `off_t *offset` | `size_t count` | - | - |
-| 188 | `not implemented` | - | `0xbc` | *reserved, unimplemented* | - | - | - | - | - |
-| 189 | `not implemented` | - | `0xbd` | *reserved, unimplemented* | - | - | - | - | - |
+| 188 | *Not Implemented* | - | `0xbc` | *reserved* | - | - | - | - | - |
+| 189 | *Not Implemented* | - | `0xbd` | *reserved* | - | - | - | - | - |
 | 190 | `vfork` | [man](https://man7.org/linux/man-pages/man2/vfork.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+vfork&type=code) | `0xbe` | - | - | - | - | - | - |
 | 191 | `ugetrlimit` | [man](https://man7.org/linux/man-pages/man2/ugetrlimit.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+ugetrlimit&type=code) | `0xbf` | `int resource` | `struct rlimit *rlim` | - | - | - | - |
 | 192 | `mmap2` | [man](https://man7.org/linux/man-pages/man2/mmap2.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mmap2&type=code) | `0xc0` | `unsigned long addr` | `unsigned long length` | `unsigned long prot` | `unsigned long flags` | `unsigned long fd` | `unsigned long pgoffset` |
@@ -250,8 +250,8 @@ Invoked via `swi #0` / `svc #0`.
 | 219 | `mincore` | [man](https://man7.org/linux/man-pages/man2/mincore.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mincore&type=code) | `0xdb` | `void *addr` | `size_t length` | `unsigned char *vec` | - | - | - |
 | 220 | `madvise` | [man](https://man7.org/linux/man-pages/man2/madvise.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+madvise&type=code) | `0xdc` | `void *addr` | `size_t length` | `int advice` | - | - | - |
 | 221 | `fcntl64` | [man](https://man7.org/linux/man-pages/man2/fcntl64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fcntl64&type=code) | `0xdd` | `int fd` | `int cmd` | `...` | - | - | - |
-| 222 | `not implemented` | - | `0xde` | *reserved, unimplemented* | - | - | - | - | - |
-| 223 | `not implemented` | - | `0xdf` | *reserved, unimplemented* | - | - | - | - | - |
+| 222 | *Not Implemented* | - | `0xde` | *reserved* | - | - | - | - | - |
+| 223 | *Not Implemented* | - | `0xdf` | *reserved* | - | - | - | - | - |
 | 224 | `gettid` | [man](https://man7.org/linux/man-pages/man2/gettid.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+gettid&type=code) | `0xe0` | - | - | - | - | - | - |
 | 225 | `readahead` | [man](https://man7.org/linux/man-pages/man2/readahead.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+readahead&type=code) | `0xe1` | `int fd` | `off64_t offset` | `size_t count` | - | - | - |
 | 226 | `setxattr` | [man](https://man7.org/linux/man-pages/man2/setxattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setxattr&type=code) | `0xe2` | `const char\ *path` | `const char\ *name` | `const void\ *value` | `size_t size` | `int flags` | - |
@@ -282,8 +282,8 @@ Invoked via `swi #0` / `svc #0`.
 | 251 | `epoll_ctl` | [man](https://man7.org/linux/man-pages/man2/epoll_ctl.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+epoll_ctl&type=code) | `0xfb` | `int epfd` | `int op` | `int fd` | `struct epoll_event *event` | - | - |
 | 252 | `epoll_wait` | [man](https://man7.org/linux/man-pages/man2/epoll_wait.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+epoll_wait&type=code) | `0xfc` | `int epfd` | `struct epoll_event *events` | `int maxevents` | `int timeout` | - | - |
 | 253 | `remap_file_pages` | [man](https://man7.org/linux/man-pages/man2/remap_file_pages.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+remap_file_pages&type=code) | `0xfd` | `void *addr` | `size_t size` | `int prot` | `size_t pgoff` | `int flags` | - |
-| 254 | `not implemented` | - | `0xfe` | *reserved, unimplemented* | - | - | - | - | - |
-| 255 | `not implemented` | - | `0xff` | *reserved, unimplemented* | - | - | - | - | - |
+| 254 | *Not Implemented* | - | `0xfe` | *reserved* | - | - | - | - | - |
+| 255 | *Not Implemented* | - | `0xff` | *reserved* | - | - | - | - | - |
 | 256 | `set_tid_address` | [man](https://man7.org/linux/man-pages/man2/set_tid_address.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+set_tid_address&type=code) | `0x100` | `int *tidptr` | - | - | - | - | - |
 | 257 | `timer_create` | [man](https://man7.org/linux/man-pages/man2/timer_create.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+timer_create&type=code) | `0x101` | `clockid_t clockid` | `struct sigevent *restrict sevp` | `timer_t *restrict timerid` | - | - | - |
 | 258 | `timer_settime` | [man](https://man7.org/linux/man-pages/man2/timer_settime.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+timer_settime&type=code) | `0x102` | `timer_t timerid` | `int flags` | `const struct itimerspec *restrict new_value` | `struct itimerspec *restrict old_value` | - | - |

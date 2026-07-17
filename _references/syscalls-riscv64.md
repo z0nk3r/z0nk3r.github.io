@@ -1,32 +1,32 @@
 ---
 layout: reference
-title: "arm64 Syscalls"
-crumb_title: "arm64"
-excerpt: "Full ARM64 (AArch64) Linux syscall table: NR, name, man page and kernel source links, and which register holds each argument."
+title: "riscv64 Syscalls"
+crumb_title: "riscv64"
+excerpt: "Full 64-bit RISC-V Linux syscall table: NR, name, man page and kernel source links, and which register holds each argument."
 tags: [linux, c, lookup]
-permalink: /references/syscalls/arm64/
-syscalls_arch: arm64
+permalink: /references/syscalls/riscv64/
+syscalls_arch: riscv64
 hidden_from_index: true
 ---
 
-*AKA: `AArch64`, `ARM64`.*
+*AKA: `RISC-V`, `RV64`.*
 
-*CPU ISAs: `aarch64`.*
+*CPU ISAs: `riscv64`.*
 
 ## Calling Convention
 
 | Syscall NR | Return | arg0 | arg1 | arg2 | arg3 | arg4 | arg5 |
 |---|---|---|---|---|---|---|---|
-| `x8` | `x0` | `x0` | `x1` | `x2` | `x3` | `x4` | `x5` |
+| `a7` | `a0` | `a0` | `a1` | `a2` | `a3` | `a4` | `a5` |
 {: style="--table-col-1: 12.5%; --table-col-2: 12.5%; --table-col-3: 12.5%; --table-col-4: 12.5%; --table-col-5: 12.5%; --table-col-6: 12.5%; --table-col-7: 12.5%; --table-col-8: 12.5%;"}
 
-Invoked via `svc #0`.
+Invoked via `ecall`. Like x86_64 and arm64, RISC-V has no separate error-flag register — a negative return value in `a0` (in the `-4095..-1` range) signals `-errno`.
 
 ## Syscalls
 
-*Note: argument types are sourced from each syscall's man page, not copied from a cheat sheet. arm64 dropped a number of legacy syscalls x86 still carries, leaving more reserved/unimplemented rows — marked as such.*
+*Note: argument types are sourced from each syscall's man page, not copied from a cheat sheet. RISC-V uses a single generic syscall list shared with riscv32 — most numbers and names are identical between the two, but riscv64 exposes modern names (`mmap`, `fcntl`, `statfs`, `fstatfs`, `truncate`, `ftruncate`, `lseek`, `sendfile`, `fadvise64`, plus `newfstatat`/`fstat`) at the same NRs where riscv32 instead exposes legacy 32-bit-only equivalents (`mmap2`, `fcntl64`, etc.) — a genuinely different public name at the same slot, not just a wider version of it. `riscv_hwprobe` and `riscv_flush_icache` are RISC-V-specific syscalls. A few rows are undocumented (no published man page yet) — marked as such.*
 
-| NR | Name | References | `%x8` | arg0 (`%x0`) | arg1 (`%x1`) | arg2 (`%x2`) | arg3 (`%x3`) | arg4 (`%x4`) | arg5 (`%x5`) |
+| NR | Name | References | `%a7` | arg0 (`%a0`) | arg1 (`%a1`) | arg2 (`%a2`) | arg3 (`%a3`) | arg4 (`%a4`) | arg5 (`%a5`) |
 |---|---|---|---|---|---|---|---|---|---|
 | 0 | `io_setup` | [man](https://man7.org/linux/man-pages/man2/io_setup.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_setup&type=code) | `0x00` | `unsigned int nr_events` | `aio_context_t *ctx_idp` | - | - | - | - |
 | 1 | `io_destroy` | [man](https://man7.org/linux/man-pages/man2/io_destroy.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_destroy&type=code) | `0x01` | `aio_context_t ctx_id` | - | - | - | - | - |
@@ -66,7 +66,7 @@ Invoked via `svc #0`.
 | 35 | `unlinkat` | [man](https://man7.org/linux/man-pages/man2/unlinkat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+unlinkat&type=code) | `0x23` | `int dirfd` | `const char *pathname` | `int flags` | - | - | - |
 | 36 | `symlinkat` | [man](https://man7.org/linux/man-pages/man2/symlinkat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+symlinkat&type=code) | `0x24` | `const char *target` | `int newdirfd` | `const char *linkpath` | - | - | - |
 | 37 | `linkat` | [man](https://man7.org/linux/man-pages/man2/linkat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+linkat&type=code) | `0x25` | `int olddirfd` | `const char *oldpath` | `int newdirfd` | `const char *newpath` | `int flags` | - |
-| 38 | `renameat` | [man](https://man7.org/linux/man-pages/man2/renameat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+renameat&type=code) | `0x26` | `int olddirfd` | `const char *oldpath` | `int newdirfd` | `const char *newpath` | - | - |
+| 38 | *Not Implemented* | - | `0x26` | *reserved* | - | - | - | - | - |
 | 39 | `umount2` | [man](https://man7.org/linux/man-pages/man2/umount2.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+umount2&type=code) | `0x27` | `const char *target` | `int flags` | - | - | - | - |
 | 40 | `mount` | [man](https://man7.org/linux/man-pages/man2/mount.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mount&type=code) | `0x28` | `const char *source` | `const char *target` | `const char *filesystemtype` | `unsigned long mountflags` | `const void *data` | - |
 | 41 | `pivot_root` | [man](https://man7.org/linux/man-pages/man2/pivot_root.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pivot_root&type=code) | `0x29` | `const char *new_root` | `const char *put_old` | - | - | - | - |
@@ -286,8 +286,8 @@ Invoked via `svc #0`.
 | 255 | *Not Implemented* | - | `0xff` | *reserved* | - | - | - | - | - |
 | 256 | *Not Implemented* | - | `0x100` | *reserved* | - | - | - | - | - |
 | 257 | *Not Implemented* | - | `0x101` | *reserved* | - | - | - | - | - |
-| 258 | *Not Implemented* | - | `0x102` | *reserved* | - | - | - | - | - |
-| 259 | *Not Implemented* | - | `0x103` | *reserved* | - | - | - | - | - |
+| 258 | `riscv_hwprobe` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+riscv_hwprobe&type=code) | `0x102` | *RISC-V CPU-feature probing syscall (added Linux 6.4), no published man page yet* | - | - | - | - | - |
+| 259 | `riscv_flush_icache` | [man](https://man7.org/linux/man-pages/man2/riscv_flush_icache.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+riscv_flush_icache&type=code) | `0x103` | `void *start` | `void *end` | `unsigned long flags` | - | - | - |
 | 260 | `wait4` | [man](https://man7.org/linux/man-pages/man2/wait4.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+wait4&type=code) | `0x104` | `pid_t pid` | `int *wstatus` | `int options` | `struct rusage *rusage` | - | - |
 | 261 | `prlimit64` | [man](https://man7.org/linux/man-pages/man2/prlimit64.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+prlimit64&type=code) | `0x105` | `pid_t pid` | `int resource` | `const struct rlimit *new_limit` | `struct rlimit *old_limit` | - | - |
 | 262 | `fanotify_init` | [man](https://man7.org/linux/man-pages/man2/fanotify_init.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fanotify_init&type=code) | `0x106` | `unsigned int flags` | `unsigned int event_f_flags` | - | - | - | - |
@@ -320,4 +320,184 @@ Invoked via `svc #0`.
 | 289 | `pkey_alloc` | [man](https://man7.org/linux/man-pages/man2/pkey_alloc.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pkey_alloc&type=code) | `0x121` | `unsigned int flags` | `unsigned int access_rights` | - | - | - | - |
 | 290 | `pkey_free` | [man](https://man7.org/linux/man-pages/man2/pkey_free.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pkey_free&type=code) | `0x122` | `int pkey` | - | - | - | - | - |
 | 291 | `statx` | [man](https://man7.org/linux/man-pages/man2/statx.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+statx&type=code) | `0x123` | `int dirfd` | `const char *restrict pathname` | `int flags` | `unsigned int mask` | `struct statx *restrict statxbuf` | - |
+| 292 | `io_pgetevents` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_pgetevents&type=code) | `0x124` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 293 | `rseq` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rseq&type=code) | `0x125` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 294 | `kexec_file_load` | [man](https://man7.org/linux/man-pages/man2/kexec_file_load.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+kexec_file_load&type=code) | `0x126` | `int kernel_fd` | `int initrd_fd` | `unsigned long cmdline_len` | `const char *cmdline` | `unsigned long flags` | - |
+| 295 | *Not Implemented* | - | `0x127` | *reserved* | - | - | - | - | - |
+| 296 | *Not Implemented* | - | `0x128` | *reserved* | - | - | - | - | - |
+| 297 | *Not Implemented* | - | `0x129` | *reserved* | - | - | - | - | - |
+| 298 | *Not Implemented* | - | `0x12a` | *reserved* | - | - | - | - | - |
+| 299 | *Not Implemented* | - | `0x12b` | *reserved* | - | - | - | - | - |
+| 300 | *Not Implemented* | - | `0x12c` | *reserved* | - | - | - | - | - |
+| 301 | *Not Implemented* | - | `0x12d` | *reserved* | - | - | - | - | - |
+| 302 | *Not Implemented* | - | `0x12e` | *reserved* | - | - | - | - | - |
+| 303 | *Not Implemented* | - | `0x12f` | *reserved* | - | - | - | - | - |
+| 304 | *Not Implemented* | - | `0x130` | *reserved* | - | - | - | - | - |
+| 305 | *Not Implemented* | - | `0x131` | *reserved* | - | - | - | - | - |
+| 306 | *Not Implemented* | - | `0x132` | *reserved* | - | - | - | - | - |
+| 307 | *Not Implemented* | - | `0x133` | *reserved* | - | - | - | - | - |
+| 308 | *Not Implemented* | - | `0x134` | *reserved* | - | - | - | - | - |
+| 309 | *Not Implemented* | - | `0x135` | *reserved* | - | - | - | - | - |
+| 310 | *Not Implemented* | - | `0x136` | *reserved* | - | - | - | - | - |
+| 311 | *Not Implemented* | - | `0x137` | *reserved* | - | - | - | - | - |
+| 312 | *Not Implemented* | - | `0x138` | *reserved* | - | - | - | - | - |
+| 313 | *Not Implemented* | - | `0x139` | *reserved* | - | - | - | - | - |
+| 314 | *Not Implemented* | - | `0x13a` | *reserved* | - | - | - | - | - |
+| 315 | *Not Implemented* | - | `0x13b` | *reserved* | - | - | - | - | - |
+| 316 | *Not Implemented* | - | `0x13c` | *reserved* | - | - | - | - | - |
+| 317 | *Not Implemented* | - | `0x13d` | *reserved* | - | - | - | - | - |
+| 318 | *Not Implemented* | - | `0x13e` | *reserved* | - | - | - | - | - |
+| 319 | *Not Implemented* | - | `0x13f` | *reserved* | - | - | - | - | - |
+| 320 | *Not Implemented* | - | `0x140` | *reserved* | - | - | - | - | - |
+| 321 | *Not Implemented* | - | `0x141` | *reserved* | - | - | - | - | - |
+| 322 | *Not Implemented* | - | `0x142` | *reserved* | - | - | - | - | - |
+| 323 | *Not Implemented* | - | `0x143` | *reserved* | - | - | - | - | - |
+| 324 | *Not Implemented* | - | `0x144` | *reserved* | - | - | - | - | - |
+| 325 | *Not Implemented* | - | `0x145` | *reserved* | - | - | - | - | - |
+| 326 | *Not Implemented* | - | `0x146` | *reserved* | - | - | - | - | - |
+| 327 | *Not Implemented* | - | `0x147` | *reserved* | - | - | - | - | - |
+| 328 | *Not Implemented* | - | `0x148` | *reserved* | - | - | - | - | - |
+| 329 | *Not Implemented* | - | `0x149` | *reserved* | - | - | - | - | - |
+| 330 | *Not Implemented* | - | `0x14a` | *reserved* | - | - | - | - | - |
+| 331 | *Not Implemented* | - | `0x14b` | *reserved* | - | - | - | - | - |
+| 332 | *Not Implemented* | - | `0x14c` | *reserved* | - | - | - | - | - |
+| 333 | *Not Implemented* | - | `0x14d` | *reserved* | - | - | - | - | - |
+| 334 | *Not Implemented* | - | `0x14e` | *reserved* | - | - | - | - | - |
+| 335 | *Not Implemented* | - | `0x14f` | *reserved* | - | - | - | - | - |
+| 336 | *Not Implemented* | - | `0x150` | *reserved* | - | - | - | - | - |
+| 337 | *Not Implemented* | - | `0x151` | *reserved* | - | - | - | - | - |
+| 338 | *Not Implemented* | - | `0x152` | *reserved* | - | - | - | - | - |
+| 339 | *Not Implemented* | - | `0x153` | *reserved* | - | - | - | - | - |
+| 340 | *Not Implemented* | - | `0x154` | *reserved* | - | - | - | - | - |
+| 341 | *Not Implemented* | - | `0x155` | *reserved* | - | - | - | - | - |
+| 342 | *Not Implemented* | - | `0x156` | *reserved* | - | - | - | - | - |
+| 343 | *Not Implemented* | - | `0x157` | *reserved* | - | - | - | - | - |
+| 344 | *Not Implemented* | - | `0x158` | *reserved* | - | - | - | - | - |
+| 345 | *Not Implemented* | - | `0x159` | *reserved* | - | - | - | - | - |
+| 346 | *Not Implemented* | - | `0x15a` | *reserved* | - | - | - | - | - |
+| 347 | *Not Implemented* | - | `0x15b` | *reserved* | - | - | - | - | - |
+| 348 | *Not Implemented* | - | `0x15c` | *reserved* | - | - | - | - | - |
+| 349 | *Not Implemented* | - | `0x15d` | *reserved* | - | - | - | - | - |
+| 350 | *Not Implemented* | - | `0x15e` | *reserved* | - | - | - | - | - |
+| 351 | *Not Implemented* | - | `0x15f` | *reserved* | - | - | - | - | - |
+| 352 | *Not Implemented* | - | `0x160` | *reserved* | - | - | - | - | - |
+| 353 | *Not Implemented* | - | `0x161` | *reserved* | - | - | - | - | - |
+| 354 | *Not Implemented* | - | `0x162` | *reserved* | - | - | - | - | - |
+| 355 | *Not Implemented* | - | `0x163` | *reserved* | - | - | - | - | - |
+| 356 | *Not Implemented* | - | `0x164` | *reserved* | - | - | - | - | - |
+| 357 | *Not Implemented* | - | `0x165` | *reserved* | - | - | - | - | - |
+| 358 | *Not Implemented* | - | `0x166` | *reserved* | - | - | - | - | - |
+| 359 | *Not Implemented* | - | `0x167` | *reserved* | - | - | - | - | - |
+| 360 | *Not Implemented* | - | `0x168` | *reserved* | - | - | - | - | - |
+| 361 | *Not Implemented* | - | `0x169` | *reserved* | - | - | - | - | - |
+| 362 | *Not Implemented* | - | `0x16a` | *reserved* | - | - | - | - | - |
+| 363 | *Not Implemented* | - | `0x16b` | *reserved* | - | - | - | - | - |
+| 364 | *Not Implemented* | - | `0x16c` | *reserved* | - | - | - | - | - |
+| 365 | *Not Implemented* | - | `0x16d` | *reserved* | - | - | - | - | - |
+| 366 | *Not Implemented* | - | `0x16e` | *reserved* | - | - | - | - | - |
+| 367 | *Not Implemented* | - | `0x16f` | *reserved* | - | - | - | - | - |
+| 368 | *Not Implemented* | - | `0x170` | *reserved* | - | - | - | - | - |
+| 369 | *Not Implemented* | - | `0x171` | *reserved* | - | - | - | - | - |
+| 370 | *Not Implemented* | - | `0x172` | *reserved* | - | - | - | - | - |
+| 371 | *Not Implemented* | - | `0x173` | *reserved* | - | - | - | - | - |
+| 372 | *Not Implemented* | - | `0x174` | *reserved* | - | - | - | - | - |
+| 373 | *Not Implemented* | - | `0x175` | *reserved* | - | - | - | - | - |
+| 374 | *Not Implemented* | - | `0x176` | *reserved* | - | - | - | - | - |
+| 375 | *Not Implemented* | - | `0x177` | *reserved* | - | - | - | - | - |
+| 376 | *Not Implemented* | - | `0x178` | *reserved* | - | - | - | - | - |
+| 377 | *Not Implemented* | - | `0x179` | *reserved* | - | - | - | - | - |
+| 378 | *Not Implemented* | - | `0x17a` | *reserved* | - | - | - | - | - |
+| 379 | *Not Implemented* | - | `0x17b` | *reserved* | - | - | - | - | - |
+| 380 | *Not Implemented* | - | `0x17c` | *reserved* | - | - | - | - | - |
+| 381 | *Not Implemented* | - | `0x17d` | *reserved* | - | - | - | - | - |
+| 382 | *Not Implemented* | - | `0x17e` | *reserved* | - | - | - | - | - |
+| 383 | *Not Implemented* | - | `0x17f` | *reserved* | - | - | - | - | - |
+| 384 | *Not Implemented* | - | `0x180` | *reserved* | - | - | - | - | - |
+| 385 | *Not Implemented* | - | `0x181` | *reserved* | - | - | - | - | - |
+| 386 | *Not Implemented* | - | `0x182` | *reserved* | - | - | - | - | - |
+| 387 | *Not Implemented* | - | `0x183` | *reserved* | - | - | - | - | - |
+| 388 | *Not Implemented* | - | `0x184` | *reserved* | - | - | - | - | - |
+| 389 | *Not Implemented* | - | `0x185` | *reserved* | - | - | - | - | - |
+| 390 | *Not Implemented* | - | `0x186` | *reserved* | - | - | - | - | - |
+| 391 | *Not Implemented* | - | `0x187` | *reserved* | - | - | - | - | - |
+| 392 | *Not Implemented* | - | `0x188` | *reserved* | - | - | - | - | - |
+| 393 | *Not Implemented* | - | `0x189` | *reserved* | - | - | - | - | - |
+| 394 | *Not Implemented* | - | `0x18a` | *reserved* | - | - | - | - | - |
+| 395 | *Not Implemented* | - | `0x18b` | *reserved* | - | - | - | - | - |
+| 396 | *Not Implemented* | - | `0x18c` | *reserved* | - | - | - | - | - |
+| 397 | *Not Implemented* | - | `0x18d` | *reserved* | - | - | - | - | - |
+| 398 | *Not Implemented* | - | `0x18e` | *reserved* | - | - | - | - | - |
+| 399 | *Not Implemented* | - | `0x18f` | *reserved* | - | - | - | - | - |
+| 400 | *Not Implemented* | - | `0x190` | *reserved* | - | - | - | - | - |
+| 401 | *Not Implemented* | - | `0x191` | *reserved* | - | - | - | - | - |
+| 402 | *Not Implemented* | - | `0x192` | *reserved* | - | - | - | - | - |
+| 403 | *Not Implemented* | - | `0x193` | *reserved* | - | - | - | - | - |
+| 404 | *Not Implemented* | - | `0x194` | *reserved* | - | - | - | - | - |
+| 405 | *Not Implemented* | - | `0x195` | *reserved* | - | - | - | - | - |
+| 406 | *Not Implemented* | - | `0x196` | *reserved* | - | - | - | - | - |
+| 407 | *Not Implemented* | - | `0x197` | *reserved* | - | - | - | - | - |
+| 408 | *Not Implemented* | - | `0x198` | *reserved* | - | - | - | - | - |
+| 409 | *Not Implemented* | - | `0x199` | *reserved* | - | - | - | - | - |
+| 410 | *Not Implemented* | - | `0x19a` | *reserved* | - | - | - | - | - |
+| 411 | *Not Implemented* | - | `0x19b` | *reserved* | - | - | - | - | - |
+| 412 | *Not Implemented* | - | `0x19c` | *reserved* | - | - | - | - | - |
+| 413 | *Not Implemented* | - | `0x19d` | *reserved* | - | - | - | - | - |
+| 414 | *Not Implemented* | - | `0x19e` | *reserved* | - | - | - | - | - |
+| 415 | *Not Implemented* | - | `0x19f` | *reserved* | - | - | - | - | - |
+| 416 | *Not Implemented* | - | `0x1a0` | *reserved* | - | - | - | - | - |
+| 417 | *Not Implemented* | - | `0x1a1` | *reserved* | - | - | - | - | - |
+| 418 | *Not Implemented* | - | `0x1a2` | *reserved* | - | - | - | - | - |
+| 419 | *Not Implemented* | - | `0x1a3` | *reserved* | - | - | - | - | - |
+| 420 | *Not Implemented* | - | `0x1a4` | *reserved* | - | - | - | - | - |
+| 421 | *Not Implemented* | - | `0x1a5` | *reserved* | - | - | - | - | - |
+| 422 | *Not Implemented* | - | `0x1a6` | *reserved* | - | - | - | - | - |
+| 423 | *Not Implemented* | - | `0x1a7` | *reserved* | - | - | - | - | - |
+| 424 | `pidfd_send_signal` | [man](https://man7.org/linux/man-pages/man2/pidfd_send_signal.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pidfd_send_signal&type=code) | `0x1a8` | `int pidfd` | `int sig` | `siginfo_t *_Nullable info` | `unsigned int flags` | - | - |
+| 425 | `io_uring_setup` | [man](https://man7.org/linux/man-pages/man2/io_uring_setup.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_uring_setup&type=code) | `0x1a9` | `u32 entries` | `struct io_uring_params *params` | - | - | - | - |
+| 426 | `io_uring_enter` | [man](https://man7.org/linux/man-pages/man2/io_uring_enter.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_uring_enter&type=code) | `0x1aa` | `unsigned int fd` | `unsigned int to_submit` | `unsigned int min_complete` | `unsigned int flags` | `sigset_t *sig` | - |
+| 427 | `io_uring_register` | [man](https://man7.org/linux/man-pages/man2/io_uring_register.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+io_uring_register&type=code) | `0x1ab` | `unsigned int fd` | `unsigned int opcode` | `void *arg` | `unsigned int nr_args` | - | - |
+| 428 | `open_tree` | [man](https://man7.org/linux/man-pages/man2/open_tree.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+open_tree&type=code) | `0x1ac` | `int dirfd` | `const char *path` | `unsigned int flags` | - | - | - |
+| 429 | `move_mount` | [man](https://man7.org/linux/man-pages/man2/move_mount.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+move_mount&type=code) | `0x1ad` | `int from_dirfd` | `const char *from_path` | `int to_dirfd` | `const char *to_path` | `unsigned int flags` | - |
+| 430 | `fsopen` | [man](https://man7.org/linux/man-pages/man2/fsopen.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fsopen&type=code) | `0x1ae` | `const char *fsname` | `unsigned int flags` | - | - | - | - |
+| 431 | `fsconfig` | [man](https://man7.org/linux/man-pages/man2/fsconfig.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fsconfig&type=code) | `0x1af` | `int fd` | `unsigned int cmd` | `const char *_Nullable key` | `const void *_Nullable value` | `int aux` | - |
+| 432 | `fsmount` | [man](https://man7.org/linux/man-pages/man2/fsmount.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fsmount&type=code) | `0x1b0` | `int fsfd` | `unsigned int flags` | `unsigned int attr_flags` | - | - | - |
+| 433 | `fspick` | [man](https://man7.org/linux/man-pages/man2/fspick.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fspick&type=code) | `0x1b1` | `int dirfd` | `const char *path` | `unsigned int flags` | - | - | - |
+| 434 | `pidfd_open` | [man](https://man7.org/linux/man-pages/man2/pidfd_open.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pidfd_open&type=code) | `0x1b2` | `pid_t pid` | `unsigned int flags` | - | - | - | - |
+| 435 | `clone3` | [man](https://man7.org/linux/man-pages/man2/clone3.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+clone3&type=code) | `0x1b3` | `struct clone_args *cl_args` | `size_t size` | - | - | - | - |
+| 436 | `close_range` | [man](https://man7.org/linux/man-pages/man2/close_range.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+close_range&type=code) | `0x1b4` | `unsigned int first` | `unsigned int last` | `int flags` | - | - | - |
+| 437 | `openat2` | [man](https://man7.org/linux/man-pages/man2/openat2.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+openat2&type=code) | `0x1b5` | `int dirfd` | `const char *path` | `struct open_how *how` | `size_t size` | - | - |
+| 438 | `pidfd_getfd` | [man](https://man7.org/linux/man-pages/man2/pidfd_getfd.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+pidfd_getfd&type=code) | `0x1b6` | `int pidfd` | `int targetfd` | `unsigned int flags` | - | - | - |
+| 439 | `faccessat2` | [man](https://man7.org/linux/man-pages/man2/faccessat2.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+faccessat2&type=code) | `0x1b7` | `int dirfd` | `const char *path` | `int mode` | `int flags` | - | - |
+| 440 | `process_madvise` | [man](https://man7.org/linux/man-pages/man2/process_madvise.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+process_madvise&type=code) | `0x1b8` | `int pidfd` | `const struct iovec *iovec` | `size_t n` | `int advice` | `unsigned int flags` | - |
+| 441 | `epoll_pwait2` | [man](https://man7.org/linux/man-pages/man2/epoll_pwait2.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+epoll_pwait2&type=code) | `0x1b9` | `int epfd` | `struct epoll_event *events` | `int n` | `const struct timespec *_Nullable timeout` | `const sigset_t *_Nullable sigmask` | - |
+| 442 | `mount_setattr` | [man](https://man7.org/linux/man-pages/man2/mount_setattr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mount_setattr&type=code) | `0x1ba` | `int dirfd` | `const char *path` | `unsigned int flags` | `struct mount_attr *attr` | `size_t size` | - |
+| 443 | `quotactl_fd` | [man](https://man7.org/linux/man-pages/man2/quotactl_fd.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+quotactl_fd&type=code) | `0x1bb` | `int fd` | `int op` | `int id` | `caddr_t addr` | - | - |
+| 444 | `landlock_create_ruleset` | [man](https://man7.org/linux/man-pages/man2/landlock_create_ruleset.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_create_ruleset&type=code) | `0x1bc` | `const struct landlock_ruleset_attr *attr` | `size_t size` | `uint32_t flags` | - | - | - |
+| 445 | `landlock_add_rule` | [man](https://man7.org/linux/man-pages/man2/landlock_add_rule.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_add_rule&type=code) | `0x1bd` | `int ruleset_fd` | `enum landlock_rule_type rule_type` | `const void *rule_attr` | `uint32_t flags` | - | - |
+| 446 | `landlock_restrict_self` | [man](https://man7.org/linux/man-pages/man2/landlock_restrict_self.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+landlock_restrict_self&type=code) | `0x1be` | `int ruleset_fd` | `uint32_t flags` | - | - | - | - |
+| 447 | `memfd_secret` | [man](https://man7.org/linux/man-pages/man2/memfd_secret.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+memfd_secret&type=code) | `0x1bf` | `unsigned int flags` | - | - | - | - | - |
+| 448 | `process_mrelease` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+process_mrelease&type=code) | `0x1c0` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 449 | `futex_waitv` | [man](https://man7.org/linux/man-pages/man2/futex_waitv.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex_waitv&type=code) | `0x1c1` | `struct futex_waitv *waiters` | `unsigned int n` | `unsigned int flags` | `const struct timespec *_Nullable timeout` | `clockid_t clockid` | - |
+| 450 | `set_mempolicy_home_node` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+set_mempolicy_home_node&type=code) | `0x1c2` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 451 | `cachestat` | [man](https://man7.org/linux/man-pages/man2/cachestat.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+cachestat&type=code) | `0x1c3` | `unsigned int fd` | `struct cachestat_range *cstat_range` | `struct cachestat *cstat` | `unsigned int flags` | - | - |
+| 452 | `fchmodat2` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+fchmodat2&type=code) | `0x1c4` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 453 | `map_shadow_stack` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+map_shadow_stack&type=code) | `0x1c5` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 454 | `futex_wake` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex_wake&type=code) | `0x1c6` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 455 | `futex_wait` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex_wait&type=code) | `0x1c7` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 456 | `futex_requeue` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+futex_requeue&type=code) | `0x1c8` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 457 | `statmount` | [man](https://man7.org/linux/man-pages/man2/statmount.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+statmount&type=code) | `0x1c9` | `struct mnt_id_req *req` | `struct statmount *smbuf` | `size_t bufsize` | `unsigned long flags` | - | - |
+| 458 | `listmount` | [man](https://man7.org/linux/man-pages/man2/listmount.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+listmount&type=code) | `0x1ca` | `struct mnt_id_req *req` | `uint64_t *mnt_ids` | `size_t n` | `unsigned long flags` | - | - |
+| 459 | `lsm_get_self_attr` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lsm_get_self_attr&type=code) | `0x1cb` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 460 | `lsm_set_self_attr` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lsm_set_self_attr&type=code) | `0x1cc` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 461 | `lsm_list_modules` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+lsm_list_modules&type=code) | `0x1cd` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 462 | `mseal` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+mseal&type=code) | `0x1ce` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 463 | `setxattrat` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+setxattrat&type=code) | `0x1cf` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 464 | `getxattrat` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+getxattrat&type=code) | `0x1d0` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 465 | `listxattrat` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+listxattrat&type=code) | `0x1d1` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 466 | `removexattrat` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+removexattrat&type=code) | `0x1d2` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 467 | `open_tree_attr` | [man](https://man7.org/linux/man-pages/man2/open_tree_attr.2.html) [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+open_tree_attr&type=code) | `0x1d3` | `int dirfd` | `const char *path` | `unsigned int flags` | `struct mount_attr *_Nullable attr` | `size_t size` | - |
+| 468 | `file_getattr` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+file_getattr&type=code) | `0x1d4` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 469 | `file_setattr` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+file_setattr&type=code) | `0x1d5` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 470 | `listns` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+listns&type=code) | `0x1d6` | *undocumented (no published man page yet)* | - | - | - | - | - |
+| 471 | `rseq_slice_yield` | [src](https://github.com/search?q=repo%3Atorvalds%2Flinux+SYSCALL_DEFINE+rseq_slice_yield&type=code) | `0x1d7` | *undocumented (no published man page yet)* | - | - | - | - | - |
 {: style="--table-col-1: 5%; --table-col-2: 14%; --table-col-3: 9%; --table-col-4: 7%; --table-col-5: 12%; --table-col-6: 12%; --table-col-7: 12%; --table-col-8: 11%; --table-col-9: 9%; --table-col-10: 9%;"}
