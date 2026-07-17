@@ -702,22 +702,23 @@ article table {
   table-layout: fixed;
 }
 
-/* Default 3-column split (Code/Field-ish, Description, Notes). A specific
-   table can override any of these directly from markdown via a kramdown
-   block IAL setting the custom properties inline, no CSS edit required:
+/* Default 3-column split (Code/Field-ish, Description, Notes), with an inert
+   4th-column rule available for tables that need one. A specific table can
+   override any of these directly from markdown via a kramdown block IAL
+   setting the custom properties inline, no CSS edit required:
      {: style="--table-col-1: 15%; --table-col-2: 10%; --table-col-3: 75%;"}
    placed on its own line immediately after the table. Custom properties
    inherit from the table element down into these width rules, so the
    override only affects that one table - every other table on the site
    keeps the defaults below.
 
-   This system assumes exactly 3 columns - the three defaults sum to 100%
-   on purpose. A table with a 4th column would leave it with ~0% width
-   (nothing left once the first 3 columns already claim the full 100% under
-   table-layout: fixed); a table with only 2 columns would leave 68%
-   unaccounted for. Every table on the site today is 3 columns by design
-   (see CLAUDE.md); a table needing a different column count needs its own
-   override IAL covering every column it actually has, not just a subset. */
+   The 3 defaults sum to 100% on purpose, matching the site's original,
+   most common table shape - every table (3-column or the 4-column ones
+   below) is expected to always set an explicit override IAL for every
+   column it actually has, not rely on these defaults. --table-col-4
+   defaults to 0% specifically so a 4-column table that forgets its
+   override fails visibly (a squashed 4th column) rather than silently
+   guessing a width that's probably wrong for unknown content. */
 article table th:nth-child(1),
 article table td:nth-child(1) {
   width: var(--table-col-1, 7%);
@@ -731,6 +732,11 @@ article table td:nth-child(2) {
 article table th:nth-child(3),
 article table td:nth-child(3) {
   width: var(--table-col-3, 68%);
+}
+
+article table th:nth-child(4),
+article table td:nth-child(4) {
+  width: var(--table-col-4, 0%);
 }
 
 article table th,
