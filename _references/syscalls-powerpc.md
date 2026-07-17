@@ -508,3 +508,4 @@ Invoked via `sc`. Errors are signaled via the SO (summary overflow) bit of the C
 
 - [torvalds/linux — arch/powerpc/kernel/syscalls/syscall.tbl](https://github.com/torvalds/linux/blob/master/arch/powerpc/kernel/syscalls/syscall.tbl)
 - [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)
+- [Wikipedia — PowerPC](https://en.wikipedia.org/wiki/PowerPC)

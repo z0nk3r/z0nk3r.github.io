@@ -369,3 +369,4 @@ Invoked via `syscall`.
 
 - [torvalds/linux — syscall_64.tbl](https://github.com/torvalds/linux/blob/master/arch/x86/entry/syscalls/syscall_64.tbl)
 - [man7.org — Linux man-pages](https://man7.org/linux/man-pages/index.html)
+- [Wikipedia — x86-64](https://en.wikipedia.org/wiki/X86-64)
