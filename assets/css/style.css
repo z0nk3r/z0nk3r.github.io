@@ -376,7 +376,7 @@ nav a:hover {
 }
 
 .reference-content {
-  max-width: 1145px;
+  max-width: 1268px;
   margin: 0 auto;
   padding: 1rem 20px 4rem;
   background: var(--background);
@@ -713,12 +713,14 @@ article table {
    keeps the defaults below.
 
    The 3 defaults sum to 100% on purpose, matching the site's original,
-   most common table shape - every table (3-column or the 4-column ones
-   below) is expected to always set an explicit override IAL for every
-   column it actually has, not rely on these defaults. --table-col-4
-   defaults to 0% specifically so a 4-column table that forgets its
-   override fails visibly (a squashed 4th column) rather than silently
-   guessing a width that's probably wrong for unknown content. */
+   most common table shape - every table (3-column, or any of the wider
+   ones below) is expected to always set an explicit override IAL for
+   every column it actually has, not rely on these defaults. Columns 4
+   and up default to 0% specifically so a wide table that forgets its
+   override fails visibly (a squashed column) rather than silently
+   guessing a width that's probably wrong for unknown content. Extended
+   to 10 columns for the syscall calling-convention tables (NR, name,
+   references, %rax-equivalent, arg0-arg5). */
 article table th:nth-child(1),
 article table td:nth-child(1) {
   width: var(--table-col-1, 7%);
@@ -737,6 +739,36 @@ article table td:nth-child(3) {
 article table th:nth-child(4),
 article table td:nth-child(4) {
   width: var(--table-col-4, 0%);
+}
+
+article table th:nth-child(5),
+article table td:nth-child(5) {
+  width: var(--table-col-5, 0%);
+}
+
+article table th:nth-child(6),
+article table td:nth-child(6) {
+  width: var(--table-col-6, 0%);
+}
+
+article table th:nth-child(7),
+article table td:nth-child(7) {
+  width: var(--table-col-7, 0%);
+}
+
+article table th:nth-child(8),
+article table td:nth-child(8) {
+  width: var(--table-col-8, 0%);
+}
+
+article table th:nth-child(9),
+article table td:nth-child(9) {
+  width: var(--table-col-9, 0%);
+}
+
+article table th:nth-child(10),
+article table td:nth-child(10) {
+  width: var(--table-col-10, 0%);
 }
 
 article table th,
