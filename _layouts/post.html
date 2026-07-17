@@ -1,0 +1,303 @@
+---
+layout: default
+---
+
+<div id="reading-progress"></div>
+
+<div class="breadcrumbs">
+    <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
+    <span> / </span>
+    <a href="{{ '/blog/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">◆</span>Blog</a>
+    <span> / </span>
+    <span><span class="crumb-icon" aria-hidden="true">▤</span>{{ page.title }}</span>
+</div>
+
+<div class="post-header">
+    {% if page.image %}
+    <div class="post-header__image-wrap">
+        <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy">
+    </div>
+    {% else %}
+    <div class="post-header__image-wrap post-header__image-wrap--placeholder">
+        <span>No Image Found</span>
+    </div>
+    {% endif %}
+    <h1>{{ page.title }}</h1>
+    <div class="post-meta">
+        {% include byline.html post=page show_read_time=true link_author=true %}
+        {% if page.categories or page.tags %}
+        <div class="badge-row" style="margin-top: 0.75rem;">
+            {% include tags.html post=page %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<div class="post-wrapper">
+    <aside class="toc-sidebar">
+        <nav id="toc"></nav>
+    </aside>
+
+    <div class="article-content">
+        <article>
+            {{ content }}
+
+            {% if page.tags %}
+            <div class="post-tags">
+                <div class="badge-row">
+                    {% include tags.html post=page %}
+                </div>
+            </div>
+            {% endif %}
+        </article>
+
+        {% assign related = "" | split: "" %}
+        {% for tag in page.tags %}
+            {% assign matches = site.posts | where_exp: "post", "post.tags contains tag" %}
+            {% assign related = related | concat: matches %}
+        {% endfor %}
+        {% assign related = related | uniq | where_exp: "post", "post.url != page.url" %}
+        {% if related.size > 0 %}
+        <div class="related-posts">
+            <h2 class="year-heading">Related posts</h2>
+            <ul class="posts">
+                {% for post in related limit:3 %}
+                    {% include post-card.html post=post %}
+                {% endfor %}
+            </ul>
+        </div>
+        {% endif %}
+
+        <div class="post-navigation">
+            {% if page.previous %}
+            <div>
+                <span>← Previous</span>
+                <a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }}</a>
+            </div>
+            {% else %}
+            <div></div>
+            {% endif %}
+
+            {% if page.next %}
+            <div>
+                <span>Next →</span>
+                <a href="{{ page.next.url | relative_url }}">{{ page.next.title }}</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Generate table of contents from headings
+    function generateTOC() {
+        const toc = document.getElementById('toc');
+        const article = document.querySelector('article');
+        const headings = article.querySelectorAll('h2, h3, h4');
+
+        if (headings.length === 0) {
+            toc.parentElement.style.display = 'none';
+            return;
+        }
+
+        headings.forEach((heading, index) => {
+            if (!heading.id) {
+                heading.id = `heading-${index}`;
+            }
+        });
+
+        // Build a tree from the flat heading list based on h2/h3/h4 level
+        const root = { level: 1, children: [] };
+        const stack = [root];
+        headings.forEach(heading => {
+            const level = parseInt(heading.tagName[1]);
+            const node = { heading, level, children: [] };
+            while (stack.length > 1 && stack[stack.length - 1].level >= level) {
+                stack.pop();
+            }
+            stack[stack.length - 1].children.push(node);
+            stack.push(node);
+        });
+
+        // Render as a flat list of plain, pre-formatted text - the same
+        // approach `tree(1)` itself uses, just with word-wrapping added
+        // since `tree` never has to fit a sidebar. Wrap points are computed
+        // by hand (not left to the browser) so every wrapped line can start
+        // with the correct literal '│'/space prefix characters, the only
+        // way to keep continuation lines looking like real tree output
+        // instead of floating disconnected text.
+        const ul = document.createElement('ul');
+
+        function measureCharWidth() {
+            const probe = document.createElement('span');
+            probe.style.position = 'absolute';
+            probe.style.visibility = 'hidden';
+            probe.style.whiteSpace = 'pre';
+            probe.style.fontFamily = 'var(--font-mono)';
+            probe.style.fontSize = '0.85rem';
+            probe.textContent = '0'.repeat(40);
+            document.body.appendChild(probe);
+            const width = probe.getBoundingClientRect().width / 40;
+            document.body.removeChild(probe);
+            return width;
+        }
+
+        function wrapWords(text, maxChars) {
+            if (maxChars < 1) return [text];
+            const words = text.split(' ');
+            const lines = [];
+            let current = '';
+            words.forEach(word => {
+                while (word.length > maxChars) {
+                    if (current) { lines.push(current); current = ''; }
+                    lines.push(word.slice(0, maxChars));
+                    word = word.slice(maxChars);
+                }
+                const candidate = current ? current + ' ' + word : word;
+                if (candidate.length > maxChars && current) {
+                    lines.push(current);
+                    current = word;
+                } else {
+                    current = candidate;
+                }
+            });
+            if (current) lines.push(current);
+            return lines.length ? lines : [''];
+        }
+
+        const charWidth = measureCharWidth();
+        // Floor of 1, not some larger "reasonable minimum" - a bigger floor
+        // would force more characters onto a line than actually measured to
+        // fit (overflowing the sidebar at larger browser/OS text-size
+        // settings, where the real available width can legitimately be this
+        // small). Wrapping into more, shorter lines is correct behavior;
+        // silently overflowing the container is not.
+        const availableChars = Math.max(Math.floor(toc.clientWidth / charWidth), 1);
+
+        function renderNode(node, ancestorPrefix, isLast) {
+            if (node.heading) {
+                const li = document.createElement('li');
+                const a = document.createElement('a');
+                a.href = `#${node.heading.id}`;
+                a.setAttribute('aria-label', node.heading.textContent);
+
+                const branch = isLast ? '└── ' : '├── ';
+                const continuationPrefix = ancestorPrefix + (isLast ? '    ' : '│   ');
+                const maxLabelChars = Math.max(availableChars - (ancestorPrefix.length + branch.length), 1);
+                const wrapped = wrapWords(node.heading.textContent, maxLabelChars);
+
+                const lines = [ancestorPrefix + branch + wrapped[0]];
+                for (let i = 1; i < wrapped.length; i++) {
+                    lines.push(continuationPrefix + wrapped[i]);
+                }
+                a.textContent = lines.join('\n');
+                li.appendChild(a);
+                ul.appendChild(li);
+            }
+
+            const childPrefix = node.heading ? ancestorPrefix + (isLast ? '    ' : '│   ') : ancestorPrefix;
+            node.children.forEach((child, i) => {
+                renderNode(child, childPrefix, i === node.children.length - 1);
+            });
+        }
+
+        renderNode(root, '', true);
+        toc.appendChild(ul);
+
+        // Highlight active TOC link on scroll
+        window.addEventListener('scroll', () => {
+            let current = '';
+            headings.forEach(heading => {
+                const rect = heading.getBoundingClientRect();
+                if (rect.top < 150) {
+                    current = heading.id;
+                }
+            });
+
+            // A short final section's heading may never cross the 150px threshold
+            // above on its own (its rect.top never gets that low if there isn't
+            // enough remaining scroll distance to push it there), which would
+            // leave an earlier heading stuck active even once the reader has
+            // scrolled all the way to the bottom of the page. Force the last
+            // heading active once we're at (or within a couple px of) max scroll.
+            const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+            if (atBottom && headings.length > 0) {
+                current = headings[headings.length - 1].id;
+            }
+
+            document.querySelectorAll('#toc a').forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${current}`) {
+                    link.classList.add('active');
+                }
+            });
+        });
+    }
+
+    // Label fenced code blocks with their detected language and add a copy button
+    function annotateCodeBlocks() {
+        document.querySelectorAll('.article-content div.highlighter-rouge').forEach(block => {
+            const langClass = [...block.classList].find(c => c.startsWith('language-'));
+            const lang = langClass ? langClass.replace('language-', '') : '';
+
+            const bar = document.createElement('div');
+            bar.className = 'code-lang-bar';
+
+            const label = document.createElement('span');
+            label.className = 'code-lang-label';
+            label.textContent = (lang && lang !== 'plaintext') ? lang : '';
+            bar.appendChild(label);
+
+            const copyBtn = document.createElement('button');
+            copyBtn.type = 'button';
+            copyBtn.className = 'code-copy-btn';
+            copyBtn.textContent = 'Copy';
+            copyBtn.addEventListener('click', () => {
+                const codeEl = block.querySelector('pre code') || block.querySelector('pre');
+                const text = codeEl ? codeEl.innerText : '';
+                navigator.clipboard.writeText(text).then(() => {
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+                });
+            });
+            bar.appendChild(copyBtn);
+
+            block.insertBefore(bar, block.firstChild);
+        });
+    }
+
+    // Fill the top progress bar based on scroll position through the article
+    function updateReadingProgress() {
+        const bar = document.getElementById('reading-progress');
+        const article = document.querySelector('article');
+        if (!bar || !article) return;
+
+        const rect = article.getBoundingClientRect();
+        const articleTop = rect.top + window.scrollY;
+        const articleHeight = rect.height;
+        // 0% when the article's top edge reaches the viewport's top edge, 100%
+        // when its bottom edge reaches the viewport's bottom edge - i.e. progress
+        // through the *scrollable distance* of the article, not the raw scroll
+        // position (which would never reach 0% for any article shorter than one
+        // viewport height above the fold).
+        const scrollableDistance = articleHeight - window.innerHeight;
+        if (scrollableDistance <= 0) {
+            bar.style.width = (window.scrollY > articleTop ? 100 : 0) + '%';
+            return;
+        }
+        const scrolled = window.scrollY - articleTop;
+        const percent = Math.min(100, Math.max(0, (scrolled / scrollableDistance) * 100));
+        bar.style.width = percent + '%';
+    }
+
+    // Wait for webfonts before measuring character width for the TOC's
+    // word-wrap - Geist Mono loads with `display: swap`, so measuring
+    // immediately on load can hit the wider fallback font instead and
+    // under-count how many characters actually fit per line, wrapping
+    // words that would have fit once the real font renders.
+    document.fonts.ready.then(generateTOC);
+    annotateCodeBlocks();
+    updateReadingProgress();
+    window.addEventListener('scroll', updateReadingProgress);
+    window.addEventListener('resize', updateReadingProgress);
+</script>

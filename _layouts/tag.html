@@ -1,0 +1,43 @@
+---
+layout: default
+---
+
+<div class="breadcrumbs">
+    <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
+    <span> / </span>
+    <a href="{{ '/tags/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">#</span>Tags</a>
+    <span> / </span>
+    <span><span class="crumb-icon" aria-hidden="true">#</span>{{ page.tag }}</span>
+</div>
+
+<main>
+    <h1>#{{ page.tag }}</h1>
+
+    {% assign posts_by_tag = site.posts | where_exp: "post", "post.tags contains page.tag" %}
+    {% assign posts_by_cat = site.posts | where_exp: "post", "post.categories contains page.tag" %}
+    {% assign matching_posts = posts_by_tag | concat: posts_by_cat | uniq %}
+
+    {% assign all_references = site.references | concat: site.data.external_references %}
+    {% assign refs_by_tag = all_references | where_exp: "ref", "ref.tags contains page.tag" %}
+    {% assign refs_by_cat = all_references | where_exp: "ref", "ref.categories contains page.tag" %}
+    {% assign matching_references = refs_by_tag | concat: refs_by_cat | uniq %}
+
+    {% if matching_posts.size > 0 %}
+    <h2 class="year-heading">Posts</h2>
+    <ul class="posts">
+        {% assign sorted_posts = matching_posts | sort: "date" | reverse %}
+        {% for post in sorted_posts %}
+            {% include post-card.html post=post %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if matching_references.size > 0 %}
+    <h2 class="year-heading">References</h2>
+    <ul class="posts">
+        {% for reference in matching_references %}
+            {% include reference-card.html reference=reference %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+</main>

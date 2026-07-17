@@ -1,0 +1,6 @@
+{% for category in include.post.categories %}
+  <a class="badge" href="{{ '/tags/' | relative_url }}{{ category | slugify }}/">{{ category }}</a>
+{% endfor %}
+{% for tag in include.post.tags %}
+  <a class="badge" href="{{ '/tags/' | relative_url }}{{ tag | slugify }}/">{{ tag }}</a>
+{% endfor %}

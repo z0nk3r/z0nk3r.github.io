@@ -1,0 +1,30 @@
+<li class="post-card">
+  {% if include.reference.link %}
+  <a class="post-card-link" href="{{ include.reference.link }}" target="_blank" rel="noopener">
+  {% else %}
+  <a class="post-card-link" href="{{ include.reference.url | relative_url }}">
+  {% endif %}
+    {% if include.reference.image %}
+    <div class="post-card__image-wrap">
+      <img src="{{ include.reference.image }}" alt="{{ include.reference.title }}" loading="lazy">
+    </div>
+    {% else %}
+    <div class="post-card__image-wrap post-card__image-wrap--placeholder">
+      <span>No Image Found</span>
+    </div>
+    {% endif %}
+    <div class="post-card__body">
+      <h2>{{ include.reference.title }}{% if include.reference.link %}<svg class="external-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M5 11L11 5M11 5H6M11 5V10"/>
+      </svg>{% endif %}</h2>
+      <p class="post-card__excerpt">
+        {% if include.reference.excerpt %}{{ include.reference.excerpt | strip_html }}{% else %}{{ include.reference.content | strip_html | truncatewords: 30 }}{% endif %}
+      </p>
+    </div>
+  </a>
+  {% if include.reference.categories or include.reference.tags %}
+  <div class="badge-row">
+    {% include tags.html post=include.reference %}
+  </div>
+  {% endif %}
+</li>
