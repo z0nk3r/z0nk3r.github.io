@@ -159,3 +159,4 @@ tags: [linux, c, lookup]
 
 - [torvalds/linux — errno-base.h](https://github.com/torvalds/linux/blob/master/include/uapi/asm-generic/errno-base.h)
 - [torvalds/linux — errno.h](https://github.com/torvalds/linux/blob/master/include/uapi/asm-generic/errno.h)
+- [Wikipedia — errno.h](https://en.wikipedia.org/wiki/Errno.h)
