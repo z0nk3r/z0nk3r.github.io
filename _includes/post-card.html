@@ -1,7 +1,7 @@
 <li class="post-card">
   <a class="post-card-link" href="{{ include.post.url | relative_url }}">
     {% if include.post.image %}
-    <div class="post-card__image-wrap">
+    <div class="post-card__image-wrap" style="view-transition-name: post-hero-{{ include.post.slug }};">
       <img src="{{ include.post.image | relative_url }}" alt="{{ include.post.title }}" loading="lazy">
     </div>
     {% else %}

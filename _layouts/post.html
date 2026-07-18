@@ -14,7 +14,7 @@ layout: default
 
 <div class="post-header">
     {% if page.image %}
-    <div class="post-header__image-wrap">
+    <div class="post-header__image-wrap" style="view-transition-name: post-hero-{{ page.slug }};">
         <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy">
     </div>
     {% else %}
