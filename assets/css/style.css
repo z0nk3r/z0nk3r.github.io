@@ -740,48 +740,38 @@ article div.highlighter-rouge code {
   overscroll-behavior-x: contain;
 }
 
-/* JS toggles .can-scroll-left / .can-scroll-right on the wrapper based on its
-   scrollLeft, so mobile users have some visual cue a table scrolls at all
-   before they try - mobile browsers commonly don't render a persistent
-   scrollbar, and this is a well-documented, commonly-missing affordance for
-   the horizontal-scroll-table pattern (both Wikipedia's own engineering docs
-   and Nielsen Norman Group's mobile-table UX research call this out). A
-   dot-based indicator was explicitly not used here per NN/g's finding that
-   users tend to miss it - an edge fade of the real column content reads more
-   directly as "there's more here." */
-.table-scroll::before,
-.table-scroll::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  width: 28px;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.2s ease;
-  z-index: 3;
+/* JS toggles .visible on this hint (a small text label placed right before
+   the wrapper) once, based on whether the table's scrollWidth actually
+   exceeds its clientWidth - not tied to live scroll position at all. Mobile
+   browsers commonly don't render a persistent scrollbar, so *some* affordance
+   that a table scrolls is needed before a user tries (both Wikipedia's own
+   engineering docs and Nielsen Norman Group's mobile-table UX research call
+   this out as a commonly-missing signal). A prior version tried an edge-fade
+   gradient keyed off live scrollLeft, which read well but was unreliable in
+   practice on real devices - a static hint can't lag or desync since it never
+   reacts to scroll position. */
+.table-scroll-hint {
+  display: none;
+  text-align: right;
+  font-size: 0.8rem;
+  color: var(--muted-foreground);
+  margin: 1.5rem 0 -0.75rem;
 }
 
-.table-scroll::before {
-  left: 0;
-  background: linear-gradient(to right, rgba(var(--background-rgb), 1), rgba(var(--background-rgb), 0));
-}
-
-.table-scroll::after {
-  right: 0;
-  background: linear-gradient(to left, rgba(var(--background-rgb), 1), rgba(var(--background-rgb), 0));
-}
-
-.table-scroll.can-scroll-left::before {
-  opacity: 1;
-}
-
-.table-scroll.can-scroll-right::after {
-  opacity: 1;
+.table-scroll-hint.visible {
+  display: block;
 }
 
 article table {
-  border-collapse: collapse;
+  /* border-collapse: separate (not the more typical collapse) plus
+     border-spacing: 0 is required for the sticky header below - collapse has
+     a real Firefox bug (Mozilla #1866715) where cell borders vanish right at
+     the sticky boundary. Every existing border rule on this table only ever
+     applies to one side of a given edge (thead's own border-bottom, tbody
+     rows' border-top starting from the second row - never both at the same
+     edge), so there's nothing for separate mode to double up visually. */
+  border-collapse: separate;
+  border-spacing: 0;
   width: 100%;
   margin: 0;
   font-size: 0.95rem;
@@ -879,6 +869,37 @@ article table thead tr {
 article table thead th {
   font-weight: 500;
   font-size: 0.85em;
+}
+
+/* Sticky header for long tables (JS adds has-sticky-header past ~10 rows,
+   raised specifically about the 400+ row syscall tables). Docks right below
+   the site's own sticky header, at the same 105px offset the TOC sidebar
+   uses to sit below it.
+
+   Only actually takes effect where .table-scroll isn't itself a scroll
+   container: CSS computes overflow-x/overflow-y as a pair - giving one axis
+   a non-visible value forces the other to compute as auto too, even if never
+   written. That makes .table-scroll its own (never-actually-scrolling)
+   sticky containing block instead of the page, which breaks position:
+   sticky's ability to track the *page's* scroll at all. Desktop tables never
+   need horizontal scroll (width: 100% always fits their container), so
+   giving overflow-x: visible there removes .table-scroll from being a
+   scroll container and sticky correctly tracks the page again. Mobile
+   tables still need overflow-x: auto for the horizontal-scroll fix above,
+   so sticky is a silent no-op there for now - not visibly broken, just
+   inert - short of building a synced dual-scroll header specifically for
+   mobile, which hasn't been asked for. */
+.table-scroll.has-sticky-header thead th {
+  position: sticky;
+  top: 105px;
+  z-index: 2;
+  background: var(--background);
+}
+
+@media (min-width: 769px) {
+  .table-scroll.has-sticky-header {
+    overflow-x: visible;
+  }
 }
 
 article table tbody td {

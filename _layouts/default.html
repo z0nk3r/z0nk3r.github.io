@@ -175,47 +175,47 @@
             table.parentNode.insertBefore(wrapper, table);
             wrapper.appendChild(table);
 
-            // Edge-fade scroll affordance: toggle can-scroll-left/right based on
-            // actual scroll position, so the fade only shows on the side that
-            // genuinely has more content - not just "this table happens to be
-            // scrollable at all." Re-checked on scroll and on resize (column
-            // widths, and therefore whether the table overflows at all, can change
-            // at the mobile/desktop breakpoint).
-            function updateScrollAffordance() {
-                var maxScrollLeft = wrapper.scrollWidth - wrapper.clientWidth;
-                wrapper.classList.toggle('can-scroll-left', wrapper.scrollLeft > 1);
-                wrapper.classList.toggle('can-scroll-right', wrapper.scrollLeft < maxScrollLeft - 1);
+            // Scroll hint: a static "more content this way" label shown whenever
+            // the table genuinely overflows its wrapper - computed once from
+            // scrollWidth/clientWidth, not tied to live scroll position. An
+            // earlier version tried to track real scroll position (edge-fade
+            // gradients toggled on the wrapper's own scroll event) and it was
+            // unreliable on real devices - main-thread contention during a fast
+            // swipe left it visibly stuck for seconds even after throttling to
+            // one update per animation frame. A static hint can't desync from
+            // anything because it never reacts to scroll position at all.
+            var hint = document.createElement('div');
+            hint.className = 'table-scroll-hint';
+            hint.textContent = 'scroll for more ↔';
+            wrapper.parentNode.insertBefore(hint, wrapper);
+
+            function updateScrollHint() {
+                var needsScroll = wrapper.scrollWidth > wrapper.clientWidth + 1;
+                hint.classList.toggle('visible', needsScroll);
             }
-            updateScrollAffordance();
-            // The native scroll event can fire far more often than the screen
-            // actually repaints during a fast drag, and updateScrollAffordance's
-            // scrollWidth/clientWidth reads force a layout each time - on a page
-            // with several long tables, that pile of forced layouts backs up on
-            // the main thread and the fade visibly lags seconds behind a fast real
-            // swipe (reported after the touch-gesture fix above shipped). Throttle
-            // to at most once per animation frame instead of once per raw event.
-            var affordanceFramePending = false;
-            wrapper.addEventListener('scroll', function () {
-                if (affordanceFramePending) return;
-                affordanceFramePending = true;
-                requestAnimationFrame(function () {
-                    affordanceFramePending = false;
-                    updateScrollAffordance();
-                });
-            }, { passive: true });
+            updateScrollHint();
             // Geist Mono loads async and can swap in after this initial check,
             // changing measured text/column widths (the same font-load race this
             // project's TOC-builder already had to account for) - re-check once
-            // fonts are actually settled so the initial fade state is correct.
+            // fonts are actually settled so the initial hint state is correct.
             if (document.fonts && document.fonts.ready) {
-                document.fonts.ready.then(updateScrollAffordance);
+                document.fonts.ready.then(updateScrollHint);
             }
 
             var tableResizeDebounce = null;
             window.addEventListener('resize', function () {
                 window.clearTimeout(tableResizeDebounce);
-                tableResizeDebounce = window.setTimeout(updateScrollAffordance, 150);
+                tableResizeDebounce = window.setTimeout(updateScrollHint, 150);
             });
+
+            // Sticky header for long tables: past ~10 rows, scrolling down loses
+            // track of which column is which (raised specifically about the
+            // syscall tables, some of which run 400+ rows). Only enabled past a
+            // row-count threshold so short reference tables don't get a sticky
+            // header they don't need.
+            if (table.querySelectorAll('tbody tr').length > 10) {
+                wrapper.classList.add('has-sticky-header');
+            }
 
             // touch-action: pan-x (in style.css) is the spec-correct way to let a
             // vertical page-scroll swipe bubble past this wrapper instead of being
