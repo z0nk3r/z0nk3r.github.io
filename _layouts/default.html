@@ -36,7 +36,10 @@
     <header>
         <div class="header-wrapper">
             <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
-            <nav>
+            <button type="button" id="navMenuToggle" class="nav-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="siteNav">
+                {% include icon-hamburger.html %}
+            </button>
+            <nav id="siteNav">
                 <div class="nav-search">
                     <input type="search" id="navSearchInput" class="nav-search-input" placeholder="Search…" aria-label="Search posts" autocomplete="off">
                     <button type="button" id="navSearchToggle" class="nav-search-toggle" aria-label="Search">
@@ -120,6 +123,41 @@
             if (navSearch.classList.contains('open') && !navSearch.contains(e.target)) {
                 navSearch.classList.remove('open');
             }
+        });
+
+        // Mobile hamburger menu toggle
+        const navMenuToggle = document.getElementById('navMenuToggle');
+        const siteNav = document.getElementById('siteNav');
+
+        navMenuToggle.addEventListener('click', () => {
+            const isOpen = siteNav.classList.toggle('open');
+            navMenuToggle.setAttribute('aria-expanded', isOpen);
+        });
+
+        document.addEventListener('click', (e) => {
+            if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target)) {
+                siteNav.classList.remove('open');
+                navMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && siteNav.classList.contains('open')) {
+                siteNav.classList.remove('open');
+                navMenuToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+
+        // Close the mobile menu if the viewport grows past the breakpoint (resize/rotation)
+        let navMenuResizeDebounce = null;
+        window.addEventListener('resize', () => {
+            window.clearTimeout(navMenuResizeDebounce);
+            navMenuResizeDebounce = window.setTimeout(() => {
+                if (window.innerWidth > 768 && siteNav.classList.contains('open')) {
+                    siteNav.classList.remove('open');
+                    navMenuToggle.setAttribute('aria-expanded', 'false');
+                }
+            }, 150);
         });
     </script>
 </body>
