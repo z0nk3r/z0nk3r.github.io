@@ -53,7 +53,20 @@ html {
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   font-size: 14px;
-  zoom: 1.1;
+}
+
+/* zoom: 1.1 was added to match how the site looked at the user's own manually-set
+   110% browser zoom - a desktop preference. Scoped to desktop-and-up only: at
+   mobile widths it causes a real Chromium quirk where document.body's effective
+   content-box width desyncs from its own getBoundingClientRect() width (confirmed
+   by directly stripping zoom and comparing - the mismatch, and the visible gap it
+   caused down the right edge of mobile content, both disappeared completely).
+   Mobile never asked for the 110%-zoom treatment in the first place, so excluding
+   it here isn't a compromise on the original request, just a scope correction. */
+@media (min-width: 769px) {
+  html {
+    zoom: 1.1;
+  }
 }
 
 ::-webkit-scrollbar {
