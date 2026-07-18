@@ -204,43 +204,53 @@
 
             // touch-action: pan-x (in style.css) is the spec-correct way to let a
             // vertical page-scroll swipe bubble past this wrapper instead of being
-            // captured for horizontal scrolling, but real mobile browsers don't
-            // always honor that once a gesture starts on an element that only
-            // claims the horizontal axis - especially here, since the tallest
-            // reference tables are thousands of pixels tall and fill the entire
-            // viewport while scrolling through their middle, so every touch during
-            // that stretch necessarily starts inside this wrapper. As a defensive
-            // backstop, measure the real angle of the gesture ourselves: once it's
-            // clearly more vertical than horizontal, drop this wrapper's own
-            // overflow-x to hidden for the rest of that touch so it genuinely has
-            // nothing left to scroll and the browser has no choice but to hand the
-            // gesture to the page. Listeners stay passive throughout (no
-            // preventDefault) so native scroll performance/behavior is untouched.
+            // captured for horizontal scrolling, but it wasn't enough in practice on
+            // real Android Chrome (confirmed by user testing after shipping it
+            // alone) - Chrome resolves which element owns a touch gesture on the
+            // compositor thread, synchronously, from touch-action alone, precisely
+            // so scrolling doesn't have to wait on main-thread JS. A *passive*
+            // touchmove handler that reacts after the fact can't retroactively
+            // redirect a gesture the compositor already committed elsewhere (an
+            // earlier version of this fix tried exactly that and didn't work). The
+            // only reliable way to override native routing is to take the gesture
+            // over directly: a non-passive touchmove that calls preventDefault() to
+            // block the wrapper's own handling, then drives the page scroll
+            // manually. behavior: 'instant' is required on the scrollBy call -
+            // without it, the site's scroll-behavior: smooth on <html> would queue
+            // every per-frame increment as its own competing animation instead of
+            // tracking the finger directly.
             var touchStartX = 0;
             var touchStartY = 0;
             var touchAxisLocked = false;
+            var verticalGesture = false;
 
             wrapper.addEventListener('touchstart', function (e) {
                 if (e.touches.length !== 1) return;
                 touchStartX = e.touches[0].clientX;
                 touchStartY = e.touches[0].clientY;
                 touchAxisLocked = false;
+                verticalGesture = false;
             }, { passive: true });
 
             wrapper.addEventListener('touchmove', function (e) {
-                if (e.touches.length !== 1 || touchAxisLocked) return;
-                var dx = e.touches[0].clientX - touchStartX;
-                var dy = e.touches[0].clientY - touchStartY;
-                if (Math.abs(dx) + Math.abs(dy) < 10) return;
-                touchAxisLocked = true;
-                if (Math.abs(dy) > Math.abs(dx)) {
-                    wrapper.classList.add('vertical-gesture-active');
-                }
-            }, { passive: true });
+                if (e.touches.length !== 1) return;
+                var currentX = e.touches[0].clientX;
+                var currentY = e.touches[0].clientY;
 
-            wrapper.addEventListener('touchend', function () {
-                wrapper.classList.remove('vertical-gesture-active');
-            }, { passive: true });
+                if (!touchAxisLocked) {
+                    var dx = currentX - touchStartX;
+                    var dy = currentY - touchStartY;
+                    if (Math.abs(dx) + Math.abs(dy) < 10) return;
+                    touchAxisLocked = true;
+                    verticalGesture = Math.abs(dy) > Math.abs(dx);
+                }
+
+                if (verticalGesture) {
+                    e.preventDefault();
+                    window.scrollBy({ top: touchStartY - currentY, left: 0, behavior: 'instant' });
+                    touchStartY = currentY;
+                }
+            }, { passive: false });
         });
     </script>
 </body>
