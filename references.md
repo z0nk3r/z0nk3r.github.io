@@ -9,6 +9,7 @@ permalink: /references/
   <ul class="posts">
     {% assign all_references = site.references | concat: site.data.external_references %}
     {% assign all_references = all_references | where_exp: "r", "r.hidden_from_index != true" %}
+    {% assign all_references = all_references | sort_natural: "title" %}
     {% for reference in all_references %}
       {% include reference-card.html reference=reference %}
     {% endfor %}
