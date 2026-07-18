@@ -163,7 +163,16 @@ header {
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
-  justify-content: space-between;
+  /* Was space-between. #themeToggle used to live nested inside #siteNav, so
+     .header-wrapper only ever had 2 direct flex children (h1 and siteNav) -
+     space-between just split those two apart, title flush left, nav flush
+     right. Now that #themeToggle is a sibling of its own (so it can stay
+     visible on mobile without opening the hamburger menu), there are 3
+     top-level items, and space-between would spread all three out evenly
+     instead of keeping the nav and the toggle grouped together on the right
+     - #siteNav's own margin-left: auto below (desktop) restores the
+     original 2-group split instead. */
+  justify-content: flex-start;
   align-items: center;
   gap: 2rem;
 }
@@ -192,6 +201,18 @@ header h1 {
 
 .nav-menu-toggle:hover {
   color: var(--foreground);
+}
+
+@media (min-width: 769px) {
+  /* Restores the original 2-group split (title flush left, nav+toggle
+     flush right) now that .header-wrapper uses justify-content: flex-start
+     instead of space-between (see comment there) - margin-left: auto
+     consumes the row's leftover space on #siteNav's own left side, pushing
+     itself and #themeToggle (which follows it via order: 4, see
+     .theme-toggle) to the right edge together, while h1 stays at the start. */
+  #siteNav {
+    margin-left: auto;
+  }
 }
 
 header h1 a {

@@ -36,7 +36,7 @@
     <header>
         <div class="header-wrapper">
             <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
-            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">{% include icon-moon.html %}</button>
             <button type="button" id="navMenuToggle" class="nav-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="siteNav">
                 {% include icon-hamburger.html %}
             </button>
@@ -77,6 +77,14 @@
         // Theme toggle
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
+        // Rendered at build time via Liquid include, then swapped in via JS at
+        // runtime - keeps a single source of truth for each icon's markup
+        // (also used for the button's initial static content above) instead of
+        // duplicating the SVG paths here. currentColor means both automatically
+        // pick up the theme's --foreground instead of platform emoji's own
+        // fixed (and inconsistent across OS/browser) colors.
+        const moonIcon = `{% include icon-moon.html %}`;
+        const sunIcon = `{% include icon-sun.html %}`;
 
         // Check localStorage for saved theme
         const savedTheme = localStorage.getItem('theme') || 'dark';
@@ -94,7 +102,7 @@
 
         function updateThemeButton() {
             const theme = html.getAttribute('data-theme');
-            themeToggle.textContent = theme === 'dark' ? '🌙' : '☀️';
+            themeToggle.innerHTML = theme === 'dark' ? moonIcon : sunIcon;
         }
 
         // Header search toggle
@@ -151,7 +159,19 @@
             // menu would snap shut every time someone tapped it while open -
             // toggling theme shouldn't close the menu, same as it never did back
             // when the button was still nested inside siteNav.
-            if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target) && !themeToggle.contains(e.target)) {
+            //
+            // Uses composedPath() instead of themeToggle.contains(e.target)
+            // specifically for this check: the click lands on the SVG icon's own
+            // <path>/<circle> (a child of themeToggle), and themeToggle's own
+            // click handler above replaces its innerHTML - including that exact
+            // child - synchronously, before this handler runs (click listeners
+            // fire in DOM order during bubbling, target-first). By the time this
+            // runs, e.target is a node that's already been detached from the
+            // document, so .contains() on it incorrectly returns false.
+            // composedPath() captures the full path at dispatch time, unaffected
+            // by DOM mutations that happen while the event is still bubbling.
+            const path = e.composedPath();
+            if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target) && !path.includes(themeToggle)) {
                 setMobileMenuOpen(false);
             }
         });
