@@ -36,6 +36,7 @@
     <header>
         <div class="header-wrapper">
             <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
+            <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
             <button type="button" id="navMenuToggle" class="nav-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="siteNav">
                 {% include icon-hamburger.html %}
             </button>
@@ -50,7 +51,6 @@
                 <a href="{{ '/references/' | relative_url }}">References</a>
                 <a href="{{ '/blog/' | relative_url }}">Blog</a>
                 <a href="{{ '/about/' | relative_url }}">About</a>
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">🌙</button>
             </nav>
         </div>
     </header>
@@ -146,7 +146,12 @@
         });
 
         document.addEventListener('click', (e) => {
-            if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target)) {
+            // themeToggle now sits outside siteNav (see header markup), so without
+            // this exemption it would newly count as an "outside" click and the
+            // menu would snap shut every time someone tapped it while open -
+            // toggling theme shouldn't close the menu, same as it never did back
+            // when the button was still nested inside siteNav.
+            if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target) && !themeToggle.contains(e.target)) {
                 setMobileMenuOpen(false);
             }
         });

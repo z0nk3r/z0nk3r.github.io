@@ -282,6 +282,14 @@ nav a:hover {
   justify-content: center;
   font-size: 1.2rem;
   transition: background-color 0.2s, border-color 0.2s;
+  /* #themeToggle now lives directly in .header-wrapper (see markup) instead
+     of as the last child of nav#siteNav, so it can stay visible on mobile
+     without opening the hamburger menu. On desktop, #siteNav has no order
+     override and stays at its default (0), so this pushes the toggle back
+     to the end of the row - the same visual spot it occupied as siteNav's
+     last child before. The mobile media query below overrides this again to
+     put it next to the hamburger instead. */
+  order: 4;
 }
 
 .theme-toggle:hover {
@@ -1643,11 +1651,31 @@ footer p {
 
   .nav-menu-toggle {
     display: flex;
+    order: 2;
+    margin-left: 0.75rem;
   }
 
   .header-wrapper {
     flex-wrap: wrap;
     gap: 0;
+    /* Base rule uses space-between, which worked when h1 and #navMenuToggle
+       were the only two items on this line - with #themeToggle now also
+       visible here, space-between would spread all three evenly instead of
+       keeping the two icons snug together on the right. flex-start plus
+       #themeToggle's own margin-left: auto below does that job instead. */
+    justify-content: flex-start;
+  }
+
+  #themeToggle {
+    /* Overrides the desktop order: 4 (see .theme-toggle) - on mobile this
+       needs to stay under #siteNav's order: 3 so it renders on the first,
+       always-visible line instead of getting wrapped away with the
+       collapsed nav. margin-left: auto consumes the rest of this flex
+       line's free space on its own left side, pushing itself and
+       #navMenuToggle (which follows it) to the right edge together, while
+       h1 stays put at the start. */
+    order: 1;
+    margin-left: auto;
   }
 
   #siteNav {
