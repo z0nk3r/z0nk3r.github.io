@@ -6,9 +6,9 @@ tags: [linux, c, lookup]
 permalink: /references/syscalls/
 ---
 
-<ul class="posts">
+<ul class="search-results">
 {% assign syscall_archs = site.references | where_exp: "r", "r.syscalls_arch" %}
 {% for reference in syscall_archs %}
-  {% include reference-card.html reference=reference %}
+  {% include reference-card-horizontal.html reference=reference %}
 {% endfor %}
 </ul>
