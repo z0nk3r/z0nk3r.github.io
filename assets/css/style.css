@@ -49,13 +49,30 @@
 /* Opt in to cross-document View Transitions site-wide. Chromium-only today
    (no flag, roughly Chrome/Edge 126+); Firefox/Safari simply ignore this
    at-rule and every navigation stays a normal instant page load - pure
-   progressive enhancement, nothing to fall back to on purpose. This alone
-   gives every internal navigation the browser's default whole-page
-   cross-fade; the blog list -> post thumbnail/hero morph (see
+   progressive enhancement, nothing to fall back to on purpose. This is
+   required to enable the feature at all (there's no pure-CSS way to scope it
+   to specific link pairs), but a JS pageswap listener in default.html skips
+   the transition outright for every navigation except blog list <-> a blog
+   post - the only pair with a real shared-element match (see
    view-transition-name on .post-card__image-wrap / .post-header__image-wrap)
-   layers a specific shared-element match on top of that default. */
+   to morph. Without that JS gate, every internal navigation got the
+   browser's default whole-page cross-fade with nothing to anchor it,
+   including ones with completely unrelated page layouts. */
 @view-transition {
   navigation: auto;
+}
+
+/* Chrome's default cross-fade uses mix-blend-mode: plus-lighter on these
+   pseudo-elements, which is a documented cause of bright "flash" artifacts
+   when the old and new page content differs significantly - additive
+   blending can make unrelated bright elements from both screenshots appear
+   simultaneously overlaid during the fade. Normal blending is the standard
+   fix; scoped to (root) only so it doesn't affect the actual named morph
+   (.post-card__image-wrap etc.), which should keep its own default
+   cross-fade/morph behavior for the image itself. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  mix-blend-mode: normal;
 }
 
 html {

@@ -369,6 +369,48 @@
                 wrapper.removeEventListener('touchmove', onTableTouchMove);
             }, { passive: true });
         });
+
+        // @view-transition { navigation: auto; } (style.css) opts in site-wide,
+        // since that's the only way to enable the feature at all - there's no
+        // pure-CSS way to scope it to specific link pairs. Left unscoped, every
+        // internal navigation got the browser's default whole-page cross-fade,
+        // not just the blog list -> post thumbnail/hero morph it was added for -
+        // and most of those other navigations have no matching
+        // view-transition-name to anchor the transition on, so it was just a
+        // raw, untuned cross-fade between two unrelated page layouts. Chrome's
+        // default mix-blend-mode: plus-lighter on that cross-fade is a
+        // documented cause of bright "flash" artifacts under exactly those
+        // conditions - reported as happening "no matter how" the site was
+        // navigated, not just on the blog. Skip the transition outright for
+        // every navigation except specifically blog list <-> a blog post, which
+        // is the only pair with a real shared-element match to morph.
+        window.addEventListener('pageswap', (e) => {
+            if (!e.viewTransition || !e.activation) return;
+            // skipTransition() (below) rejects the transition's own ready/
+            // finished/updateCallbackDone promises - without an explicit catch,
+            // that surfaces as an unhandled promise rejection page error even
+            // though skipping is intentional here, not a failure.
+            e.viewTransition.ready.catch(function () {});
+            e.viewTransition.finished.catch(function () {});
+            e.viewTransition.updateCallbackDone.catch(function () {});
+
+            var fromURL = e.activation.from && e.activation.from.url;
+            var toURL = e.activation.entry.url;
+            if (!fromURL) {
+                e.viewTransition.skipTransition();
+                return;
+            }
+            var from = new URL(fromURL);
+            var to = new URL(toURL);
+            var isBlogList = function (url) { return url.pathname === '{{ "/blog/" | relative_url }}'; };
+            var isBlogPost = function (url) {
+                return url.pathname.indexOf('{{ "/blog/" | relative_url }}') === 0 && !isBlogList(url);
+            };
+            var isBlogPair = (isBlogList(from) && isBlogPost(to)) || (isBlogPost(from) && isBlogList(to));
+            if (!isBlogPair) {
+                e.viewTransition.skipTransition();
+            }
+        });
     </script>
 </body>
 </html>
