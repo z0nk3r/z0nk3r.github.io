@@ -187,7 +187,22 @@
                 wrapper.classList.toggle('can-scroll-right', wrapper.scrollLeft < maxScrollLeft - 1);
             }
             updateScrollAffordance();
-            wrapper.addEventListener('scroll', updateScrollAffordance);
+            // The native scroll event can fire far more often than the screen
+            // actually repaints during a fast drag, and updateScrollAffordance's
+            // scrollWidth/clientWidth reads force a layout each time - on a page
+            // with several long tables, that pile of forced layouts backs up on
+            // the main thread and the fade visibly lags seconds behind a fast real
+            // swipe (reported after the touch-gesture fix above shipped). Throttle
+            // to at most once per animation frame instead of once per raw event.
+            var affordanceFramePending = false;
+            wrapper.addEventListener('scroll', function () {
+                if (affordanceFramePending) return;
+                affordanceFramePending = true;
+                requestAnimationFrame(function () {
+                    affordanceFramePending = false;
+                    updateScrollAffordance();
+                });
+            }, { passive: true });
             // Geist Mono loads async and can swap in after this initial check,
             // changing measured text/column widths (the same font-load race this
             // project's TOC-builder already had to account for) - re-check once
