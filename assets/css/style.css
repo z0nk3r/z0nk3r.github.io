@@ -1082,6 +1082,19 @@ article table tbody tr:not(:first-child) td {
   gap: 1.5rem;
 }
 
+/* Syscalls hub page only (not the general search-results page, which stays a
+   single full-width column) - on desktop, lay the arch list out two per row
+   instead of one. The list is already ordered 32-bit immediately before its
+   64-bit counterpart (arm, arm64, mips, mips64, ...), so filling a 2-column
+   grid left-to-right naturally pairs each pair side by side with no extra
+   sorting/grouping logic needed. */
+@media (min-width: 769px) {
+  .search-results.syscalls-arch-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .search-result {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
