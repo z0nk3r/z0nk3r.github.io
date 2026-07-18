@@ -740,6 +740,15 @@ article div.highlighter-rouge code {
   overscroll-behavior-x: contain;
 }
 
+/* Defensive backstop for a real gap in touch-action: pan-x's real-world
+   behavior (see the touchstart/touchmove JS in default.html): once a gesture
+   is measured as predominantly vertical, this class drops overflow-x to
+   hidden for the rest of that touch so the wrapper has nothing left to
+   scroll and the browser must hand the gesture to the page. */
+.table-scroll.vertical-gesture-active {
+  overflow-x: hidden;
+}
+
 /* JS toggles .can-scroll-left / .can-scroll-right on the wrapper based on its
    scrollLeft, so mobile users have some visual cue a table scrolls at all
    before they try - mobile browsers commonly don't render a persistent
