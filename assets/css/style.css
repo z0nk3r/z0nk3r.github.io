@@ -724,8 +724,60 @@ article div.highlighter-rouge code {
    (switching that to display: block was tried historically and silently
    broke the fixed-layout width algorithm in Chromium for some tables). */
 .table-scroll {
+  position: relative;
   overflow-x: auto;
   margin: 1.5rem 0;
+  /* touch-action: pan-x is the actual fix for a real mobile bug: without it, a
+     vertical page-scroll swipe that has any horizontal component (nearly all
+     real thumb swipes do) gets captured by this wrapper's own horizontal
+     scroll instead of the page, since it's the first scrollable ancestor in
+     that direction. Claiming only horizontal panning here means the browser
+     leaves vertical panning to bubble up to the page, as intended.
+     overscroll-behavior-x is a complementary, not equivalent, fix - it only
+     stops the scroll from chaining into e.g. a browser back/forward-swipe
+     gesture once this wrapper hits its own left/right edge. */
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+}
+
+/* JS toggles .can-scroll-left / .can-scroll-right on the wrapper based on its
+   scrollLeft, so mobile users have some visual cue a table scrolls at all
+   before they try - mobile browsers commonly don't render a persistent
+   scrollbar, and this is a well-documented, commonly-missing affordance for
+   the horizontal-scroll-table pattern (both Wikipedia's own engineering docs
+   and Nielsen Norman Group's mobile-table UX research call this out). A
+   dot-based indicator was explicitly not used here per NN/g's finding that
+   users tend to miss it - an edge fade of the real column content reads more
+   directly as "there's more here." */
+.table-scroll::before,
+.table-scroll::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 28px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 3;
+}
+
+.table-scroll::before {
+  left: 0;
+  background: linear-gradient(to right, rgba(var(--background-rgb), 1), rgba(var(--background-rgb), 0));
+}
+
+.table-scroll::after {
+  right: 0;
+  background: linear-gradient(to left, rgba(var(--background-rgb), 1), rgba(var(--background-rgb), 0));
+}
+
+.table-scroll.can-scroll-left::before {
+  opacity: 1;
+}
+
+.table-scroll.can-scroll-right::after {
+  opacity: 1;
 }
 
 article table {

@@ -174,6 +174,33 @@
             wrapper.className = 'table-scroll';
             table.parentNode.insertBefore(wrapper, table);
             wrapper.appendChild(table);
+
+            // Edge-fade scroll affordance: toggle can-scroll-left/right based on
+            // actual scroll position, so the fade only shows on the side that
+            // genuinely has more content - not just "this table happens to be
+            // scrollable at all." Re-checked on scroll and on resize (column
+            // widths, and therefore whether the table overflows at all, can change
+            // at the mobile/desktop breakpoint).
+            function updateScrollAffordance() {
+                var maxScrollLeft = wrapper.scrollWidth - wrapper.clientWidth;
+                wrapper.classList.toggle('can-scroll-left', wrapper.scrollLeft > 1);
+                wrapper.classList.toggle('can-scroll-right', wrapper.scrollLeft < maxScrollLeft - 1);
+            }
+            updateScrollAffordance();
+            wrapper.addEventListener('scroll', updateScrollAffordance);
+            // Geist Mono loads async and can swap in after this initial check,
+            // changing measured text/column widths (the same font-load race this
+            // project's TOC-builder already had to account for) - re-check once
+            // fonts are actually settled so the initial fade state is correct.
+            if (document.fonts && document.fonts.ready) {
+                document.fonts.ready.then(updateScrollAffordance);
+            }
+
+            var tableResizeDebounce = null;
+            window.addEventListener('resize', function () {
+                window.clearTimeout(tableResizeDebounce);
+                tableResizeDebounce = window.setTimeout(updateScrollAffordance, 150);
+            });
         });
     </script>
 </body>
