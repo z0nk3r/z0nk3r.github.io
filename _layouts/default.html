@@ -159,6 +159,22 @@
                 }
             }, 150);
         });
+
+        // Wrap every table in article content with a scrollable container. Kramdown
+        // emits bare <table> elements with no wrapper, and article table itself can't
+        // become a real horizontal-scroll box on its own: giving it overflow-x: auto
+        // only does something once its own rendered width is allowed to exceed its
+        // container (see the mobile min-width rules in style.css), and at that point
+        // the overflow has to be caught by an ordinary block-level ancestor - a
+        // <table> kept at display: table can't reliably serve as its own scroll
+        // container without reintroducing the display: block fixed-layout bug this
+        // project hit before. A plain wrapper div sidesteps that entirely.
+        document.querySelectorAll('article table').forEach((table) => {
+            var wrapper = document.createElement('div');
+            wrapper.className = 'table-scroll';
+            table.parentNode.insertBefore(wrapper, table);
+            wrapper.appendChild(table);
+        });
     </script>
 </body>
 </html>

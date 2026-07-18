@@ -702,11 +702,23 @@ article div.highlighter-rouge code {
    Tables
    ========================================================================== */
 
-article table {
+/* JS (default.html) wraps every article table in this at render time, since a
+   bare <table> can't reliably serve as its own horizontal-scroll container -
+   giving the table itself overflow-x: auto only has something to scroll once
+   its own rendered width is allowed to exceed its container (see the mobile
+   min-width rules below), and a plain block-level wrapper is what actually
+   catches that overflow without touching the table's own display: table
+   (switching that to display: block was tried historically and silently
+   broke the fixed-layout width algorithm in Chromium for some tables). */
+.table-scroll {
   overflow-x: auto;
+  margin: 1.5rem 0;
+}
+
+article table {
   border-collapse: collapse;
   width: 100%;
-  margin: 1.5rem 0;
+  margin: 0;
   font-size: 0.95rem;
   border-top: 2px solid var(--foreground);
   border-bottom: 2px solid var(--foreground);
@@ -715,8 +727,7 @@ article table {
      columns from its own content (which made "Notes" land at a different x
      position per table). This requires the element to stay display: table —
      display: block (an earlier fix for page-level horizontal overflow) breaks
-     the fixed-layout algorithm's width resolution in Chromium, so scrolling is
-     handled by overflow-x: auto directly on the table box instead. */
+     the fixed-layout algorithm's width resolution in Chromium. */
   table-layout: fixed;
 }
 
@@ -1437,6 +1448,29 @@ footer p {
 @media (max-width: 768px) {
   body {
     font-size: 13px;
+  }
+
+  /* With table-layout: fixed and width: 100%, a table's own box is always
+     exactly the container's width, so the overflow-x: auto declared on
+     article table (above) never has anything to actually scroll - percentage
+     columns just get crushed down to fit instead, and overflow-wrap forces
+     every word onto its own line once a column is a handful of px wide,
+     reading as vertical letter-soup on narrow screens. Giving the table a
+     real min-width wider than the viewport gives table-layout: fixed a
+     bigger basis to distribute the declared percentages against, so each
+     column gets a real, readable pixel width and the table becomes
+     genuinely wider than its container - which is what makes the existing
+     overflow-x: auto finally have something to do (scrolls inside the
+     table's own box, not the page - overflow-x: hidden on html/body still
+     prevents any page-level horizontal scrollbar). */
+  article table {
+    width: max-content;
+    min-width: 100%;
+  }
+
+  article table th,
+  article table td {
+    min-width: 6.5em;
   }
 
   .posts {
