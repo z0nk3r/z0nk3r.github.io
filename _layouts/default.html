@@ -160,6 +160,38 @@
             }, 150);
         });
 
+        // Measure the site header's real bottom edge for the sticky table-header
+        // offset below, instead of guessing a fixed pixel value. A hardcoded
+        // 105px (copied from the TOC sidebar's own offset) turned out to not
+        // match this header's actual rendered height at all - measured at
+        // ~77px in testing, a ~39px gap wide enough for a real table row to
+        // show through while scrolled, right above the sticky table header.
+        // header.getBoundingClientRect().bottom is stable across scroll
+        // position (the header's margin-top and its own sticky top offset are
+        // both 1rem, so it renders at the same place whether "actively stuck"
+        // or at natural rest at the top of the page) but can change on resize
+        // (responsive font sizes, header wrapping), so it's re-measured there
+        // too, matching the existing --scrollbar-width pattern in <head>.
+        //
+        // Dividing by the current zoom factor is required, not optional: this
+        // site applies zoom: 1.1 on desktop, which scales every raw px value
+        // written in the stylesheet at render time - but getBoundingClientRect
+        // already returns post-zoom pixels. Storing that measurement directly
+        // and using it inside a CSS calc() double-applies the zoom (measured
+        // ~77px real became ~93.5px rendered instead of the intended ~85px).
+        // Dividing back out here keeps the stored custom property in the same
+        // pre-zoom "logical px" space every other hardcoded value in the
+        // stylesheet is already written in, so it only gets zoomed once.
+        function setStickyTableHeaderOffset() {
+            var header = document.querySelector('header');
+            if (!header) return;
+            var zoomFactor = parseFloat(getComputedStyle(document.documentElement).zoom) || 1;
+            var bottom = header.getBoundingClientRect().bottom / zoomFactor;
+            document.documentElement.style.setProperty('--table-sticky-top', Math.ceil(bottom) + 'px');
+        }
+        setStickyTableHeaderOffset();
+        window.addEventListener('resize', setStickyTableHeaderOffset);
+
         // Wrap every table in article content with a scrollable container. Kramdown
         // emits bare <table> elements with no wrapper, and article table itself can't
         // become a real horizontal-scroll box on its own: giving it overflow-x: auto
