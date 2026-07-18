@@ -872,31 +872,43 @@ article table thead th {
 }
 
 /* Sticky header for long tables (JS adds has-sticky-header past ~10 rows,
-   raised specifically about the 400+ row syscall tables). Docks right below
-   the site's own sticky header, at the same 105px offset the TOC sidebar
-   uses to sit below it.
-
-   Only actually takes effect where .table-scroll isn't itself a scroll
-   container: CSS computes overflow-x/overflow-y as a pair - giving one axis
-   a non-visible value forces the other to compute as auto too, even if never
-   written. That makes .table-scroll its own (never-actually-scrolling)
-   sticky containing block instead of the page, which breaks position:
-   sticky's ability to track the *page's* scroll at all. Desktop tables never
-   need horizontal scroll (width: 100% always fits their container), so
-   giving overflow-x: visible there removes .table-scroll from being a
-   scroll container and sticky correctly tracks the page again. Mobile
-   tables still need overflow-x: auto for the horizontal-scroll fix above,
-   so sticky is a silent no-op there for now - not visibly broken, just
-   inert - short of building a synced dual-scroll header specifically for
-   mobile, which hasn't been asked for. */
-.table-scroll.has-sticky-header thead th {
-  position: sticky;
-  top: 105px;
-  z-index: 2;
-  background: var(--background);
-}
-
+   raised specifically about the 400+ row syscall tables) - desktop only, see
+   the media query below for why. Docks right below the site's own sticky
+   header, at the same 105px offset the TOC sidebar uses to sit below it.
+   surface-1 (the same subtle raised tint header/cards use elsewhere) plus a
+   border matching the table's own 2px outer border weight (instead of the
+   regular 1px row-separator weight) gives it a real edge to visually pin
+   against - a flat var(--background) fill read as part of the scrolling
+   table instead of a fixed anchor above it. */
 @media (min-width: 769px) {
+  /* Scoped to desktop, not just "works better here": CSS computes
+     overflow-x/overflow-y as a pair - giving one axis a non-visible value
+     forces the other to compute as auto too, even if never written. That
+     makes .table-scroll its own (never-actually-scrolling) sticky containing
+     block instead of the page. Critically, this ISN'T a harmless no-op -
+     position: sticky still applies its top offset as a static shift (the
+     same way position: relative would) since the container's scroll range
+     is zero, so on mobile (which needs overflow-x: auto for the horizontal-
+     scroll fix above, and can't drop the coupling) the header row rendered
+     shifted 105px down into the second and third body rows instead of
+     either sticking cleanly or doing nothing - a real visual regression,
+     confirmed via a real device screenshot, not just inert. Desktop tables
+     never need horizontal scroll (width: 100% always fits their container),
+     so this whole rule - position included - only ever applies there.
+     Mobile gets no sticky header at all for now, rather than a half-broken
+     one; a fully correct mobile version would need a synced dual-scroll
+     header (a separate always-visible thead outside the horizontally-
+     scrolling wrapper, its horizontal position driven by JS mirroring the
+     body's scrollLeft), which hasn't been asked for. */
+  .table-scroll.has-sticky-header thead th {
+    position: sticky;
+    top: 105px;
+    z-index: 2;
+    background: var(--surface-1);
+    border-bottom: 2px solid var(--foreground);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+
   .table-scroll.has-sticky-header {
     overflow-x: visible;
   }
