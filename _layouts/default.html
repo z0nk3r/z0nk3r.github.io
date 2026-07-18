@@ -2,6 +2,23 @@
 <html lang="en" data-theme="dark">
 <head>
     <meta charset="utf-8">
+    <script>
+        // Sets data-theme before anything paints, so there's never a window where
+        // the wrong theme is visible - not even briefly. <html> above hardcodes
+        // data-theme="dark" as its static default; without this, the correction
+        // only happened in the bottom <script> block, after the entire page had
+        // already parsed. That's a real flash-of-wrong-theme on every normal
+        // load, just too brief to consciously notice - but a cross-document view
+        // transition (see the blog thumbnail -> hero morph) captures and holds
+        // that transitional moment for ~250ms instead of snapping instantly,
+        // turning an imperceptible flash into a highly visible one. Must stay a
+        // plain synchronous script (no defer/async) to actually block parsing
+        // until it runs.
+        (function () {
+            var theme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
     <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
@@ -86,9 +103,9 @@
         const moonIcon = `{% include icon-moon.html %}`;
         const sunIcon = `{% include icon-sun.html %}`;
 
-        // Check localStorage for saved theme
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        html.setAttribute('data-theme', savedTheme);
+        // data-theme is already correct by now - set synchronously in <head>
+        // before this script ever runs (see comment there) - this just needs
+        // to sync the button's icon to whatever that already set.
         updateThemeButton();
 
         themeToggle.addEventListener('click', () => {
