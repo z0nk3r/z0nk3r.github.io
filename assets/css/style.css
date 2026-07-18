@@ -904,11 +904,38 @@ article table thead th {
      body's scrollLeft), which hasn't been asked for. */
   .table-scroll.has-sticky-header thead th {
     position: sticky;
-    top: 105px;
+    /* --table-sticky-top is measured in default.html from the real site
+       header's rendered bottom edge - a hardcoded guess here previously left
+       a ~39px gap wide enough for a table row to visibly peek through while
+       scrolled. The + 8px is a small deliberate buffer so the two sticky
+       headers don't look like they're touching, not leftover slop. */
+    top: calc(var(--table-sticky-top, 105px) + 8px);
     z-index: 2;
     background: var(--background);
     border-bottom: 2px solid var(--foreground);
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
+  }
+
+  /* A fixed 8px buffer is enough for most rows, but cells with wrapped
+     multi-line content (a long arg type, for example) can still be tall
+     enough for their last line to peek into that gap while scrolling -
+     sizing the buffer for the tallest possible row would leave an
+     oversized, mostly-empty gap the rest of the time. A blurred backdrop
+     strip spanning the buffer handles any row height without needing to
+     guess one: still visible (mostly-opaque, not a hard cut), just not
+     legible. Anchored to each th (sticky already gives it a positioned
+     containing block) with a negative top so it sits in the gap above the
+     header's own box, not inside it. */
+  .table-scroll.has-sticky-header thead th::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -9px;
+    height: 9px;
+    backdrop-filter: blur(4px);
+    background: rgba(var(--background-rgb), 0.75);
+    pointer-events: none;
   }
 
   .table-scroll.has-sticky-header {
