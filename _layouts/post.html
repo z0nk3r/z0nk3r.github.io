@@ -18,7 +18,7 @@ layout: default
         <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy">
     </div>
     {% else %}
-    <div class="post-header__image-wrap post-header__image-wrap--placeholder">
+    <div class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: post-hero-{{ page.slug }};">
         <span>No Image Found</span>
     </div>
     {% endif %}
