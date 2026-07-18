@@ -1647,6 +1647,26 @@ footer p {
     margin-top: 1rem;
   }
 
+  /* Blur everything except the header (which holds the open menu itself and
+     already reads as its own layer via its own backdrop-filter + z-index)
+     while the mobile menu is open, so the menu is what's in focus instead of
+     competing with the page behind it. pointer-events: none stops taps from
+     reaching blurred-out content, matching standard overlay/modal behavior.
+     The transition duration matches #siteNav.open's own above so the blur
+     fades in/out in sync with the menu's own animation. */
+  #ascii-bg,
+  .page-content,
+  footer {
+    transition: filter 0.25s ease;
+  }
+
+  body.menu-open #ascii-bg,
+  body.menu-open .page-content,
+  body.menu-open footer {
+    filter: blur(6px);
+    pointer-events: none;
+  }
+
   header h1 {
     font-size: 1rem;
   }

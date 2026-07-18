@@ -129,22 +129,31 @@
         const navMenuToggle = document.getElementById('navMenuToggle');
         const siteNav = document.getElementById('siteNav');
 
-        navMenuToggle.addEventListener('click', () => {
-            const isOpen = siteNav.classList.toggle('open');
+        // Single source of truth for open/close, since it's triggered from 4
+        // separate places below (toggle click, outside click, Escape, resize
+        // past the breakpoint) - also toggles body.menu-open, which blurs the
+        // rest of the page behind the open menu (see the mobile media query
+        // in style.css) so it reads as a clear background layer instead of
+        // competing with the menu for attention.
+        function setMobileMenuOpen(isOpen) {
+            siteNav.classList.toggle('open', isOpen);
             navMenuToggle.setAttribute('aria-expanded', isOpen);
+            document.body.classList.toggle('menu-open', isOpen);
+        }
+
+        navMenuToggle.addEventListener('click', () => {
+            setMobileMenuOpen(!siteNav.classList.contains('open'));
         });
 
         document.addEventListener('click', (e) => {
             if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target)) {
-                siteNav.classList.remove('open');
-                navMenuToggle.setAttribute('aria-expanded', 'false');
+                setMobileMenuOpen(false);
             }
         });
 
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape' && siteNav.classList.contains('open')) {
-                siteNav.classList.remove('open');
-                navMenuToggle.setAttribute('aria-expanded', 'false');
+                setMobileMenuOpen(false);
             }
         });
 
@@ -154,8 +163,7 @@
             window.clearTimeout(navMenuResizeDebounce);
             navMenuResizeDebounce = window.setTimeout(() => {
                 if (window.innerWidth > 768 && siteNav.classList.contains('open')) {
-                    siteNav.classList.remove('open');
-                    navMenuToggle.setAttribute('aria-expanded', 'false');
+                    setMobileMenuOpen(false);
                 }
             }, 150);
         });
