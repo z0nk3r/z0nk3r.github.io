@@ -2,3 +2,39 @@
   link: "https://ctftime.org/"
   excerpt: "Archive and calendar of CTF competitions, team rankings, and event writeups."
   tags: [ctf]
+
+- title: "GTFOBins"
+  link: "https://gtfobins.org/"
+  excerpt: "Curated list of Unix binaries that can be abused to bypass local security restrictions, for privilege escalation."
+  image: "/assets/images/references/gtfobins.png"
+  tags: [appsec, tools]
+
+- title: "pwntools"
+  link: "https://github.com/Gallopsled/pwntools"
+  excerpt: "CTF framework and exploit development library for Python."
+  image: "/assets/images/references/pwntools.png"
+  tags: [pwn, tools]
+
+- title: "GEF"
+  link: "https://github.com/hugsy/gef"
+  excerpt: "GDB extension for exploit development and reverse engineering."
+  image: "/assets/images/references/gef.png"
+  tags: [pwn, tools]
+
+- title: "pwndbg"
+  link: "https://github.com/pwndbg/pwndbg"
+  excerpt: "GDB plugin that adds exploit-development and reverse-engineering features to the debugger."
+  image: "/assets/images/references/pwndbg.png"
+  tags: [pwn, tools]
+
+- title: "Exploit-DB Shellcodes"
+  link: "https://www.exploit-db.com/shellcodes"
+  excerpt: "Searchable archive of architecture-specific shellcode."
+  image: "/assets/images/references/exploit-db.png"
+  tags: [pwn, tools]
+
+- title: "Compiler Explorer"
+  link: "https://godbolt.org/"
+  excerpt: "Live compiler output — see the exact assembly/opcodes a given source line generates, across compilers and architectures."
+  image: "/assets/images/references/compiler-explorer.png"
+  tags: [tools]
