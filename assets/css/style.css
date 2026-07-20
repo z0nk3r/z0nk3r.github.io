@@ -125,17 +125,25 @@ html {
   font-size: 14px;
 }
 
-/* zoom: 1.1 was added to match how the site looked at the user's own manually-set
-   110% browser zoom - a desktop preference. Scoped to desktop-and-up only: at
-   mobile widths it causes a real Chromium quirk where document.body's effective
-   content-box width desyncs from its own getBoundingClientRect() width (confirmed
-   by directly stripping zoom and comparing - the mismatch, and the visible gap it
-   caused down the right edge of mobile content, both disappeared completely).
-   Mobile never asked for the 110%-zoom treatment in the first place, so excluding
-   it here isn't a compromise on the original request, just a scope correction. */
+/* The desktop 110% look used to be zoom: 1.1 here (added to match the user's
+   manually-set 110% browser zoom). zoom is now permanently retired from this
+   codebase: a controlled A/B test (identical view-transition fixes, local
+   without zoom vs live with it) proved zoom was the remaining cause of the
+   view-transition flash - on top of two earlier confirmed zoom bugs in this
+   repo (mobile clientWidth desync, sticky-header measurement double-scaling).
+
+   The replacement is mathematically equivalent for everything rem-based:
+   zoom 1.1 over a 14px root rendered 1rem at 15.4px, and so does a 15.4px
+   root font-size directly - same rendered size for every rem/em value on the
+   site, no buggy scaling primitive involved. The handful of absolute px
+   values that zoom used to scale (container max-widths, the TOC column,
+   avatar/thumbnail boxes, header-clearance offsets) are multiplied by 1.1
+   where they appear instead - each is marked with a "zoom-replacement"
+   comment. 1px borders deliberately stay 1px (they render crisper than the
+   old fractional 1.1px). Mobile (<769px) never had the zoom and is untouched. */
 @media (min-width: 769px) {
   html {
-    zoom: 1.1;
+    font-size: 15.4px;
   }
 }
 
@@ -224,7 +232,7 @@ header {
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   width: calc(100% - 10px);
-  max-width: 1390px;
+  max-width: 1529px;
   margin: 1rem auto 0;
   padding: 0.5rem 0;
   position: sticky;
@@ -234,7 +242,7 @@ header {
 }
 
 .header-wrapper {
-  max-width: 1400px;
+  max-width: 1540px;
   margin: 0 auto;
   padding: 0 20px;
   display: flex;
@@ -338,7 +346,7 @@ nav a:hover {
 }
 
 .nav-search.open .nav-search-input {
-  width: 160px;
+  width: 176px; /* zoom-replacement: was 160px under zoom 1.1 */
   opacity: 1;
   padding: 0.4rem 0.7rem;
   border-color: var(--border);
@@ -393,12 +401,21 @@ nav a:hover {
   border-color: var(--border-strong);
 }
 
+/* zoom-replacement: under the old desktop zoom 1.1 the toggle rendered at
+   44px; mobile never had zoom and keeps the 40px base above. */
+@media (min-width: 769px) {
+  .theme-toggle {
+    width: 44px;
+    height: 44px;
+  }
+}
+
 /* ==========================================================================
    Breadcrumbs
    ========================================================================== */
 
 .breadcrumbs {
-  max-width: 1400px;
+  max-width: 1540px;
   margin: 2rem auto 0;
   padding: 0 20px;
   font-size: 0.85rem;
@@ -428,7 +445,7 @@ nav a:hover {
    ========================================================================== */
 
 .post-header {
-  max-width: 1400px;
+  max-width: 1540px;
   margin: 0 auto;
   padding: 2rem 20px 0;
   text-align: center;
@@ -448,20 +465,20 @@ nav a:hover {
 }
 
 .post-wrapper {
-  max-width: 1400px;
+  max-width: 1540px;
   margin: 0 auto;
   padding: 2rem 20px;
   display: grid;
-  grid-template-columns: 300px 1fr;
+  grid-template-columns: 330px 1fr; /* zoom-replacement: was 300px under zoom 1.1 */
   gap: 3rem;
 }
 
 /* Table of contents sidebar */
 .toc-sidebar {
   position: sticky;
-  top: 105px;
+  top: 116px; /* zoom-replacement: was 105px under zoom 1.1 */
   height: fit-content;
-  max-height: calc(100vh - 122px);
+  max-height: calc(100vh - 134px); /* zoom-replacement: was 122px under zoom 1.1 */
   overflow-y: auto;
   overflow-x: hidden;
   padding: 1.25rem;
@@ -523,7 +540,7 @@ nav a:hover {
 }
 
 .reference-content {
-  max-width: 1268px;
+  max-width: 1395px; /* zoom-replacement: was 1268px under zoom 1.1 */
   margin: 0 auto;
   padding: 1rem 20px 4rem;
   background: var(--background);
@@ -564,7 +581,7 @@ article img {
 article h2 {
   font-size: 1.3rem;
   margin: 2.5rem 0 1rem 0;
-  scroll-margin-top: 88px;
+  scroll-margin-top: 97px; /* zoom-replacement: was 88px under zoom 1.1 */
   line-height: 1.4;
   font-weight: 500;
 }
@@ -572,7 +589,7 @@ article h2 {
 article h3 {
   font-size: 1.3rem;
   margin: 2rem 0 1rem 0;
-  scroll-margin-top: 88px;
+  scroll-margin-top: 97px; /* zoom-replacement: was 88px under zoom 1.1 */
   font-weight: 500;
 }
 
@@ -580,7 +597,7 @@ article h4,
 article h5,
 article h6 {
   margin: 1.5rem 0 0.75rem 0;
-  scroll-margin-top: 88px;
+  scroll-margin-top: 97px; /* zoom-replacement: was 88px under zoom 1.1 */
   font-weight: 500;
 }
 
@@ -1025,7 +1042,7 @@ article table thead th {
        a ~39px gap wide enough for a table row to visibly peek through while
        scrolled. The + 8px is a small deliberate buffer so the two sticky
        headers don't look like they're touching, not leftover slop. */
-    top: calc(var(--table-sticky-top, 105px) + 8px);
+    top: calc(var(--table-sticky-top, 116px) + 8px);
     z-index: 2;
     background: var(--background);
     border-bottom: 2px solid var(--foreground);
@@ -1160,7 +1177,7 @@ article table tbody tr:not(:first-child) td {
 
 .tag-search {
   width: 100%;
-  max-width: 420px;
+  max-width: 462px; /* zoom-replacement: was 420px under zoom 1.1 */
   padding: 0.65rem 1rem;
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
@@ -1238,6 +1255,18 @@ article table tbody tr:not(:first-child) td {
   align-items: center;
   justify-content: center;
   overflow: hidden;
+}
+
+/* zoom-replacement: under the old desktop zoom 1.1 this thumbnail rendered
+   at 154x110; mobile never had zoom and keeps the 140x100 base above (these
+   horizontal rows also show on narrow screens, where the extra 14px would
+   eat into the text column). */
+@media (min-width: 769px) {
+  .search-result__image-wrap {
+    flex-basis: 154px;
+    width: 154px;
+    height: 110px;
+  }
 }
 
 .search-result__image-wrap img {
@@ -1341,7 +1370,7 @@ article table tbody tr:not(:first-child) td {
    ========================================================================== */
 
 main {
-  max-width: 1400px;
+  max-width: 1540px;
   margin: 0 auto;
   padding: 2rem 20px;
 }
@@ -1444,7 +1473,7 @@ main h1 {
 }
 
 .post-header__image-wrap {
-  max-width: 1100px;
+  max-width: 1210px; /* zoom-replacement: was 1100px under zoom 1.1 */
   aspect-ratio: 1200 / 630;
   margin: 0 auto 2rem;
 }
@@ -1546,7 +1575,7 @@ footer {
 }
 
 .footer-wrapper {
-  max-width: 1400px;
+  max-width: 1540px;
   margin: 0 auto;
   display: flex;
   align-items: center;
@@ -1583,7 +1612,7 @@ footer p {
 
 .author-header {
   width: 65%;
-  max-width: 884px;
+  max-width: 972px; /* zoom-replacement: was 884px under zoom 1.1 */
   margin: 2rem auto;
   padding: 1.5rem;
   display: flex;
@@ -1596,8 +1625,8 @@ footer p {
 
 .author-header__avatar {
   flex-shrink: 0;
-  width: 130px;
-  height: 130px;
+  width: 143px; /* zoom-replacement: was 130px under zoom 1.1 */
+  height: 143px;
   border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--surface-2);
@@ -1847,22 +1876,22 @@ footer p {
   }
 }
 
-/* On viewports comfortably wider than the 1400px content max-width, nudge all
+/* On viewports comfortably wider than the 1540px content max-width, nudge all
    centered content a few pixels right (visually recentering after the
    permanent scrollbar gutter took space from the right side only). Scoped to
    a width with plenty of centering slack so the margins never go negative. */
-@media (min-width: 1450px) {
+@media (min-width: 1560px) {
   .footer-wrapper,
   .post-header,
   .post-wrapper,
   .breadcrumbs,
   main {
-    margin-left: calc((100% - 1400px) / 2 + 10px);
-    margin-right: calc((100% - 1400px) / 2 - 10px);
+    margin-left: calc((100% - 1540px) / 2 + 10px);
+    margin-right: calc((100% - 1540px) / 2 - 10px);
   }
 
   header {
-    margin-left: calc((100% - 1390px) / 2 + 10px);
-    margin-right: calc((100% - 1390px) / 2 - 10px);
+    margin-left: calc((100% - 1529px) / 2 + 10px);
+    margin-right: calc((100% - 1529px) / 2 - 10px);
   }
 }
