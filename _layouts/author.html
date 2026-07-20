@@ -2,14 +2,15 @@
 layout: default
 ---
 
-<div class="breadcrumbs">
+<nav class="breadcrumbs" aria-label="Breadcrumb">
     <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
     <span> / </span>
     <a href="{{ '/authors/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">●●</span>Authors</a>
     <span> / </span>
     <span><span class="crumb-icon" aria-hidden="true">●</span>{{ page.name }}</span>
-</div>
+</nav>
 
+<main>
 <div class="author-header">
     <div class="author-header__avatar">
         <img src="{{ page.avatar }}" alt="{{ page.name }}">
@@ -25,7 +26,6 @@ layout: default
     </div>
 </div>
 
-<main>
     {% assign author_posts = site.posts | where_exp: "post", "post.author == page.name" %}
     {% if page.name == site.author %}
     {% assign default_author_posts = site.posts | where_exp: "post", "post.author == nil" %}
