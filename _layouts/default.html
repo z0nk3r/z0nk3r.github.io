@@ -193,17 +193,42 @@
 
         // pageswap fires on the outgoing page right before the browser
         // captures its view-transition snapshots - the spec's designated
-        // last-chance hook to mutate the page before old-state capture. If a
-        // named element is outside the viewport at that moment (the post hero
-        // after scrolling down a long article, then pressing Back), the morph
-        // animates from an offscreen rect and streaks across the entire
-        // viewport - reads as a flash, and only happens sometimes (depends on
-        // scroll position). Stripping the name means that side simply doesn't
-        // participate; the destination element just appears in place instead.
-        window.addEventListener('pageswap', () => {
+        // last-chance hook to mutate the page before old-state capture. A
+        // named element should only participate in the transition when it is
+        // BOTH onscreen and actually involved in this specific navigation:
+        //
+        // - Offscreen (the post hero after scrolling down a long article,
+        //   then pressing Back): the morph would animate from an offscreen
+        //   rect and streak across the entire viewport.
+        // - Not the navigation target (every OTHER card on /blog/ when one
+        //   card is clicked): each card carries a unique name with no match
+        //   on the destination page, so Chrome gives each an exit-only
+        //   transition group - observed visibly "flying to the bottom
+        //   offscreen" during the transition rather than staying inert.
+        //
+        // Stripping the name means that element simply doesn't participate.
+        // Target resolution: a card's name is kept only when the navigation
+        // goes to that card's own link; the post hero (not inside a link) is
+        // kept only when navigating to the blog index it morphs back into.
+        // If the destination isn't available (activation null, or a manually
+        // dispatched event in tests), fall back to offscreen-stripping only.
+        window.addEventListener('pageswap', (e) => {
+            var destPath = null;
+            if (e.activation && e.activation.entry && e.activation.entry.url) {
+                destPath = new URL(e.activation.entry.url).pathname;
+            }
+            var blogIndexPath = '{{ "/blog/" | relative_url }}';
             document.querySelectorAll('[style*="view-transition-name"]').forEach((el) => {
-                const rect = el.getBoundingClientRect();
-                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                var rect = el.getBoundingClientRect();
+                var offscreen = rect.bottom < 0 || rect.top > window.innerHeight;
+                var isTarget = true;
+                if (destPath !== null) {
+                    var link = el.closest('a');
+                    isTarget = link
+                        ? new URL(link.href).pathname === destPath
+                        : destPath === blogIndexPath;
+                }
+                if (offscreen || !isTarget) {
                     el.style.viewTransitionName = 'none';
                 }
             });
