@@ -47,6 +47,30 @@
             color-scheme: light;
         }
     </style>
+    {% if page.layout == 'post' %}
+    <!-- rel="expect" blocking="render" is the View Transitions spec's own
+         companion feature for cross-document morphs: the incoming page's
+         transition capture happens at its FIRST rendering opportunity, which
+         with incremental HTML parsing can land before the hero element has
+         even been parsed - the morph then randomly has no destination
+         ("sometimes" flashes, network-chunking dependent). This blocks first
+         render until #post-hero is parsed; it sits at the top of <body>, so
+         the delay is negligible. Non-supporting browsers ignore the link.
+         The preload starts the hero image fetch during head parse instead of
+         waiting for the <img> tag to be discovered mid-body - the other
+         race: a capture of a not-yet-decoded image. -->
+    <link rel="expect" href="#post-hero" blocking="render">
+    {% if page.image %}
+    <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
+    {% endif %}
+    {% elsif page.url == '/blog/' %}
+    <!-- Same reasoning for the reverse (Back) direction: block the list
+         page's first render until every card is parsed, so the returning
+         morph always finds its destination card. The marker span sits right
+         after the post list in blog.md; the page is small enough that
+         blocking until it parses costs nothing meaningful. -->
+    <link rel="expect" href="#post-list-end" blocking="render">
+    {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
     <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
@@ -149,6 +173,41 @@
             const theme = html.getAttribute('data-theme');
             themeToggle.innerHTML = theme === 'dark' ? moonIcon : sunIcon;
         }
+
+        // bfcache restores skip every script on the page - including the head
+        // theme bootstrap - so a page restored via Back/Forward still wears
+        // whatever theme it was showing when it was frozen. If the theme was
+        // toggled on another page in between, the restored page is stale, and
+        // the view transition navigating into it makes that stale frame
+        // visible ("the theme changes when going back and forth"). Re-sync
+        // from localStorage whenever a page comes back from the cache.
+        window.addEventListener('pageshow', (e) => {
+            if (!e.persisted) return;
+            const storedTheme = localStorage.getItem('theme') || 'dark';
+            if (html.getAttribute('data-theme') !== storedTheme) {
+                html.setAttribute('data-theme', storedTheme);
+                updateThemeButton();
+                window.dispatchEvent(new Event('themechange'));
+            }
+        });
+
+        // pageswap fires on the outgoing page right before the browser
+        // captures its view-transition snapshots - the spec's designated
+        // last-chance hook to mutate the page before old-state capture. If a
+        // named element is outside the viewport at that moment (the post hero
+        // after scrolling down a long article, then pressing Back), the morph
+        // animates from an offscreen rect and streaks across the entire
+        // viewport - reads as a flash, and only happens sometimes (depends on
+        // scroll position). Stripping the name means that side simply doesn't
+        // participate; the destination element just appears in place instead.
+        window.addEventListener('pageswap', () => {
+            document.querySelectorAll('[style*="view-transition-name"]').forEach((el) => {
+                const rect = el.getBoundingClientRect();
+                if (rect.bottom < 0 || rect.top > window.innerHeight) {
+                    el.style.viewTransitionName = 'none';
+                }
+            });
+        });
 
         // Header search toggle
         const navSearch = document.querySelector('.nav-search');
