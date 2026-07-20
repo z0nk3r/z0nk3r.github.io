@@ -19,6 +19,34 @@
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
+    <style>
+        /* Critical theme paint, inline and hardcoded on purpose - not a
+           duplicate of the --background/--foreground tokens in style.css.
+           The script above sets data-theme correctly before anything paints,
+           but the CSS that makes that attribute visually matter
+           ([data-theme="light"] { --background: ...; } etc.) lives in the
+           external style.css, which a cross-document view transition can
+           capture its screenshot *before* has finished loading and applying
+           - the attribute was already right, but nothing had painted it yet,
+           so the transition captured :root's bare dark default, or in the
+           worst case the browser's own raw unstyled white before even that.
+           This has zero network/parse dependency - it applies the instant
+           it's parsed, same frame as the script above sets the attribute -
+           so there's no gap left for a transition to capture mid-flash.
+           Values are hardcoded (not var(--background)) deliberately: those
+           custom properties are ALSO defined in style.css, so referencing
+           them here would just move the same dependency, not remove it.
+           Mirror any theme color changes here manually - see --background /
+           [data-theme="light"] --background in style.css. */
+        html {
+            background-color: #060000;
+            color-scheme: dark;
+        }
+        html[data-theme="light"] {
+            background-color: #fdf6e3;
+            color-scheme: light;
+        }
+    </style>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
     <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
@@ -370,47 +398,6 @@
             }, { passive: true });
         });
 
-        // @view-transition { navigation: auto; } (style.css) opts in site-wide,
-        // since that's the only way to enable the feature at all - there's no
-        // pure-CSS way to scope it to specific link pairs. Left unscoped, every
-        // internal navigation got the browser's default whole-page cross-fade,
-        // not just the blog list -> post thumbnail/hero morph it was added for -
-        // and most of those other navigations have no matching
-        // view-transition-name to anchor the transition on, so it was just a
-        // raw, untuned cross-fade between two unrelated page layouts. Chrome's
-        // default mix-blend-mode: plus-lighter on that cross-fade is a
-        // documented cause of bright "flash" artifacts under exactly those
-        // conditions - reported as happening "no matter how" the site was
-        // navigated, not just on the blog. Skip the transition outright for
-        // every navigation except specifically blog list <-> a blog post, which
-        // is the only pair with a real shared-element match to morph.
-        window.addEventListener('pageswap', (e) => {
-            if (!e.viewTransition || !e.activation) return;
-            // skipTransition() (below) rejects the transition's own ready/
-            // finished/updateCallbackDone promises - without an explicit catch,
-            // that surfaces as an unhandled promise rejection page error even
-            // though skipping is intentional here, not a failure.
-            e.viewTransition.ready.catch(function () {});
-            e.viewTransition.finished.catch(function () {});
-            e.viewTransition.updateCallbackDone.catch(function () {});
-
-            var fromURL = e.activation.from && e.activation.from.url;
-            var toURL = e.activation.entry.url;
-            if (!fromURL) {
-                e.viewTransition.skipTransition();
-                return;
-            }
-            var from = new URL(fromURL);
-            var to = new URL(toURL);
-            var isBlogList = function (url) { return url.pathname === '{{ "/blog/" | relative_url }}'; };
-            var isBlogPost = function (url) {
-                return url.pathname.indexOf('{{ "/blog/" | relative_url }}') === 0 && !isBlogList(url);
-            };
-            var isBlogPair = (isBlogList(from) && isBlogPost(to)) || (isBlogPost(from) && isBlogList(to));
-            if (!isBlogPair) {
-                e.viewTransition.skipTransition();
-            }
-        });
     </script>
 </body>
 </html>

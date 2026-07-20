@@ -46,36 +46,78 @@
   box-sizing: border-box;
 }
 
-/* Opt in to cross-document View Transitions site-wide. Chromium-only today
-   (no flag, roughly Chrome/Edge 126+); Firefox/Safari simply ignore this
-   at-rule and every navigation stays a normal instant page load - pure
-   progressive enhancement, nothing to fall back to on purpose. This is
-   required to enable the feature at all (there's no pure-CSS way to scope it
-   to specific link pairs), but a JS pageswap listener in default.html skips
-   the transition outright for every navigation except blog list <-> a blog
-   post - the only pair with a real shared-element match (see
-   view-transition-name on .post-card__image-wrap / .post-header__image-wrap)
-   to morph. Without that JS gate, every internal navigation got the
-   browser's default whole-page cross-fade with nothing to anchor it,
-   including ones with completely unrelated page layouts. */
+/* Opt in to cross-document View Transitions site-wide, deliberately. Chromium-
+   only today (no flag, roughly Chrome/Edge 126+); Firefox/Safari simply
+   ignore this at-rule and every navigation stays a normal instant page load -
+   pure progressive enhancement, nothing to fall back to on purpose.
+
+   Every internal navigation gets the browser's default whole-page cross-fade
+   as a base-level transition; the blog list <-> post pages additionally get a
+   real shared-element morph on top of that (see view-transition-name on
+   .post-card__image-wrap / .post-header__image-wrap), since that's the only
+   pair with a matching name to anchor a morph on - everywhere else just gets
+   the plain cross-fade.
+
+   An earlier version tried gating this in JS (a pageswap listener calling
+   skipTransition() for every non-blog navigation) after the default
+   cross-fade was reported as flashing "no matter how" the site was
+   navigated - but the actual cause was the two bugs below (a theme FOUC and
+   Chrome's default blend mode), not the base transition itself being
+   unwanted. With both fixed, gating was removed - a plain cross-fade
+   everywhere reads better than abruptly-instant navigation on every page
+   except two. */
 @view-transition {
   navigation: auto;
 }
 
-/* Chrome's default cross-fade uses mix-blend-mode: plus-lighter on these
-   pseudo-elements, which is a documented cause of bright "flash" artifacts
-   when the old and new page content differs significantly - additive
-   blending can make unrelated bright elements from both screenshots appear
-   simultaneously overlaid during the fade. Normal blending is the standard
-   fix; scoped to (root) only so it doesn't affect the actual named morph
-   (.post-card__image-wrap etc.), which should keep its own default
-   cross-fade/morph behavior for the image itself. */
+/* mix-blend-mode: normal (below) fixed one real bug (Chrome's default
+   plus-lighter additive blending flashing bright where old/new content
+   didn't match) but not the actual complaint - confirmed directly that the
+   "flash" is the root cross-fade itself: it's the whole-page screenshot, so
+   it fills the entire viewport by definition, and no amount of color/blend
+   tuning changes that it's visually dominant enough to read as "the whole
+   page flashing full-screen," drowning out the actual point of this feature
+   (the named image morph on .post-card__image-wrap /
+   .post-header__image-wrap). animation: none stops root from cross-fading
+   at all - old content is simply replaced by new instantly, no visible
+   transition for anything *except* the named element, which keeps its own
+   separate ::view-transition-group and default morph animation untouched.
+   Trade-off: since @view-transition applies site-wide (see above), this
+   also makes every *other* navigation feel instant again, not just blog
+   list <-> post - if that turns out to feel wrong once the flash itself is
+   confirmed fixed, revisit with a short (not zero) root duration instead of
+   fully removing it, rather than reverting to per-page JS gating again. */
 ::view-transition-old(root),
 ::view-transition-new(root) {
+  animation: none;
+}
+
+/* mix-blend-mode: normal needs to apply everywhere a transition can actually
+   be visible, not just (root) - the named image morph
+   (.post-card__image-wrap / .post-header__image-wrap, view-transition-name:
+   post-hero-<slug>, a different literal name per post) still had Chrome's
+   default plus-lighter blending, and flashed the same way root did before
+   this was scoped there alone. (*) matches every transition group, root
+   included, regardless of its specific name - there's no way to target
+   "every post-hero-* name" individually since each one is a distinct
+   literal string, and (*) is the standard way to apply a rule broadly
+   without enumerating every name. The image's own scaling/interpolation
+   between very differently-sized old (small thumbnail) and new (large hero)
+   captures is exactly the kind of old/new mismatch plus-lighter flashes on. */
+::view-transition-old(*),
+::view-transition-new(*) {
   mix-blend-mode: normal;
 }
 
 html {
+  /* Only body had a background-color before - during a cross-document view
+     transition, the top-layer transition overlay can briefly show through
+     to whatever's painted at the very bottom canvas layer. Without this,
+     that's the browser's own raw default (white), independent of theme -
+     not a wrong-theme flash, a genuinely unstyled one. This is a
+     well-documented view-transitions gotcha: always set background-color on
+     html itself, not just body. */
+  background-color: var(--background);
   scroll-behavior: smooth;
   overflow-x: hidden;
   overflow-y: scroll;
@@ -134,6 +176,23 @@ footer {
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  /* Reverted: DO NOT give this its own view-transition-name. Tried it to fix
+     a flash (theory: transitioning from an accumulated glyph pattern to a
+     blank freshly-loaded canvas), and it made the flash worse instead.
+     Root cause of the regression: giving *any* element a view-transition-
+     name pulls it into the browser's top-layer ::view-transition pseudo-
+     element overlay for the transition's duration, where it's captured as
+     an independent, isolated box stacked among its *sibling* named groups
+     (root included) - not within the page's normal stacking context. This
+     element's z-index: -1 only means "behind everything" there; once
+     isolated into its own transition group, that no longer holds; it can
+     end up rendering above the rest of the page instead of behind it. Named
+     transition groups are for elements that are SUPPOSED to float and morph
+     independently (the blog hero image); this is a full-page background
+     decoration that was never meant to do that. Left as part of root's
+     flattened capture instead - whatever cross-fade artifact that still
+     causes is a smaller problem than a background layer briefly covering
+     the whole page. */
 }
 
 @media (max-width: 768px) {
