@@ -72,8 +72,20 @@
     <link rel="expect" href="#post-list-end" blocking="render">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The title is hand-written (keeps the site's own "Title - z0nk3r"
+         format); the seo include below runs with its title output turned
+         off - the meta description is NOT hand-written, that one comes
+         straight from the seo include, sourced from the same front matter.
+         Both used to be duplicated (two title tags with different
+         separators, two descriptions - invalid HTML): NOT from the include
+         call itself, but from an earlier version of THIS comment, which
+         wrote the include's own curly-brace syntax as plain prose - Liquid
+         has no concept of HTML comments and parses any {curly-percent} tag
+         syntax it finds in the raw template text regardless of surrounding
+         markup, so that earlier comment was itself a second, silent,
+         argument-less invocation. Do not write the literal tag delimiters
+         in a comment again - describe the tag in words instead. -->
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
-    <meta name="description" content="{% if page.excerpt %}{{ page.excerpt | strip_html | strip_newlines | truncate: 160 }}{% else %}{{ site.description }}{% endif %}">
     <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -81,7 +93,7 @@
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
     <script src="{{ '/assets/js/ascii-background.js' | relative_url }}" defer></script>
     {% feed_meta %}
-    {% seo %}
+    {% seo title=false %}
     {% unless page.image %}
     <meta property="og:image" content="{{ '/assets/images/social-preview.png' | absolute_url }}">
     <meta name="twitter:image" content="{{ '/assets/images/social-preview.png' | absolute_url }}">
@@ -104,7 +116,11 @@
     <canvas id="ascii-bg" aria-hidden="true"></canvas>
     <header>
         <div class="header-wrapper">
-            <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
+            {% comment %} Deliberately not an <h1>: the site title renders in
+            the header of every page, and each page already has its own real
+            h1 - two h1s per page is an a11y/SEO anti-pattern. Styled via
+            .site-title. {% endcomment %}
+            <p class="site-title"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></p>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">{% include icon-moon.html %}</button>
             <button type="button" id="navMenuToggle" class="nav-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="siteNav">
                 {% include icon-hamburger.html %}
