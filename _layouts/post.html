@@ -4,14 +4,15 @@ layout: default
 
 <div id="reading-progress"></div>
 
-<div class="breadcrumbs">
+<nav class="breadcrumbs" aria-label="Breadcrumb">
     <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
     <span> / </span>
     <a href="{{ '/blog/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">◆</span>Blog</a>
     <span> / </span>
     <span><span class="crumb-icon" aria-hidden="true">▤</span>{{ page.title }}</span>
-</div>
+</nav>
 
+<main>
 <div class="post-header">
     {% comment %} id="post-hero" is the render-blocking anchor for the
     <link rel="expect"> in default.html's head - first render (and therefore
@@ -102,6 +103,7 @@ layout: default
         </div>
     </div>
 </div>
+</main>
 
 <script>
     // Generate table of contents from headings
