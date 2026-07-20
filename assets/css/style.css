@@ -181,7 +181,22 @@ footer {
 #ascii-bg {
   position: fixed;
   inset: 0;
-  z-index: -1;
+  /* Was z-index: -1. Once html gained its own explicit background-color
+     (added for the view-transition white-flash fix - see html's own rule
+     below), that negative z-index put this canvas BEHIND html's own root
+     background, not just behind body's normal content - a position:fixed
+     element's stacking is resolved against the initial containing block
+     (viewport-level), not against body specifically, so html's own
+     background painted directly over it and the whole effect silently
+     stopped being visible. Confirmed empirically: getImageData() showed
+     the canvas WAS still drawing correctly (non-zero alpha, real glyph
+     shapes), but zero pixels differed from pure background color in an
+     actual page screenshot - not a drawing bug, a compositing one.
+     z-index: 0 keeps it correctly behind every other real element on the
+     page (header is explicitly z-index: 100, and ordinary content simply
+     paints after a fixed z-index: 0 sibling regardless) while staying
+     above html/body's own background layer, where it's supposed to be. */
+  z-index: 0;
   pointer-events: none;
   /* Reverted: DO NOT give this its own view-transition-name. Tried it to fix
      a flash (theory: transitioning from an accumulated glyph pattern to a

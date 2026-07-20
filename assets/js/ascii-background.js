@@ -44,6 +44,20 @@
         fgRgb = style.getPropertyValue('--foreground-rgb').trim() || fgRgb;
     }
 
+    // Canvas 2D's ctx.font setter parses its value with its own restricted
+    // CSS-font-shorthand parser, which does NOT resolve custom properties -
+    // ctx.font = '16px var(--font-mono, monospace)' is invalid syntax to it,
+    // so the assignment is silently rejected and the canvas is left on its
+    // built-in default (confirmed via Playwright: ctx.font read back as
+    // "10px sans-serif", never the intended 16px mono - every glyph has been
+    // rendering smaller and in the wrong typeface than the CELL_SIZE grid
+    // math assumes). getComputedStyle DOES resolve custom properties, so
+    // read the real family from a live element instead and build a plain,
+    // canvas-valid font string from that.
+    function resolveMonoFontFamily() {
+        return getComputedStyle(document.body).fontFamily || 'monospace';
+    }
+
     function randomLifetime() {
         return MIN_LIFETIME_MS + Math.random() * (MAX_LIFETIME_MS - MIN_LIFETIME_MS);
     }
@@ -87,7 +101,7 @@
         canvas.style.width = cssWidth + 'px';
         canvas.style.height = cssHeight + 'px';
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-        ctx.font = CELL_SIZE + 'px var(--font-mono, monospace)';
+        ctx.font = CELL_SIZE + 'px ' + resolveMonoFontFamily();
         ctx.textBaseline = 'top';
 
         cols = Math.ceil(cssWidth / CELL_SIZE);
