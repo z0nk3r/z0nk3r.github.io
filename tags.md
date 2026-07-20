@@ -22,10 +22,10 @@ permalink: /tags/
     {% endfor %}
   {% endfor %}
   {% assign all_tags = all_tags | sort %}
+  {% assign all_references = site.references | concat: site.data.external_references %}
 
   <div class="badge-row tag-cloud" id="tagCloud">
     {% for t in all_tags %}
-      {% assign all_references = site.references | concat: site.data.external_references %}
       {% assign posts_by_tag = site.posts | where_exp: "post", "post.tags contains t" %}
       {% assign posts_by_cat = site.posts | where_exp: "post", "post.categories contains t" %}
       {% assign refs_by_tag = all_references | where_exp: "ref", "ref.tags contains t" %}
