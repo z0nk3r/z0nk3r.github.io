@@ -13,8 +13,13 @@ layout: default
 </div>
 
 <div class="post-header">
+    {% comment %} id="post-hero" is the render-blocking anchor for the
+    <link rel="expect"> in default.html's head - first render (and therefore
+    the view-transition capture) waits until this element is parsed. Both
+    branches carry it since both carry the view-transition-name; only one
+    renders. {% endcomment %}
     {% if page.image %}
-    <div class="post-header__image-wrap" style="view-transition-name: post-hero-{{ page.slug }};">
+    <div id="post-hero" class="post-header__image-wrap" style="view-transition-name: post-hero-{{ page.slug }};">
         <!-- Not loading="lazy" - same reasoning as post-card.html's image:
              this is the subject of the view-transition morph and needs to be
              decoded and ready when the browser captures the transition
@@ -23,11 +28,12 @@ layout: default
              brand-new document being navigated to as part of the
              transition itself - there's been no chance for it to have
              already loaded ahead of time the way a lazily-loaded image
-             further down a page might. -->
-        <img src="{{ page.image | relative_url }}" alt="{{ page.title }}">
+             further down a page might. fetchpriority pairs with the preload
+             in default.html's head. -->
+        <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" fetchpriority="high">
     </div>
     {% else %}
-    <div class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: post-hero-{{ page.slug }};">
+    <div id="post-hero" class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: post-hero-{{ page.slug }};">
         <span>No Image Found</span>
     </div>
     {% endif %}
