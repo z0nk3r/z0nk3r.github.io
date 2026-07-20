@@ -15,7 +15,16 @@ layout: default
 <div class="post-header">
     {% if page.image %}
     <div class="post-header__image-wrap" style="view-transition-name: post-hero-{{ page.slug }};">
-        <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" loading="lazy">
+        <!-- Not loading="lazy" - same reasoning as post-card.html's image:
+             this is the subject of the view-transition morph and needs to be
+             decoded and ready when the browser captures the transition
+             screenshot, which lazy loading races against. Doubly relevant
+             here specifically, since this is the very first thing on a
+             brand-new document being navigated to as part of the
+             transition itself - there's been no chance for it to have
+             already loaded ahead of time the way a lazily-loaded image
+             further down a page might. -->
+        <img src="{{ page.image | relative_url }}" alt="{{ page.title }}">
     </div>
     {% else %}
     <div class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: post-hero-{{ page.slug }};">
