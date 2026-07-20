@@ -2,14 +2,16 @@
   <a class="post-card-link" href="{{ include.post.url | relative_url }}">
     {% if include.post.image %}
     <div class="post-card__image-wrap" style="view-transition-name: post-hero-{{ include.post.slug }};">
-      <!-- Not loading="lazy" on purpose: this image is the subject of the
-           blog list <-> post view-transition morph (see view-transition-name
-           above), which needs it decoded and ready at the moment the
-           browser captures the transition screenshot. Lazy loading defers
-           fetch/decode until the browser decides it's needed, racing against
-           that capture - reported as an intermittent flash ("sometimes"),
-           consistent with a timing race rather than a deterministic bug. -->
-      <img src="{{ include.post.image | relative_url }}" alt="{{ include.post.title }}">
+      <!-- loading="lazy" is safe here despite this element's
+           view-transition-name: the card a reader actually clicks is
+           onscreen by definition (they had to see it to click it), and
+           every OTHER card's name gets stripped at pageswap before capture
+           (see the pageswap handler in default.html) regardless of load
+           state, so there's no card left in a position to race the
+           transition capture. Removing lazy loading here fixed nothing and
+           just made every card on every listing page (home, author, tag,
+           related-posts, not just /blog/) load eagerly for no benefit. -->
+      <img src="{{ include.post.image | relative_url }}" alt="{{ include.post.title }}" loading="lazy">
     </div>
     {% else %}
     <div class="post-card__image-wrap post-card__image-wrap--placeholder" style="view-transition-name: post-hero-{{ include.post.slug }};">

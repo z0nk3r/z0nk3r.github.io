@@ -260,7 +260,7 @@ header {
   gap: 2rem;
 }
 
-header h1 {
+.site-title {
   margin: 0;
   font-family: var(--font-display);
   font-size: 1.05rem;
@@ -298,12 +298,12 @@ header h1 {
   }
 }
 
-header h1 a {
+.site-title a {
   color: var(--foreground);
   text-decoration: none;
 }
 
-header h1 a:hover {
+.site-title a:hover {
   color: var(--muted-foreground);
 }
 
@@ -1845,7 +1845,7 @@ footer p {
     pointer-events: none;
   }
 
-  header h1 {
+  .site-title {
     font-size: 1rem;
   }
 
