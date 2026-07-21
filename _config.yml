@@ -20,15 +20,33 @@ collections:
   tag_pages:
     output: true
     permalink: /tags/:name/
+  tutorial_topics:
+    output: true
+    permalink: /tutorials/:name/
+  tutorials:
+    output: true
+    permalink: /tutorials/:path/
 
 # Hosted references don't need `layout: reference` repeated in every file - scoped to just
 # this collection (not path: "" globally) so it can't leak into other content by accident.
+# Same reasoning for the two tutorials collections below - a collection doc with no layout
+# renders with zero styling at all (see CLAUDE.md), so every new collection gets one of these.
 defaults:
   - scope:
       path: ""
       type: references
     values:
       layout: reference
+  - scope:
+      path: ""
+      type: tutorial_topics
+    values:
+      layout: tutorial-topic
+  - scope:
+      path: ""
+      type: tutorials
+    values:
+      layout: tutorial-chapter
 
 # Build settings
 plugins:

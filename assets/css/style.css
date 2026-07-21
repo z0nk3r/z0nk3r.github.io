@@ -1478,6 +1478,186 @@ article table tbody tr:not(:first-child) td {
 }
 
 /* ==========================================================================
+   Tutorials (index cards, chapter list, empty state)
+
+   Inserted here (after .search-empty, before "Post navigation") on purpose:
+   .tutorial-card overrides .search-result's border at equal specificity
+   (dropping it in favor of the corner-bracket hover below), and a tie at
+   equal specificity resolves by source order - this rule must come later
+   than .search-result's own border declaration above, not just be "grouped
+   with other card styles" for tidiness.
+   ========================================================================== */
+
+.tutorial-card {
+  position: relative;
+  border: none;
+  overflow: hidden;
+}
+
+/* Same 22px corner-bracket hover language as .post-card/.author-list-item -
+   the site's established "this card navigates somewhere" treatment, used
+   here instead of .search-result's static border since search-result rows
+   are JS-built /search/ results, not primary navigation cards. */
+.tutorial-card::before,
+.tutorial-card::after {
+  content: '';
+  position: absolute;
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+  transition: width 0.3s ease, height 0.3s ease;
+  z-index: 2;
+}
+
+.tutorial-card::before {
+  top: 0;
+  left: 0;
+  border-top: 1px solid var(--border-strong);
+  border-left: 1px solid var(--border-strong);
+  border-top-left-radius: var(--radius-xl);
+}
+
+.tutorial-card::after {
+  bottom: 0;
+  right: 0;
+  border-bottom: 1px solid var(--border-strong);
+  border-right: 1px solid var(--border-strong);
+  border-bottom-right-radius: var(--radius-xl);
+}
+
+.tutorial-card:hover::before,
+.tutorial-card:hover::after,
+.tutorial-card:focus-within::before,
+.tutorial-card:focus-within::after {
+  width: 100%;
+  height: 100%;
+}
+
+/* Larger thumbnail than a plain search row, desktop only - mobile keeps the
+   .search-result__image-wrap base (140x100) so the text column survives;
+   same scoping pattern as that class's own 154x110 desktop override. */
+@media (min-width: 769px) {
+  .tutorial-card .search-result__image-wrap {
+    flex-basis: 220px;
+    width: 220px;
+    height: 145px;
+  }
+}
+
+.chapter-list-head {
+  font-family: var(--font-mono);
+  color: var(--muted-foreground);
+  margin: 0 0 0.25rem;
+}
+
+.chapter-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-family: var(--font-mono);
+}
+
+.chapter-list li {
+  margin: 0;
+}
+
+.chapter-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-md);
+  color: var(--foreground);
+  text-decoration: none;
+}
+
+.chapter-list a:hover {
+  background: var(--surface-1);
+}
+
+.chapter-tree,
+.chapter-num,
+.chapter-meta-inline {
+  color: var(--muted-foreground);
+}
+
+.chapter-tree {
+  white-space: pre;
+}
+
+.chapter-title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.chapter-meta-inline {
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.chapter-list-empty {
+  font-family: var(--font-mono);
+  color: var(--muted-foreground);
+}
+
+/* No hero above the h1 on a chapter page (see CLAUDE.md - chapters are
+   deliberately imageless), so it needs its own top breathing room the way
+   .reference-header does rather than inheriting .post-header's spacing,
+   which assumes a hero image sits above it. */
+.chapter-header {
+  padding-top: 4rem;
+}
+
+.terminal-empty {
+  max-width: 640px;
+  margin: 2rem auto 0;
+  padding: 1.5rem 1.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  background: var(--surface-1);
+  font-family: var(--font-mono);
+  text-align: left;
+}
+
+.terminal-empty__line {
+  margin: 0 0 0.35rem;
+}
+
+.terminal-empty__prompt {
+  color: var(--foreground);
+}
+
+.terminal-empty__out {
+  color: var(--muted-foreground);
+}
+
+.terminal-empty__cursor {
+  display: inline-block;
+  animation: terminal-blink 1.1s step-end infinite;
+}
+
+@keyframes terminal-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* Placed immediately after the animation rule it overrides - ties at equal
+   specificity resolve by source order regardless of the media condition
+   being true, the same cascade gotcha documented elsewhere in this file for
+   the other prefers-reduced-motion overrides. */
+@media (prefers-reduced-motion: reduce) {
+  .terminal-empty__cursor {
+    animation: none;
+  }
+}
+
+.terminal-empty__hint {
+  margin: 1rem 0 0;
+  color: var(--muted-foreground);
+}
+
+/* ==========================================================================
    Post navigation (prev/next)
    ========================================================================== */
 
@@ -2101,6 +2281,13 @@ footer p {
 
   .post-navigation > div:last-child {
     text-align: left;
+  }
+
+  /* Minute counts crowd a narrow row - the larger desktop-only thumbnail
+     override above already keeps the tutorial card itself readable here,
+     so this only trims the chapter-list row, not the card. */
+  .chapter-meta-inline {
+    display: none;
   }
 }
 
