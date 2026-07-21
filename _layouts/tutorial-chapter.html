@@ -1,0 +1,75 @@
+---
+layout: default
+---
+
+<div id="reading-progress"></div>
+
+{% assign topic_doc = site.tutorial_topics | where: "topic", page.topic | first %}
+{% assign chapters = site.tutorials | where: "topic", page.topic | sort: "chapter" %}
+{% for ch in chapters %}
+  {% if ch.url == page.url %}{% assign chapter_pos = forloop.index %}{% endif %}
+{% endfor %}
+{% assign prev_index = chapter_pos | minus: 2 %}
+{% assign next_index = chapter_pos %}
+{% if chapter_pos > 1 %}{% assign prev_ch = chapters[prev_index] %}{% endif %}
+{% if next_index < chapters.size %}{% assign next_ch = chapters[next_index] %}{% endif %}
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
+    <span> / </span>
+    <a href="{{ '/tutorials/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▣</span>Tutorials</a>
+    <span> / </span>
+    <a href="{{ topic_doc.url | relative_url }}"><span class="crumb-icon" aria-hidden="true">▣</span>{{ topic_doc.title }}</a>
+    <span> / </span>
+    <span><span class="crumb-icon" aria-hidden="true">▤</span>{{ page.crumb_title | default: page.title }}</span>
+</nav>
+
+<main>
+{% comment %} No hero image on chapters - the topic owns imagery and the
+view-transition morph (see CLAUDE.md); .chapter-header gives this its own
+top padding since it isn't following a hero the way .post-header usually
+is. {% endcomment %}
+<div class="post-header chapter-header">
+    <h1>{{ page.title }}</h1>
+    <div class="post-meta">
+        {% include chapter-meta.html chapter=page position=chapter_pos total=chapters.size link_author=true %}
+    </div>
+</div>
+
+<div class="post-wrapper">
+    <aside class="toc-sidebar">
+        <nav id="toc"></nav>
+    </aside>
+
+    <div class="article-content">
+        <article>
+            {{ content }}
+        </article>
+
+        <div class="post-navigation">
+            {% if prev_ch %}
+            <div>
+                <span>← Previous chapter</span>
+                <a href="{{ prev_ch.url | relative_url }}">{{ prev_ch.title }}</a>
+            </div>
+            {% else %}
+            <div></div>
+            {% endif %}
+
+            {% if next_ch %}
+            <div>
+                <span>Next chapter →</span>
+                <a href="{{ next_ch.url | relative_url }}">{{ next_ch.title }}</a>
+            </div>
+            {% else %}
+            <div>
+                <span>Series index ↩</span>
+                <a href="{{ topic_doc.url | relative_url }}">{{ topic_doc.title }}</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+</main>
+
+{% include article-scripts.html %}

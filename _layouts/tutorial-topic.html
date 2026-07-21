@@ -1,0 +1,66 @@
+---
+layout: default
+---
+
+<nav class="breadcrumbs" aria-label="Breadcrumb">
+    <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
+    <span> / </span>
+    <a href="{{ '/tutorials/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▣</span>Tutorials</a>
+    <span> / </span>
+    <span><span class="crumb-icon" aria-hidden="true">▣</span>{{ page.title }}</span>
+</nav>
+
+<main>
+<div class="post-header">
+    {% comment %} id="topic-hero" is the render-blocking anchor for the
+    <link rel="expect"> in default.html's head, same reasoning as post.html's
+    #post-hero. data-vt-index opts this element into the pageswap handler's
+    "back" exemption (kept only when navigating to /tutorials/) without
+    touching the existing blog<->post fallback. {% endcomment %}
+    {% if page.image %}
+    <div id="topic-hero" class="post-header__image-wrap" style="view-transition-name: tutorial-topic-{{ page.topic }};" data-vt-index="{{ '/tutorials/' | relative_url }}">
+        <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" fetchpriority="high">
+    </div>
+    {% else %}
+    <div id="topic-hero" class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ page.topic }};" data-vt-index="{{ '/tutorials/' | relative_url }}">
+        <span>No Image Found</span>
+    </div>
+    {% endif %}
+    <h1>{{ page.title }}</h1>
+    {% if page.categories or page.tags %}
+    <div class="post-meta">
+        <div class="badge-row">
+            {% include tags.html post=page %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<div class="reference-content">
+    <article>
+        {{ content }}
+    </article>
+
+    {% assign chapters = site.tutorials | where: "topic", page.topic | sort: "chapter" %}
+    <section class="chapter-index">
+        <h2 class="year-heading">Chapters</h2>
+        <p class="chapter-list-head" aria-hidden="true">tutorials/{{ page.topic }}/</p>
+        {% if chapters.size > 0 %}
+        <ol class="chapter-list">
+            {% for ch in chapters %}
+            <li>
+                <a href="{{ ch.url | relative_url }}">
+                    <span class="chapter-tree" aria-hidden="true">{% if forloop.last %}└──{% else %}├──{% endif %}</span>
+                    <span class="chapter-num">{{ forloop.index | prepend: "0" | slice: -2, 2 }}</span>
+                    <span class="chapter-title">{{ ch.title }}</span>
+                    {% if ch.read_time %}<span class="chapter-meta-inline">{{ ch.read_time }} min</span>{% endif %}
+                </a>
+            </li>
+            {% endfor %}
+        </ol>
+        {% else %}
+        <p class="chapter-list-empty"><span aria-hidden="true">└── </span>(no chapters yet &mdash; this topic is being written)</p>
+        {% endif %}
+    </section>
+</div>
+</main>
