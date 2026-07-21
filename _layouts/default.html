@@ -94,6 +94,13 @@
          in a comment again - describe the tag in words instead. -->
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
+    <!-- apple-touch-icon and the icon-192/512 PNGs are separate raster
+         renders of the same ">_ " mark as favicon.svg (generated via PIL,
+         same tooling used for social-preview.png - no vector-icon support
+         on iOS/Android home screens, hence PNG here despite the SVG
+         favicon above being preferred everywhere it works). -->
+    <link rel="apple-touch-icon" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">
+    <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
     <!-- Geist/Geist Mono/Michroma are self-hosted (assets/fonts/, @font-face
          rules at the top of style.css) rather than loaded from Google
          Fonts' CDN - removes two render-blocking cross-origin round trips
