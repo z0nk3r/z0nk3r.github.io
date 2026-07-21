@@ -8,6 +8,14 @@
     var CHARS = '01ABCDEFGHIJKLMNOPQRSTUVWXYZ!@#$%^&*+-=<>/\\|~';
     var TICK_MS = 60;
     var GLYPH_ALPHA = 0.18;
+    // Every glyph is only ever drawn once, the moment a column's falling head
+    // enters a new row (see tick()) - after that it just fades via the
+    // ambient composite erosion below, never redrawn. That single draw IS
+    // the head, so doubling its alpha relative to GLYPH_ALPHA is what makes
+    // the leading character of each trail read as brighter than the dimmer,
+    // already-fading characters behind it. Derived from GLYPH_ALPHA rather
+    // than a separate literal so it stays "double" if that ever gets retuned.
+    var HEAD_ALPHA = GLYPH_ALPHA * 2;
     var FADE_ALPHA = 0.15;
     var MIN_SPEED = 0.4;
     var MAX_SPEED = 1.2;
@@ -128,7 +136,7 @@
         ctx.fillRect(0, 0, cssWidth, cssHeight);
         ctx.globalCompositeOperation = 'source-over';
 
-        ctx.fillStyle = 'rgba(' + fgRgb + ', ' + GLYPH_ALPHA + ')';
+        ctx.fillStyle = 'rgba(' + fgRgb + ', ' + HEAD_ALPHA + ')';
         for (var c = 0; c < cols; c++) {
             var col = columns[c];
 
