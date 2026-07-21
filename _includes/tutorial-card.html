@@ -1,0 +1,28 @@
+{% assign card_chapters = site.tutorials | where: "topic", include.topic.topic %}
+{% assign card_minutes = 0 %}
+{% for ch in card_chapters %}{% assign card_minutes = card_minutes | plus: ch.read_time %}{% endfor %}
+<li class="search-result tutorial-card">
+  <a href="{{ include.topic.url | relative_url }}">
+    {% if include.topic.image %}
+    <!-- Not loading="lazy" - same reasoning as post-card.html's image: this
+         is the subject of the card->hero view-transition morph and needs to
+         be decoded and ready when the browser captures the transition
+         screenshot, which lazy loading races against. -->
+    <div class="search-result__image-wrap tutorial-card__image-wrap" style="view-transition-name: tutorial-topic-{{ include.topic.topic }};">
+      <img src="{{ include.topic.image | relative_url }}" alt="{{ include.topic.title }}">
+    </div>
+    {% else %}
+    <div class="search-result__image-wrap tutorial-card__image-wrap search-result__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ include.topic.topic }};">
+      <span>No Image Found</span>
+    </div>
+    {% endif %}
+    <div class="search-result__body">
+      <h2>{{ include.topic.title }}</h2>
+      <div class="byline search-result__byline">
+        <span>{{ card_chapters.size }} chapter{% unless card_chapters.size == 1 %}s{% endunless %}</span>
+        {% if card_minutes > 0 %}<span class="byline-sep">|</span><span>~{{ card_minutes }} min total</span>{% endif %}
+      </div>
+      <p>{{ include.topic.description }}</p>
+    </div>
+  </a>
+</li>
