@@ -46,6 +46,21 @@
   box-sizing: border-box;
 }
 
+/* Global keyboard-focus indicator. Nav links, cards, footer icons, and the
+   theme/search toggles previously relied on the browser's own default focus
+   ring (which several UAs draw faintly or inconsistently against a
+   near-black background) - this is the one visible ring for all of them.
+   Deliberately :focus-visible, not :focus, so mouse/touch clicks don't show
+   it, only keyboard navigation. Low specificity (a bare pseudo-class, 0-1-0)
+   is intentional: .nav-search-input:focus / .tag-search:focus (0-2-0) already
+   set outline: none and indicate focus via border-color instead, and this
+   rule must lose to those on purpose rather than fighting their own
+   deliberate treatment. */
+:focus-visible {
+  outline: 2px solid var(--foreground);
+  outline-offset: 2px;
+}
+
 /* Opt in to cross-document View Transitions site-wide, deliberately. Chromium-
    only today (no flag, roughly Chrome/Edge 126+); Firefox/Safari simply
    ignore this at-rule and every navigation stays a normal instant page load -
@@ -123,6 +138,18 @@ html {
   scrollbar-gutter: stable;
   scrollbar-width: thin;
   font-size: 14px;
+}
+
+/* Placed after the base html rule above rather than in the other
+   prefers-reduced-motion block near the top of this file, on purpose:
+   both set scroll-behavior on the same html selector (equal specificity),
+   so the later rule in source order wins the cascade tie regardless of
+   which one is conditional - an earlier override here would silently lose
+   to the base rule's scroll-behavior: smooth. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 /* The desktop 110% look used to be zoom: 1.1 here (added to match the user's
@@ -1158,6 +1185,15 @@ article table tbody tr:not(:first-child) td {
   gap: 0.5rem;
 }
 
+/* post.html / reference.html both put a badge-row directly under the post
+   meta block and want a small gap above it - was a one-off inline
+   style="margin-top: 0.75rem" on each, moved here as a real rule. Scoped to
+   .post-meta specifically so it doesn't touch card/search-result badge-rows
+   elsewhere, which already get their spacing from their own containers. */
+.post-meta .badge-row {
+  margin-top: 0.75rem;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -1888,6 +1924,25 @@ footer p {
 
   .post-navigation > div:last-child {
     text-align: left;
+  }
+}
+
+/* Placed after the mobile block above rather than in the other
+   prefers-reduced-motion block near the top of this file, on purpose:
+   #siteNav / #ascii-bg / .page-content / footer there set transition with
+   equal selector specificity, so for the same media condition (mobile) the
+   later rule in source order wins the cascade tie regardless of where a
+   media block sits in the file - an earlier override would silently lose
+   to those. The ASCII canvas effect's own reduced-motion handling already
+   lives in JS (ascii-background.js renders one static frame and starts no
+   timer at all), so #ascii-bg needs no drawing-side change here, only its
+   blur transition. */
+@media (max-width: 768px) and (prefers-reduced-motion: reduce) {
+  #siteNav,
+  #ascii-bg,
+  .page-content,
+  footer {
+    transition: none;
   }
 }
 
