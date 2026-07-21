@@ -349,14 +349,22 @@ header {
   color: var(--muted-foreground);
 }
 
-nav {
+/* Scoped to #siteNav specifically, not a bare `nav` element selector - the
+   site also has two other <nav>s (.breadcrumbs on post/reference/tag/author
+   pages, #toc in the sidebar) that don't want this flex row layout or gap.
+   A bare `nav { }` here used to leak onto both: #toc needed its own
+   `.toc-sidebar nav { display: block; }` override to undo it (removed now
+   that the leak's gone), and .breadcrumbs was inheriting this rule's
+   gap: 2rem instead of having a real value of its own - it now sets its
+   own display/align-items/gap below instead of relying on this selector. */
+#siteNav {
   display: flex;
   gap: 2rem;
   align-items: center;
   flex-shrink: 0;
 }
 
-nav a {
+#siteNav a {
   color: var(--muted-foreground);
   text-decoration: none;
   font-family: var(--font-mono);
@@ -364,7 +372,7 @@ nav a {
   transition: color 0.2s;
 }
 
-nav a:hover {
+#siteNav a:hover {
   color: var(--foreground);
 }
 
@@ -457,6 +465,9 @@ nav a:hover {
    ========================================================================== */
 
 .breadcrumbs {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
   max-width: 1540px;
   margin: 2rem auto 0;
   padding: 0 20px;
@@ -527,16 +538,6 @@ nav a:hover {
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
-}
-
-/* The generic `nav { display: flex; ... }` rule above (meant for the header's
-   nav) also matches #toc, the TOC's own <nav>. That turns its single <ul>
-   child into a flex item, which sizes to its own max-content (shrink-to-fit)
-   width instead of filling the container - letting long TOC lines render
-   past the sidebar's right edge instead of being constrained/ellipsized by
-   it. Reset back to a plain block box, which is all #toc needs. */
-.toc-sidebar nav {
-  display: block;
 }
 
 .toc-sidebar ul {
