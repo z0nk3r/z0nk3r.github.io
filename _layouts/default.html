@@ -94,9 +94,13 @@
          in a comment again - describe the tag in words instead. -->
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500;600&family=Michroma&display=swap" rel="stylesheet">
+    <!-- Geist/Geist Mono/Michroma are self-hosted (assets/fonts/, @font-face
+         rules at the top of style.css) rather than loaded from Google
+         Fonts' CDN - removes two render-blocking cross-origin round trips
+         (fonts.googleapis.com for the stylesheet, then fonts.gstatic.com
+         for the actual files) in exchange for maintaining the font files
+         here. See the "Fonts (self-hosted)" comment in style.css for which
+         subsets are kept and why. -->
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
     <script src="{{ '/assets/js/ascii-background.js' | relative_url }}" defer></script>
     {% feed_meta %}
