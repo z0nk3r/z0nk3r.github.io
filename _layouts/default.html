@@ -77,6 +77,17 @@
          after the post list in blog.md; the page is small enough that
          blocking until it parses costs nothing meaningful. -->
     <link rel="expect" href="#post-list-end" blocking="render">
+    {% elsif page.layout == 'tutorial-topic' %}
+    <!-- Same anti-flash pair as the post-hero branch above, for the
+         card <-> topic-hero morph instead of card <-> post-hero. -->
+    <link rel="expect" href="#topic-hero" blocking="render">
+    {% if page.image %}
+    <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
+    {% endif %}
+    {% elsif page.url == '/tutorials/' %}
+    <!-- Same reverse-direction reasoning as the /blog/ branch above, for
+         navigating back from a topic page to the tutorials index. -->
+    <link rel="expect" href="#topic-list-end" blocking="render">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- The title is hand-written (keeps the site's own "Title - z0nk3r"
@@ -255,9 +266,12 @@
         //
         // Stripping the name means that element simply doesn't participate.
         // Target resolution: a card's name is kept only when the navigation
-        // goes to that card's own link; the post hero (not inside a link) is
-        // kept only when navigating to the blog index it morphs back into.
-        // If the destination isn't available (activation null, or a manually
+        // goes to that card's own link; a non-link named element (the post
+        // hero, the tutorial topic hero) is kept only when navigating to the
+        // index page it morphs back into - the post hero has no
+        // data-vt-index and falls back to the blog index unchanged, while
+        // the topic hero opts into /tutorials/ via that attribute. If the
+        // destination isn't available (activation null, or a manually
         // dispatched event in tests), fall back to offscreen-stripping only.
         window.addEventListener('pageswap', (e) => {
             var destPath = null;
@@ -273,7 +287,7 @@
                     var link = el.closest('a');
                     isTarget = link
                         ? new URL(link.href).pathname === destPath
-                        : destPath === blogIndexPath;
+                        : destPath === (el.dataset.vtIndex || blogIndexPath);
                 }
                 if (offscreen || !isTarget) {
                     el.style.viewTransitionName = 'none';

@@ -46,4 +46,35 @@ roughly a tenth of this size on the wire.
     "content": {{ reference.content | strip_html | normalize_whitespace | jsonify }}
   }
 {% endfor %}
+{% for topic in site.tutorial_topics %}
+  {% unless first %},{% endunless %}{% assign first = false %}
+  {
+    "type": "tutorial-topic",
+    "title": {{ topic.title | jsonify }},
+    "url": {{ topic.url | relative_url | jsonify }},
+    "date": null,
+    "author": null,
+    "authorAvatar": null,
+    "context": null,
+    "image": {{ topic.image | relative_url | jsonify }},
+    "excerpt": {{ topic.description | strip_html | normalize_whitespace | jsonify }},
+    "content": {{ topic.content | strip_html | normalize_whitespace | jsonify }}
+  }
+{% endfor %}
+{% for chapter in site.tutorials %}
+  {% unless first %},{% endunless %}{% assign first = false %}
+  {% assign ch_topic = site.tutorial_topics | where: "topic", chapter.topic | first %}
+  {
+    "type": "tutorial-chapter",
+    "title": {{ chapter.title | jsonify }},
+    "url": {{ chapter.url | relative_url | jsonify }},
+    "date": null,
+    "author": null,
+    "authorAvatar": null,
+    "context": {{ ch_topic.title | jsonify }},
+    "image": null,
+    "excerpt": {{ chapter.excerpt | strip_html | normalize_whitespace | jsonify }},
+    "content": {{ chapter.content | strip_html | normalize_whitespace | jsonify }}
+  }
+{% endfor %}
 ]
