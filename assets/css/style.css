@@ -1599,6 +1599,16 @@ main h1 {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
+  /* Flex items default to min-height: auto, which lets a flex item refuse
+     to shrink below its own content's natural height even when flex-shrink
+     would otherwise fit it into the space .post-card's fixed aspect-ratio
+     height actually allows (after subtracting .badge-row's own height,
+     which is a sibling of this element, not a descendant). Without this,
+     a card whose image + title + excerpt naturally wanted more room than
+     that budget would push .badge-row down past .post-card's bottom edge -
+     confirmed as the root cause of tags rendering cut off/overlapping the
+     card boundary on longer-excerpt reference cards. */
+  min-height: 0;
   color: inherit;
   text-decoration: none;
 }
@@ -1665,8 +1675,21 @@ main h1 {
   flex: 1 1 auto;
   overflow: hidden;
   padding: 1.25rem 1.5rem 1.5rem;
-  display: flex;
-  flex-direction: column;
+  /* Deliberately NOT display: flex - its only children (h2, .post-card__excerpt)
+     just need to stack top to bottom, which normal block flow already does.
+     Making them flex items here was actively harmful: a flex item's display
+     value gets "blockified" per spec, which silently turns each child's own
+     display: -webkit-box (the mechanism -webkit-line-clamp depends on) into
+     flow-root - disabling line-clamping entirely with no visual warning.
+     Every card's excerpt was rendering fully untruncated as a result; short
+     excerpts happened to still fit their allotted space by coincidence,
+     longer ones (mostly on hand-written external reference cards) didn't,
+     and pushed .badge-row down past the card's bottom edge. Confirmed via
+     getComputedStyle before/after: display read back as "flow-root" either
+     way (an existing Chromium quirk for this legacy property, not a useful
+     signal), but the excerpt's actual rendered height only matched its
+     intended 3-line cap once .post-card__body stopped being a flex
+     container. */
 }
 
 .post-card__body h2 {
@@ -1689,7 +1712,6 @@ main h1 {
 }
 
 .post-card__excerpt {
-  flex: 1 1 auto;
   color: var(--muted-foreground);
   font-size: 0.925rem;
   margin: 0 0 0.75rem;
