@@ -47,6 +47,13 @@
             color-scheme: light;
         }
     </style>
+    <!-- Colors mobile browser chrome (URL bar, task switcher card) to match
+         the theme instead of showing a generic default. Hardcoded to the
+         dark default here for the same reason the critical-paint <style>
+         above is hardcoded (no external-stylesheet dependency at initial
+         paint); updateThemeButton() below keeps it in sync on every toggle,
+         bfcache restore, and init. -->
+    <meta name="theme-color" content="#060000">
     {% if page.layout == 'post' %}
     <!-- rel="expect" blocking="render" is the View Transitions spec's own
          companion feature for cross-document morphs: the incoming page's
@@ -188,6 +195,13 @@
         function updateThemeButton() {
             const theme = html.getAttribute('data-theme');
             themeToggle.innerHTML = theme === 'dark' ? moonIcon : sunIcon;
+            // Same hardcoded hex pair as the <meta name="theme-color"> tag
+            // and the critical-paint <style> in <head> - keep all three in
+            // sync by hand if the theme colors ever change.
+            const themeColorMeta = document.querySelector('meta[name="theme-color"]');
+            if (themeColorMeta) {
+                themeColorMeta.setAttribute('content', theme === 'dark' ? '#060000' : '#fdf6e3');
+            }
         }
 
         // bfcache restores skip every script on the page - including the head
