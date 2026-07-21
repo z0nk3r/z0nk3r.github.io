@@ -139,17 +139,22 @@
             h1 - two h1s per page is an a11y/SEO anti-pattern. Styled via
             .site-title. {% endcomment %}
             <p class="site-title"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></p>
+            {% comment %} Sits directly in .header-wrapper, not nested inside
+            #siteNav, for the same reason #themeToggle does: it needs to stay
+            visible and usable on mobile without opening the hamburger menu.
+            CSS order (see .nav-search / #themeToggle rules) positions it to
+            the left of the theme toggle on both mobile and desktop. {% endcomment %}
+            <div class="nav-search">
+                <input type="search" id="navSearchInput" class="nav-search-input" placeholder="Search…" aria-label="Search posts" autocomplete="off">
+                <button type="button" id="navSearchToggle" class="nav-search-toggle" aria-label="Search">
+                    {% include icon-search.html %}
+                </button>
+            </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">{% include icon-moon.html %}</button>
             <button type="button" id="navMenuToggle" class="nav-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="siteNav">
                 {% include icon-hamburger.html %}
             </button>
             <nav id="siteNav">
-                <div class="nav-search">
-                    <input type="search" id="navSearchInput" class="nav-search-input" placeholder="Search…" aria-label="Search posts" autocomplete="off">
-                    <button type="button" id="navSearchToggle" class="nav-search-toggle" aria-label="Search">
-                        {% include icon-search.html %}
-                    </button>
-                </div>
                 <a href="{{ '/' | relative_url }}">Home</a>
                 <a href="{{ '/references/' | relative_url }}">References</a>
                 <a href="{{ '/blog/' | relative_url }}">Blog</a>
@@ -324,11 +329,11 @@
         });
 
         document.addEventListener('click', (e) => {
-            // themeToggle now sits outside siteNav (see header markup), so without
-            // this exemption it would newly count as an "outside" click and the
-            // menu would snap shut every time someone tapped it while open -
-            // toggling theme shouldn't close the menu, same as it never did back
-            // when the button was still nested inside siteNav.
+            // themeToggle and navSearch now both sit outside siteNav (see header
+            // markup), so without this exemption they'd newly count as an
+            // "outside" click and the menu would snap shut every time someone
+            // tapped either while open - same as it never did back when both
+            // were still nested inside siteNav.
             //
             // Uses composedPath() instead of themeToggle.contains(e.target)
             // specifically for this check: the click lands on the SVG icon's own
@@ -340,8 +345,10 @@
             // document, so .contains() on it incorrectly returns false.
             // composedPath() captures the full path at dispatch time, unaffected
             // by DOM mutations that happen while the event is still bubbling.
+            // navSearch doesn't mutate its own innerHTML the same way, but is
+            // checked via composedPath() too for consistency/simplicity.
             const path = e.composedPath();
-            if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target) && !path.includes(themeToggle)) {
+            if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target) && !path.includes(themeToggle) && !path.includes(navSearch)) {
                 setMobileMenuOpen(false);
             }
         });
