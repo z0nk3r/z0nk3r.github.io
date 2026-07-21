@@ -72,6 +72,9 @@ permalink: /search/
         });
         html += '</ul>';
         resultsEl.innerHTML = html;
+      })
+      .catch(function () {
+        resultsEl.innerHTML = '<p class="search-empty">Search is unavailable right now - try again later.</p>';
       });
 
     function escapeHtml(str) {

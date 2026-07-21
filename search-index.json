@@ -2,6 +2,18 @@
 layout: null
 permalink: /search-index.json
 ---
+{% comment %}
+This file is large (the full text of every syscall reference table included
+verbatim, ~780KB raw) - by design, not an oversight. Full excerpt-only
+indexing was considered and rejected: search needs to match syscall names
+that only appear in table bodies, not in any post/reference excerpt.
+normalize_whitespace above collapses the runs of whitespace strip_html
+leaves behind from converting table markup to text, which is a real,
+zero-behavior-change shrink. Beyond that, this is fetched only when a
+search query is actually submitted (not on every page load), and GitHub
+Pages serves it gzip-compressed, which takes repetitive table text down to
+roughly a tenth of this size on the wire.
+{% endcomment %}
 [
 {% assign first = true %}
 {% for post in site.posts %}
@@ -16,8 +28,8 @@ permalink: /search-index.json
     "author": {{ result_author | jsonify }},
     "authorAvatar": {{ author_doc.avatar | jsonify }},
     "image": {{ post.image | relative_url | jsonify }},
-    "excerpt": {{ post.excerpt | strip_html | jsonify }},
-    "content": {{ post.content | strip_html | jsonify }}
+    "excerpt": {{ post.excerpt | strip_html | normalize_whitespace | jsonify }},
+    "content": {{ post.content | strip_html | normalize_whitespace | jsonify }}
   }
 {% endfor %}
 {% for reference in site.references %}
@@ -30,8 +42,8 @@ permalink: /search-index.json
     "author": null,
     "authorAvatar": null,
     "image": {{ reference.image | relative_url | jsonify }},
-    "excerpt": {{ reference.excerpt | strip_html | jsonify }},
-    "content": {{ reference.content | strip_html | jsonify }}
+    "excerpt": {{ reference.excerpt | strip_html | normalize_whitespace | jsonify }},
+    "content": {{ reference.content | strip_html | normalize_whitespace | jsonify }}
   }
 {% endfor %}
 ]
