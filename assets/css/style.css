@@ -428,10 +428,14 @@ header {
   /* Restores the original 2-group split (title flush left, nav+toggle
      flush right) now that .header-wrapper uses justify-content: flex-start
      instead of space-between (see comment there) - margin-left: auto
-     consumes the row's leftover space on #siteNav's own left side, pushing
-     itself and #themeToggle (which follows it via order: 4, see
-     .theme-toggle) to the right edge together, while h1 stays at the start. */
-  #siteNav {
+     consumes the row's leftover space on .nav-search's own left side,
+     pushing it and everything that follows (#siteNav, then #themeToggle via
+     order: 4, see .theme-toggle) to the right edge together as one group,
+     while h1 stays at the start. Lives on .nav-search rather than #siteNav
+     now that search sits outside siteNav in the DOM (see header markup) -
+     it's the first element of the trailing group, so it's the one that
+     needs to absorb the free space. */
+  .nav-search {
     margin-left: auto;
   }
 }
@@ -488,7 +492,12 @@ header {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   border-radius: var(--radius-md);
-  transition: width 0.25s ease, opacity 0.2s ease, padding 0.25s ease, border-color 0.2s ease;
+  /* flex-grow is a no-op on desktop (its open state below sets a fixed
+     width instead, never touching flex-grow) - included here rather than
+     scoped into the mobile media query so the one .nav-search-input rule
+     covers both transition lists without duplicating the other four
+     properties. */
+  transition: width 0.25s ease, flex-grow 0.25s ease, opacity 0.2s ease, padding 0.25s ease, border-color 0.2s ease;
 }
 
 .nav-search.open .nav-search-input {
@@ -1946,7 +1955,7 @@ footer p {
 
   .nav-menu-toggle {
     display: flex;
-    order: 2;
+    order: 3;
     margin-left: 0.75rem;
   }
 
@@ -1961,21 +1970,70 @@ footer p {
     justify-content: flex-start;
   }
 
+  /* Moved out of siteNav to the same trailing header group as #themeToggle
+     (see header markup comment) so it stays usable on mobile without
+     opening the hamburger menu. flex: 1 1 0% (instead of a fixed content
+     width + margin-left: auto, which #themeToggle still uses) makes
+     nav-search's own box exactly as wide as the leftover space between
+     .site-title and #themeToggle, not just its own icon-sized content
+     width - this is what lets the search input below actually have real
+     room to grow into. Flex-basis must be 0%, not auto (the first attempt
+     at this used auto and it looked right when closed but grew way past
+     the available header width once opened): auto bases nav-search's own
+     size on its CONTENT's natural size, but its content (the input) is
+     itself trying to grow to fill "however much space nav-search has" -
+     a circular dependency where the input's animating flex-grow inflates
+     nav-search's own auto-basis in real time, letting it balloon past the
+     actual free space in .header-wrapper. flex-basis: 0% breaks that
+     loop - nav-search's size is then purely "this container's share of
+     .header-wrapper's free space," independent of what's rendered inside
+     it. justify-content: flex-end keeps the search icon pinned to the
+     right edge of that box (adjacent to #themeToggle) whether the input
+     is open or closed. min-width: 0 overrides the flex-item default of
+     min-width: auto, which would otherwise stop this from shrinking back
+     down to icon-only size when closed. */
+  .nav-search {
+    order: 1;
+    flex: 1 1 0%;
+    min-width: 0;
+    justify-content: flex-end;
+  }
+
+  /* Overrides the desktop open state's fixed width: 176px just below -
+     a fixed pixel value doesn't know how much room is actually free next
+     to the icon on any given phone, and silently wrapped the header onto
+     two lines on a real device once the input pushed past the leftover
+     space (flex-wrap: wrap absorbs overflow as wrapping, not horizontal
+     scroll - a scrollWidth-based overflow check doesn't catch that, only
+     a real device did). flex: 1 1 0% makes the input grow to consume
+     exactly whatever space .nav-search's own box has left after the icon
+     button's fixed size (.nav-search-toggle has flex-shrink: 0) is
+     subtracted - i.e. exactly the gap between the site title and the
+     search icon, by construction, at any viewport width. min-width: 0
+     stops the input's own intrinsic minimum size from flooring that. */
+  .nav-search.open .nav-search-input {
+    flex: 1 1 0%;
+    width: auto;
+    min-width: 0;
+  }
+
   #themeToggle {
     /* Overrides the desktop order: 4 (see .theme-toggle) - on mobile this
-       needs to stay under #siteNav's order: 3 so it renders on the first,
-       always-visible line instead of getting wrapped away with the
-       collapsed nav. margin-left: auto consumes the rest of this flex
-       line's free space on its own left side, pushing itself and
-       #navMenuToggle (which follows it) to the right edge together, while
-       h1 stays put at the start. */
-    order: 1;
-    margin-left: auto;
+       needs to stay ahead of #siteNav's order: 4 so it renders on the
+       first, always-visible line instead of getting wrapped away with the
+       collapsed nav. margin-left: auto used to live here, consuming the
+       rest of this flex line's free space to push itself + everything
+       after it (search used to not exist as a separate element, then
+       #navMenuToggle) to the right edge - now that .nav-search is ordered
+       ahead of this and does that job instead, this only needs a small
+       fixed gap after it. */
+    order: 2;
+    margin-left: 0.75rem;
   }
 
   #siteNav {
     flex-basis: 100%;
-    order: 3;
+    order: 4;
     flex-direction: column;
     align-items: flex-end;
     text-align: right;
