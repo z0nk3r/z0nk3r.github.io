@@ -31,13 +31,5 @@ layout: default
     {% assign default_author_posts = site.posts | where_exp: "post", "post.author == nil" %}
     {% assign author_posts = author_posts | concat: default_author_posts | sort: "date" | reverse %}
     {% endif %}
-    {% assign posts_by_year = author_posts | group_by_exp: "post", "post.date | date: '%Y'" %}
-    {% for year_group in posts_by_year %}
-    <h2 class="year-heading">{{ year_group.name }}</h2>
-    <ul class="posts">
-        {% for post in year_group.items %}
-            {% include post-card.html post=post %}
-        {% endfor %}
-    </ul>
-    {% endfor %}
+    {% include posts-by-year.html posts=author_posts %}
 </main>
