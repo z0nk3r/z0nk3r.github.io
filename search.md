@@ -50,11 +50,15 @@ permalink: /search/
             : '<div class="search-result__image-wrap search-result__image-wrap--placeholder"><span>No Image Found</span></div>';
 
           var bylineBlock = '';
-          if (item.author) {
+          if (item.type === 'post' && item.author) {
             var avatarBlock = item.authorAvatar
               ? '<div class="avatar avatar--photo"><img src="' + item.authorAvatar + '" alt="' + escapeHtml(item.author) + '"></div>'
               : '<div class="avatar">' + escapeHtml(item.author.slice(0, 1).toUpperCase()) + '</div>';
             bylineBlock = '<div class="byline search-result__byline">' + avatarBlock + '<span>' + escapeHtml(item.author) + '</span><span class="byline-sep">|</span><time>' + escapeHtml(item.date) + '</time></div>';
+          } else if (item.type === 'tutorial-topic') {
+            bylineBlock = '<div class="byline search-result__byline"><span>Tutorial series</span></div>';
+          } else if (item.type === 'tutorial-chapter') {
+            bylineBlock = '<div class="byline search-result__byline"><span>Tutorial &middot; ' + escapeHtml(item.context || '') + '</span></div>';
           } else {
             bylineBlock = '<div class="byline search-result__byline"><span>Reference</span></div>';
           }

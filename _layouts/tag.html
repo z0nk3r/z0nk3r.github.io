@@ -22,12 +22,28 @@ layout: default
     {% assign refs_by_cat = all_references | where_exp: "ref", "ref.categories contains page.tag" %}
     {% assign matching_references = refs_by_tag | concat: refs_by_cat | uniq %}
 
+    {% comment %} Tutorials are tagged at the topic level only, not per
+    chapter (see CLAUDE.md) - a multi-chapter series would otherwise dump
+    several near-identical rows onto every matching tag page. {% endcomment %}
+    {% assign topics_by_tag = site.tutorial_topics | where_exp: "tp", "tp.tags contains page.tag" %}
+    {% assign topics_by_cat = site.tutorial_topics | where_exp: "tp", "tp.categories contains page.tag" %}
+    {% assign matching_topics = topics_by_tag | concat: topics_by_cat | uniq %}
+
     {% if matching_posts.size > 0 %}
     <h2 class="year-heading">Posts</h2>
     <ul class="posts">
         {% assign sorted_posts = matching_posts | sort: "date" | reverse %}
         {% for post in sorted_posts %}
             {% include post-card.html post=post %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if matching_topics.size > 0 %}
+    <h2 class="year-heading">Tutorials</h2>
+    <ul class="search-results tutorial-list">
+        {% for topic in matching_topics %}
+            {% include tutorial-card.html topic=topic %}
         {% endfor %}
     </ul>
     {% endif %}
