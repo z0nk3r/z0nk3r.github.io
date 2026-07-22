@@ -174,8 +174,11 @@
             <button type="button" id="navMenuToggle" class="nav-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="siteNav">
                 {% include icon-hamburger.html %}
             </button>
+            {% comment %} No explicit "Home" link - the header icon
+            (.site-title above) already links there with an accessible
+            "z0nk3r home" label, matching the standard clickable-logo
+            convention; a separate text link would just duplicate it. {% endcomment %}
             <nav id="siteNav">
-                <a href="{{ '/' | relative_url }}">Home</a>
                 <a href="{{ '/tutorials/' | relative_url }}">Tutorials</a>
                 <a href="{{ '/references/' | relative_url }}">References</a>
                 <a href="{{ '/blog/' | relative_url }}">Blog</a>
