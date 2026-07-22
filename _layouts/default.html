@@ -104,12 +104,16 @@
          argument-less invocation. Do not write the literal tag delimiters
          in a comment again - describe the tag in words instead. -->
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
-    <link rel="icon" type="image/svg+xml" href="{{ '/assets/favicon.svg' | relative_url }}">
-    <!-- apple-touch-icon and the icon-192/512 PNGs are separate raster
-         renders of the same ">_ " mark as favicon.svg (generated via PIL,
-         same tooling used for social-preview.png - no vector-icon support
-         on iOS/Android home screens, hence PNG here despite the SVG
-         favicon above being preferred everywhere it works). -->
+    <!-- Uses the same icon-192.png raster asset as .site-title in the
+         header (see body markup) and apple-touch-icon.png/icon-512.png
+         below, rather than the original hand-written assets/favicon.svg -
+         keeps the browser-tab icon, header mark, and home-screen icons all
+         visually identical instead of two slightly different renders of
+         the same design. favicon.svg still exists on disk (PIL's icon-*.png
+         renders were generated from the same self-hosted Geist Mono font,
+         not from this file, so nothing depends on it) but is no longer
+         referenced anywhere. -->
+    <link rel="icon" type="image/png" href="{{ '/assets/images/icon-192.png' | relative_url }}">
     <link rel="apple-touch-icon" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">
     <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
     <!-- Geist/Geist Mono/Michroma are self-hosted (assets/fonts/, @font-face
@@ -148,8 +152,13 @@
             {% comment %} Deliberately not an <h1>: the site title renders in
             the header of every page, and each page already has its own real
             h1 - two h1s per page is an a11y/SEO anti-pattern. Styled via
-            .site-title. {% endcomment %}
-            <p class="site-title"><a href="{{ '/' | relative_url }}">{{ site.title }}</a></p>
+            .site-title. Reuses the same ">_ " mark as the favicon, via the
+            icon-192.png raster asset (already generated for the web
+            manifest/apple-touch-icon - see CLAUDE.md) rather than the SVG
+            favicon itself - aria-label carries the accessible name; the
+            img's own alt is empty since it's now decorative relative to
+            the link's label. {% endcomment %}
+            <p class="site-title"><a href="{{ '/' | relative_url }}" aria-label="{{ site.title }} home"><img src="{{ '/assets/images/icon-192.png' | relative_url }}" alt="" width="32" height="32"></a></p>
             {% comment %} Sits directly in .header-wrapper, not nested inside
             #siteNav, for the same reason #themeToggle does: it needs to stay
             visible and usable on mobile without opening the hamburger menu.

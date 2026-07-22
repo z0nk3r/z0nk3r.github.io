@@ -398,13 +398,33 @@ header {
   gap: 2rem;
 }
 
+/* Reuses icon-192.png (same asset as the browser-tab favicon and the
+   apple-touch-icon/manifest icons - see default.html's head) rather than
+   spelling out the site name in text. That image has its own fixed dark
+   badge / cream glyph baked in (hardcoded colors, not theme tokens), so
+   unlike the old text title it deliberately does NOT flip with the site
+   theme - it's a static brand mark, same as the browser tab icon it now
+   matches exactly. */
 .site-title {
   margin: 0;
-  font-family: var(--font-display);
-  font-size: 1.05rem;
-  font-weight: 400;
-  letter-spacing: 0.04em;
   flex-shrink: 0;
+}
+
+.site-title a {
+  display: flex;
+  align-items: center;
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+
+.site-title a:hover {
+  opacity: 0.75;
+}
+
+.site-title img {
+  display: block;
+  width: 32px;
+  height: 32px;
 }
 
 .nav-menu-toggle {
@@ -438,15 +458,6 @@ header {
   .nav-search {
     margin-left: auto;
   }
-}
-
-.site-title a {
-  color: var(--foreground);
-  text-decoration: none;
-}
-
-.site-title a:hover {
-  color: var(--muted-foreground);
 }
 
 /* Scoped to #siteNav specifically, not a bare `nav` element selector - the
@@ -2253,8 +2264,12 @@ footer p {
     pointer-events: none;
   }
 
-  .site-title {
-    font-size: 1rem;
+  /* Was font-size (the old text title's sizing knob) - .site-title's
+     content is an image now, so the equivalent mobile-scoped-down
+     adjustment lives on the image's own size instead. */
+  .site-title img {
+    width: 28px;
+    height: 28px;
   }
 
   .post-header h1 {
