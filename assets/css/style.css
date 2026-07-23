@@ -382,7 +382,20 @@ header {
 .header-wrapper {
   max-width: 1540px;
   margin: 0 auto;
-  padding: 0 20px;
+  /* Left padding is deliberately smaller than right (was a symmetric
+     0 20px) - the header icon (.site-title) sits flush against this edge
+     with no text baseline/line-height around it the way "z0nk3r" used to
+     have, so 20px read as visibly more whitespace on the icon's left than
+     above/below it (measured: ~14.7px top/bottom on desktop, from
+     header's own 0.5rem vertical padding plus flex-centering slack for a
+     32px icon in a taller row, vs 20px+1px border on the left). 14px
+     matches that top/bottom gap closely enough to read as symmetric at
+     both the 32px desktop and 28px mobile icon size (measured 14.7px and
+     14px respectively - the ~0.7px difference isn't visible). Right stays
+     20px, matching the breadcrumbs/main/footer left-rail padding
+     elsewhere on the page - only the icon's own left edge needed this,
+     not the row as a whole. */
+  padding: 0 20px 0 14px;
   display: flex;
   /* Was space-between. #themeToggle used to live nested inside #siteNav, so
      .header-wrapper only ever had 2 direct flex children (h1 and siteNav) -
