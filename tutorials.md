@@ -7,10 +7,15 @@ permalink: /tutorials/
 <main>
   <h1>Tutorials</h1>
 
-  {% assign topics = site.tutorial_topics | sort_natural: "title" %}
-  {% if topics.size > 0 %}
+  {% comment %} Root topics only (parent="") - nested child topics render as
+  cards on their own parent's page, not here. topic-children also applies the
+  sibling sort (order:-carrying topics first, the rest alphabetically), and
+  the empty-state gate keys on the FILTERED list so a site with only nested
+  topics (no roots) still gets the empty state instead of a bare <ul>. {% endcomment %}
+  {% include topic-children.html parent="" %}
+  {% if topic_children.size > 0 %}
   <ul class="search-results tutorial-list">
-    {% for topic in topics %}
+    {% for topic in topic_children %}
       {% include tutorial-card.html topic=topic %}
     {% endfor %}
   </ul>

@@ -20,9 +20,13 @@ collections:
   tag_pages:
     output: true
     permalink: /tags/:name/
+  # :path (not :name) so topic docs can nest: _tutorial_topics/basic-skills/basic-python.md
+  # -> /tutorials/basic-skills/basic-python/. Root-level docs are unaffected (:path of a
+  # root doc is just its name). Note :path does NOT slugify the way :name does - topic
+  # filenames must already be clean lowercase-hyphen slugs.
   tutorial_topics:
     output: true
-    permalink: /tutorials/:name/
+    permalink: /tutorials/:path/
   tutorials:
     output: true
     permalink: /tutorials/:path/

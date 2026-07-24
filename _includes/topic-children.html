@@ -1,0 +1,37 @@
+{% comment %}
+Computes the sorted immediate children of a topic key into `topic_children`.
+Params:
+  parent - the parent topic key ("" for root topics, i.e. the /tutorials/
+           index's own card list)
+Produces NO output - Liquid assigns inside an include write to the caller's
+scope (there is no include-local scope), and that leak is deliberately the
+return mechanism here: after {% include topic-children.html parent=... %},
+the caller reads `topic_children`.
+
+A child is any topic doc whose key minus its last "/"-segment equals the
+parent key exactly - one level down only, computed per doc via
+split | pop | join (pop is a Jekyll filter, non-mutating, drops the last
+element; a root doc's parent computes to "").
+
+Sort: siblings WITH an `order:` front-matter integer come first, sorted by
+it; siblings without follow, sorted naturally by title. Two separate lists
+concatenated - deliberately NOT `sort: "order", "last"`, which is valid
+Liquid but compares all the nil-order docs as equal under Ruby's unstable
+sort, making their relative order nondeterministic build-to-build. Sibling
+`order:` values should be unique for the same reason.
+{% endcomment %}
+{% assign tc_ordered = "" | split: "" %}
+{% assign tc_unordered = "" | split: "" %}
+{% for tc_doc in site.tutorial_topics %}
+  {% assign tc_parent = tc_doc.topic | split: "/" | pop | join: "/" %}
+  {% if tc_parent == include.parent %}
+    {% if tc_doc.order %}
+      {% assign tc_ordered = tc_ordered | push: tc_doc %}
+    {% else %}
+      {% assign tc_unordered = tc_unordered | push: tc_doc %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% assign tc_ordered = tc_ordered | sort: "order" %}
+{% assign tc_unordered = tc_unordered | sort_natural: "title" %}
+{% assign topic_children = tc_ordered | concat: tc_unordered %}

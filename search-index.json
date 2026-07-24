@@ -46,8 +46,23 @@ roughly a tenth of this size on the wire.
     "content": {{ reference.content | strip_html | normalize_whitespace | jsonify }}
   }
 {% endfor %}
+{% comment %} With nested topics, "context" is a " / "-joined chain of topic
+titles resolved by walking every "/"-separated prefix of the topic key (same
+prefix walk as topic-crumbs.html; missing ancestor docs fall back to the raw
+path segment). Topics get their ANCESTOR chain (null for roots - the title
+field already names the topic itself); chapters get the full chain including
+their own topic. {% endcomment %}
 {% for topic in site.tutorial_topics %}
   {% unless first %},{% endunless %}{% assign first = false %}
+  {% assign ctx_segments = topic.topic | split: "/" | pop %}
+  {% assign ctx_parts = "" | split: "" %}
+  {% assign ctx_prefix = "" %}
+  {% for ctx_seg in ctx_segments %}
+    {% if forloop.first %}{% assign ctx_prefix = ctx_seg %}{% else %}{% assign ctx_prefix = ctx_prefix | append: "/" | append: ctx_seg %}{% endif %}
+    {% assign ctx_doc = site.tutorial_topics | where: "topic", ctx_prefix | first %}
+    {% if ctx_doc %}{% assign ctx_parts = ctx_parts | push: ctx_doc.title %}{% else %}{% assign ctx_parts = ctx_parts | push: ctx_seg %}{% endif %}
+  {% endfor %}
+  {% assign ctx_joined = ctx_parts | join: " / " %}
   {
     "type": "tutorial-topic",
     "title": {{ topic.title | jsonify }},
@@ -55,7 +70,7 @@ roughly a tenth of this size on the wire.
     "date": null,
     "author": null,
     "authorAvatar": null,
-    "context": null,
+    "context": {% if ctx_joined == "" %}null{% else %}{{ ctx_joined | jsonify }}{% endif %},
     "image": {{ topic.image | relative_url | jsonify }},
     "excerpt": {{ topic.description | strip_html | normalize_whitespace | jsonify }},
     "content": {{ topic.content | strip_html | normalize_whitespace | jsonify }}
@@ -63,7 +78,15 @@ roughly a tenth of this size on the wire.
 {% endfor %}
 {% for chapter in site.tutorials %}
   {% unless first %},{% endunless %}{% assign first = false %}
-  {% assign ch_topic = site.tutorial_topics | where: "topic", chapter.topic | first %}
+  {% assign ctx_segments = chapter.topic | split: "/" %}
+  {% assign ctx_parts = "" | split: "" %}
+  {% assign ctx_prefix = "" %}
+  {% for ctx_seg in ctx_segments %}
+    {% if forloop.first %}{% assign ctx_prefix = ctx_seg %}{% else %}{% assign ctx_prefix = ctx_prefix | append: "/" | append: ctx_seg %}{% endif %}
+    {% assign ctx_doc = site.tutorial_topics | where: "topic", ctx_prefix | first %}
+    {% if ctx_doc %}{% assign ctx_parts = ctx_parts | push: ctx_doc.title %}{% else %}{% assign ctx_parts = ctx_parts | push: ctx_seg %}{% endif %}
+  {% endfor %}
+  {% assign ctx_joined = ctx_parts | join: " / " %}
   {
     "type": "tutorial-chapter",
     "title": {{ chapter.title | jsonify }},
@@ -71,7 +94,7 @@ roughly a tenth of this size on the wire.
     "date": null,
     "author": null,
     "authorAvatar": null,
-    "context": {{ ch_topic.title | jsonify }},
+    "context": {{ ctx_joined | jsonify }},
     "image": null,
     "excerpt": {{ chapter.excerpt | strip_html | normalize_whitespace | jsonify }},
     "content": {{ chapter.content | strip_html | normalize_whitespace | jsonify }}

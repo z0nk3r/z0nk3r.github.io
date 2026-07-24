@@ -14,12 +14,13 @@ layout: default
 {% if chapter_pos > 1 %}{% assign prev_ch = chapters[prev_index] %}{% endif %}
 {% if next_index < chapters.size %}{% assign next_ch = chapters[next_index] %}{% endif %}
 
+{% comment %} topic-crumbs renders Home / Tutorials / every ancestor topic /
+this chapter's own topic (all linked, link_last=true) - arbitrary nesting
+depth; only the chapter's own ▤ crumb is appended here. The include's assigns
+are all crumb_-prefixed so they can't clobber chapters/topic_doc/chapter_pos
+above. {% endcomment %}
 <nav class="breadcrumbs" aria-label="Breadcrumb">
-    <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
-    <span> / </span>
-    <a href="{{ '/tutorials/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▣</span>Tutorials</a>
-    <span> / </span>
-    <a href="{{ topic_doc.url | relative_url }}"><span class="crumb-icon" aria-hidden="true">▣</span>{{ topic_doc.title }}</a>
+    {% include topic-crumbs.html topic=page.topic link_last=true %}
     <span> / </span>
     <span><span class="crumb-icon" aria-hidden="true">▤</span>{{ page.crumb_title | default: page.title }}</span>
 </nav>

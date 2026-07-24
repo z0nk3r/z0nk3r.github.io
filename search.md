@@ -56,7 +56,10 @@ permalink: /search/
               : '<div class="avatar">' + escapeHtml(item.author.slice(0, 1).toUpperCase()) + '</div>';
             bylineBlock = '<div class="byline search-result__byline">' + avatarBlock + '<span>' + escapeHtml(item.author) + '</span><span class="byline-sep">|</span><time>' + escapeHtml(item.date) + '</time></div>';
           } else if (item.type === 'tutorial-topic') {
-            bylineBlock = '<div class="byline search-result__byline"><span>Tutorial series</span></div>';
+            // context is the parent-chain of topic titles for NESTED topics
+            // ("Basic Skills / Basic Python"), null for root topics - the
+            // suffix only renders when there's actually a chain to show.
+            bylineBlock = '<div class="byline search-result__byline"><span>Tutorial series' + (item.context ? ' &middot; ' + escapeHtml(item.context) : '') + '</span></div>';
           } else if (item.type === 'tutorial-chapter') {
             bylineBlock = '<div class="byline search-result__byline"><span>Tutorial &middot; ' + escapeHtml(item.context || '') + '</span></div>';
           } else {

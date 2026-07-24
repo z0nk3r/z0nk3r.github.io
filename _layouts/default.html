@@ -78,9 +78,16 @@
          blocking until it parses costs nothing meaningful. -->
     <link rel="expect" href="#post-list-end" blocking="render">
     {% elsif page.layout == 'tutorial-topic' %}
-    <!-- Same anti-flash pair as the post-hero branch above, for the
-         card <-> topic-hero morph instead of card <-> post-hero. -->
-    <link rel="expect" href="#topic-hero" blocking="render">
+    <!-- Same anti-flash reasoning as the post-hero branch above, but anchored
+         at the END of the topic page's content (not the hero) because a topic
+         page is now BOTH a morph destination (its hero, forward direction)
+         AND a list of child-topic cards (reverse direction, morphing back
+         into a child's card - nested tutorials). Parsing is sequential, so
+         one blocker on the last element covers the hero and every card above
+         it; an earlier #topic-hero anchor wouldn't guarantee the cards are
+         parsed. Topic pages are small - the extra blocking cost is the same
+         tradeoff /blog/'s #post-list-end already accepts. -->
+    <link rel="expect" href="#topic-content-end" blocking="render">
     {% if page.image %}
     <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
     {% endif %}
