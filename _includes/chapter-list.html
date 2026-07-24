@@ -1,0 +1,27 @@
+{% comment %}
+Computes the sorted chapters directly under a topic's URL into
+`topic_chapters`.
+Params:
+  parent_url - the topic page's URL (raw doc URL, trailing slash included).
+Produces NO output - the assign-leak into the caller's scope IS the return
+mechanism (same convention as topic-children.html); the caller reads
+`topic_chapters` afterward.
+
+A chapter is any doc in the tutorials collection whose parent URL (own URL
+minus the last segment) equals `parent_url` AND which carries a `chapter:`
+key - the collection-wide topic-vs-chapter discriminator.
+
+The `sort: "chapter"` MUST stay after this filter, never applied to the raw
+mixed collection: topic docs have no chapter: key, and Liquid's sort raises
+comparing an integer against nil.
+{% endcomment %}
+{% assign cl_list = "" | split: "" %}
+{% for cl_doc in site.tutorials %}
+  {% if cl_doc.chapter %}
+    {% assign cl_parent = cl_doc.url | split: "/" | pop | join: "/" | append: "/" %}
+    {% if cl_parent == include.parent_url %}
+      {% assign cl_list = cl_list | push: cl_doc %}
+    {% endif %}
+  {% endif %}
+{% endfor %}
+{% assign topic_chapters = cl_list | sort: "chapter" %}

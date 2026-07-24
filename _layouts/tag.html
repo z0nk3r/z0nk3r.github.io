@@ -25,8 +25,8 @@ layout: default
     {% comment %} Tutorials are tagged at the topic level only, not per
     chapter (see the project notes) - a multi-chapter series would otherwise dump
     several near-identical rows onto every matching tag page. {% endcomment %}
-    {% assign topics_by_tag = site.tutorial_topics | where_exp: "tp", "tp.tags contains page.tag" %}
-    {% assign topics_by_cat = site.tutorial_topics | where_exp: "tp", "tp.categories contains page.tag" %}
+    {% assign topics_by_tag = site.tutorials | where_exp: "tp", "tp.tags contains page.tag" %}
+    {% assign topics_by_cat = site.tutorials | where_exp: "tp", "tp.categories contains page.tag" %}
     {% assign matching_topics = topics_by_tag | concat: topics_by_cat | uniq %}
 
     {% if matching_posts.size > 0 %}

@@ -11,7 +11,7 @@ permalink: /tags/
     <input type="search" id="tagSearch" class="tag-search" placeholder="Search tags…" aria-label="Search tags" autocomplete="off">
   </div>
 
-  {% assign all_tagged = site.posts | concat: site.references | concat: site.data.external_references | concat: site.tutorial_topics %}
+  {% assign all_tagged = site.posts | concat: site.references | concat: site.data.external_references | concat: site.tutorials %}
   {% assign all_tags = "" | split: "," %}
   {% for item in all_tagged %}
     {% for t in item.tags %}
@@ -30,8 +30,8 @@ permalink: /tags/
       {% assign posts_by_cat = site.posts | where_exp: "post", "post.categories contains t" %}
       {% assign refs_by_tag = all_references | where_exp: "ref", "ref.tags contains t" %}
       {% assign refs_by_cat = all_references | where_exp: "ref", "ref.categories contains t" %}
-      {% assign topics_by_tag = site.tutorial_topics | where_exp: "tp", "tp.tags contains t" %}
-      {% assign topics_by_cat = site.tutorial_topics | where_exp: "tp", "tp.categories contains t" %}
+      {% assign topics_by_tag = site.tutorials | where_exp: "tp", "tp.tags contains t" %}
+      {% assign topics_by_cat = site.tutorials | where_exp: "tp", "tp.categories contains t" %}
       {% assign matching_posts = posts_by_tag | concat: posts_by_cat | uniq %}
       {% assign matching_refs = refs_by_tag | concat: refs_by_cat | uniq %}
       {% assign matching_topics = topics_by_tag | concat: topics_by_cat | uniq %}

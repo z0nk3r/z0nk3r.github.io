@@ -1,46 +1,51 @@
 {% comment %}
-Card meta is descendant-aware: with nested topics, a group's card must count
-every chapter anywhere below it (its own direct chapters plus all
-descendants'), not just exact-key matches - an exact-match join would show a
-group as "0 chapters". Starts-with matching is done via slice-to-prefix-length
-comparison (Liquid has no startswith filter; `contains` matches anywhere in
-the string, which would false-positive on sibling keys sharing a substring).
-Child-topic count is immediate children only (same parent computation as
-topic-children.html), shown as "N series" when non-zero.
+Card meta is descendant-aware: a group's card counts every chapter anywhere
+below it, not just direct ones. All joins are URL-based (the tutorials
+collection holds both topics and chapters; chapter: presence discriminates).
+The topic's own url is already the "/"-terminated descendant prefix - do NOT
+append another "/" (that would make the prefix "/tutorials/a//" and match
+nothing), and its termination makes sibling false-positives (/tutorials/a/
+vs /tutorials/ab/...) impossible. Starts-with is slice-to-prefix-length
+(Liquid has no startswith; `contains` matches anywhere). The child/"N
+series" count must exclude chapters - a group's DIRECT chapters share its
+parent URL, and without the unless-filter they'd inflate the series count.
 {% endcomment %}
-{% assign card_prefix = include.topic.topic | append: "/" %}
+{% assign card_prefix = include.topic.url %}
 {% assign card_chapter_count = 0 %}
 {% assign card_minutes = 0 %}
-{% for ch in site.tutorials %}
-  {% assign card_head = ch.topic | slice: 0, card_prefix.size %}
-  {% if ch.topic == include.topic.topic or card_head == card_prefix %}
-    {% assign card_chapter_count = card_chapter_count | plus: 1 %}
-    {% assign card_minutes = card_minutes | plus: ch.read_time %}
-  {% endif %}
-{% endfor %}
 {% assign card_child_count = 0 %}
-{% for card_t in site.tutorial_topics %}
-  {% assign card_t_parent = card_t.topic | split: "/" | pop | join: "/" %}
-  {% if card_t_parent == include.topic.topic %}
-    {% assign card_child_count = card_child_count | plus: 1 %}
+{% for card_doc in site.tutorials %}
+  {% assign card_head = card_doc.url | slice: 0, card_prefix.size %}
+  {% if card_head == card_prefix and card_doc.url != card_prefix %}
+    {% if card_doc.chapter %}
+      {% assign card_chapter_count = card_chapter_count | plus: 1 %}
+      {% assign card_minutes = card_minutes | plus: card_doc.read_time %}
+    {% else %}
+      {% assign card_parent = card_doc.url | split: "/" | pop | join: "/" | append: "/" %}
+      {% if card_parent == card_prefix %}
+        {% assign card_child_count = card_child_count | plus: 1 %}
+      {% endif %}
+    {% endif %}
   {% endif %}
 {% endfor %}
 <li class="search-result tutorial-card">
   <a href="{{ include.topic.url | relative_url }}">
-    {% comment %} vt-name slugifies the "/" in nested keys - a slash inside a
-    CSS custom-ident silently invalidates the whole view-transition-name
-    declaration (morph degrades to a plain crossfade with no error). Must
-    match tutorial-topic.html's hero slugification exactly. {% endcomment %}
+    {% comment %} vt-name derives its slug from the URL (segments after
+    /tutorials/, joined with "-") - a raw "/" inside a CSS custom-ident
+    silently invalidates the whole view-transition-name declaration (morph
+    degrades to a plain crossfade with no error). Must match
+    tutorial-topic-page.html's hero slugification exactly. {% endcomment %}
+    {% assign card_vt = include.topic.url | remove_first: '/tutorials/' | split: '/' | join: '-' %}
     {% if include.topic.image %}
     <!-- Not loading="lazy" - same reasoning as post-card.html's image: this
          is the subject of the card->hero view-transition morph and needs to
          be decoded and ready when the browser captures the transition
          screenshot, which lazy loading races against. -->
-    <div class="search-result__image-wrap tutorial-card__image-wrap" style="view-transition-name: tutorial-topic-{{ include.topic.topic | replace: '/', '-' }};">
+    <div class="search-result__image-wrap tutorial-card__image-wrap" style="view-transition-name: tutorial-topic-{{ card_vt }};">
       <img src="{{ include.topic.image | relative_url }}" alt="{{ include.topic.title }}">
     </div>
     {% else %}
-    <div class="search-result__image-wrap tutorial-card__image-wrap search-result__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ include.topic.topic | replace: '/', '-' }};">
+    <div class="search-result__image-wrap tutorial-card__image-wrap search-result__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ card_vt }};">
       <span>No Image Found</span>
     </div>
     {% endif %}

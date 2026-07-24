@@ -77,10 +77,13 @@
          after the post list in blog.md; the page is small enough that
          blocking until it parses costs nothing meaningful. -->
     <link rel="expect" href="#post-list-end" blocking="render">
-    {% elsif page.layout == 'tutorial-topic' %}
-    <!-- Same anti-flash reasoning as the post-hero branch above, but anchored
+    {% elsif page.layout == 'tutorial' %}
+    {% unless page.chapter %}
+    <!-- Topic pages only (the whole tutorials collection shares one layout;
+         a doc with `chapter:` is a chapter and gets no expect, as before).
+         Same anti-flash reasoning as the post-hero branch above, but anchored
          at the END of the topic page's content (not the hero) because a topic
-         page is now BOTH a morph destination (its hero, forward direction)
+         page is BOTH a morph destination (its hero, forward direction)
          AND a list of child-topic cards (reverse direction, morphing back
          into a child's card - nested tutorials). Parsing is sequential, so
          one blocker on the last element covers the hero and every card above
@@ -91,6 +94,7 @@
     {% if page.image %}
     <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
     {% endif %}
+    {% endunless %}
     {% elsif page.url == '/tutorials/' %}
     <!-- Same reverse-direction reasoning as the /blog/ branch above, for
          navigating back from a topic page to the tutorials index. -->

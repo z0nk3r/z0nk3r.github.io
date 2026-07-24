@@ -46,58 +46,53 @@ roughly a tenth of this size on the wire.
     "content": {{ reference.content | strip_html | normalize_whitespace | jsonify }}
   }
 {% endfor %}
-{% comment %} With nested topics, "context" is a " / "-joined chain of topic
-titles resolved by walking every "/"-separated prefix of the topic key (same
-prefix walk as topic-crumbs.html; missing ancestor docs fall back to the raw
-path segment). Topics get their ANCESTOR chain (null for roots - the title
-field already names the topic itself); chapters get the full chain including
-their own topic. {% endcomment %}
-{% for topic in site.tutorial_topics %}
+{% comment %} One loop covers the whole tutorials collection - a doc with a
+chapter: key is a chapter, one without is a topic (same discriminator as
+_layouts/tutorial.html). The two type strings are unchanged so search.md's
+JS needs no edits. "context" is a " / "-joined chain of topic titles built
+by walking the "/"-separated segments of the doc's PARENT URL (own URL minus
+last segment) and looking each prefix up by URL - the same walk for both
+kinds: a topic's parent-URL chain is its ancestors (empty for roots ->
+null), a chapter's is the full chain including its own topic. Missing
+ancestor docs fall back to the raw path segment. {% endcomment %}
+{% for doc in site.tutorials %}
   {% unless first %},{% endunless %}{% assign first = false %}
-  {% assign ctx_segments = topic.topic | split: "/" | pop %}
+  {% assign ctx_parent = doc.url | split: "/" | pop | join: "/" | append: "/" %}
+  {% assign ctx_segments = ctx_parent | remove_first: "/tutorials/" | split: "/" %}
   {% assign ctx_parts = "" | split: "" %}
-  {% assign ctx_prefix = "" %}
+  {% assign ctx_url = "/tutorials/" %}
   {% for ctx_seg in ctx_segments %}
-    {% if forloop.first %}{% assign ctx_prefix = ctx_seg %}{% else %}{% assign ctx_prefix = ctx_prefix | append: "/" | append: ctx_seg %}{% endif %}
-    {% assign ctx_doc = site.tutorial_topics | where: "topic", ctx_prefix | first %}
+    {% assign ctx_url = ctx_url | append: ctx_seg | append: "/" %}
+    {% assign ctx_doc = site.tutorials | where: "url", ctx_url | first %}
     {% if ctx_doc %}{% assign ctx_parts = ctx_parts | push: ctx_doc.title %}{% else %}{% assign ctx_parts = ctx_parts | push: ctx_seg %}{% endif %}
   {% endfor %}
   {% assign ctx_joined = ctx_parts | join: " / " %}
-  {
-    "type": "tutorial-topic",
-    "title": {{ topic.title | jsonify }},
-    "url": {{ topic.url | relative_url | jsonify }},
-    "date": null,
-    "author": null,
-    "authorAvatar": null,
-    "context": {% if ctx_joined == "" %}null{% else %}{{ ctx_joined | jsonify }}{% endif %},
-    "image": {{ topic.image | relative_url | jsonify }},
-    "excerpt": {{ topic.description | strip_html | normalize_whitespace | jsonify }},
-    "content": {{ topic.content | strip_html | normalize_whitespace | jsonify }}
-  }
-{% endfor %}
-{% for chapter in site.tutorials %}
-  {% unless first %},{% endunless %}{% assign first = false %}
-  {% assign ctx_segments = chapter.topic | split: "/" %}
-  {% assign ctx_parts = "" | split: "" %}
-  {% assign ctx_prefix = "" %}
-  {% for ctx_seg in ctx_segments %}
-    {% if forloop.first %}{% assign ctx_prefix = ctx_seg %}{% else %}{% assign ctx_prefix = ctx_prefix | append: "/" | append: ctx_seg %}{% endif %}
-    {% assign ctx_doc = site.tutorial_topics | where: "topic", ctx_prefix | first %}
-    {% if ctx_doc %}{% assign ctx_parts = ctx_parts | push: ctx_doc.title %}{% else %}{% assign ctx_parts = ctx_parts | push: ctx_seg %}{% endif %}
-  {% endfor %}
-  {% assign ctx_joined = ctx_parts | join: " / " %}
+  {% if doc.chapter %}
   {
     "type": "tutorial-chapter",
-    "title": {{ chapter.title | jsonify }},
-    "url": {{ chapter.url | relative_url | jsonify }},
+    "title": {{ doc.title | jsonify }},
+    "url": {{ doc.url | relative_url | jsonify }},
     "date": null,
     "author": null,
     "authorAvatar": null,
     "context": {{ ctx_joined | jsonify }},
     "image": null,
-    "excerpt": {{ chapter.excerpt | strip_html | normalize_whitespace | jsonify }},
-    "content": {{ chapter.content | strip_html | normalize_whitespace | jsonify }}
+    "excerpt": {{ doc.excerpt | strip_html | normalize_whitespace | jsonify }},
+    "content": {{ doc.content | strip_html | normalize_whitespace | jsonify }}
   }
+  {% else %}
+  {
+    "type": "tutorial-topic",
+    "title": {{ doc.title | jsonify }},
+    "url": {{ doc.url | relative_url | jsonify }},
+    "date": null,
+    "author": null,
+    "authorAvatar": null,
+    "context": {% if ctx_joined == "" %}null{% else %}{{ ctx_joined | jsonify }}{% endif %},
+    "image": {{ doc.image | relative_url | jsonify }},
+    "excerpt": {{ doc.description | strip_html | normalize_whitespace | jsonify }},
+    "content": {{ doc.content | strip_html | normalize_whitespace | jsonify }}
+  }
+  {% endif %}
 {% endfor %}
 ]

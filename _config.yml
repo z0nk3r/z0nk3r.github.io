@@ -20,20 +20,19 @@ collections:
   tag_pages:
     output: true
     permalink: /tags/:name/
-  # :path (not :name) so topic docs can nest: _tutorial_topics/basic-skills/basic-python.md
-  # -> /tutorials/basic-skills/basic-python/. Root-level docs are unaffected (:path of a
-  # root doc is just its name). Note :path does NOT slugify the way :name does - topic
-  # filenames must already be clean lowercase-hyphen slugs.
-  tutorial_topics:
-    output: true
-    permalink: /tutorials/:path/
+  # ONE collection holds both topics and chapters - the join IS the file
+  # placement (a doc's parent is its URL minus the last segment; no topic:
+  # front-matter key exists). A doc WITH a chapter: key is a chapter, one
+  # without is a topic - see _layouts/tutorial.html. :path keeps the
+  # directory nesting in the URL; it does NOT slugify the way :name does,
+  # so filenames must already be clean lowercase-hyphen slugs.
   tutorials:
     output: true
     permalink: /tutorials/:path/
 
 # Hosted references don't need `layout: reference` repeated in every file - scoped to just
 # this collection (not path: "" globally) so it can't leak into other content by accident.
-# Same reasoning for the two tutorials collections below - a collection doc with no layout
+# Same reasoning for the tutorials collection below - a collection doc with no layout
 # renders with zero styling at all (see the project notes), so every new collection gets one of these.
 defaults:
   - scope:
@@ -43,14 +42,9 @@ defaults:
       layout: reference
   - scope:
       path: ""
-      type: tutorial_topics
-    values:
-      layout: tutorial-topic
-  - scope:
-      path: ""
       type: tutorials
     values:
-      layout: tutorial-chapter
+      layout: tutorial
 
 # Build settings
 plugins:

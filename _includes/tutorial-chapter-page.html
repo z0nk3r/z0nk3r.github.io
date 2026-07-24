@@ -1,26 +1,30 @@
----
-layout: default
----
-
 <div id="reading-progress"></div>
 
-{% assign topic_doc = site.tutorial_topics | where: "topic", page.topic | first %}
-{% assign chapters = site.tutorials | where: "topic", page.topic | sort: "chapter" %}
-{% for ch in chapters %}
+{% comment %} All joins are URL-derived: the chapter's parent topic is
+simply its own URL minus the last segment (the join IS the file placement -
+no topic: front-matter key exists anymore). topic_doc lookup is by exact
+URL match (url is an invokable drop property, trailing slash included).
+chapter-list.html returns this topic's sorted chapters as topic_chapters
+via the assign-leak convention. {% endcomment %}
+{% assign chapter_parent_url = page.url | split: "/" | pop | join: "/" | append: "/" %}
+{% assign topic_doc = site.tutorials | where: "url", chapter_parent_url | first %}
+{% include chapter-list.html parent_url=chapter_parent_url %}
+{% for ch in topic_chapters %}
   {% if ch.url == page.url %}{% assign chapter_pos = forloop.index %}{% endif %}
 {% endfor %}
 {% assign prev_index = chapter_pos | minus: 2 %}
 {% assign next_index = chapter_pos %}
-{% if chapter_pos > 1 %}{% assign prev_ch = chapters[prev_index] %}{% endif %}
-{% if next_index < chapters.size %}{% assign next_ch = chapters[next_index] %}{% endif %}
+{% if chapter_pos > 1 %}{% assign prev_ch = topic_chapters[prev_index] %}{% endif %}
+{% if next_index < topic_chapters.size %}{% assign next_ch = topic_chapters[next_index] %}{% endif %}
 
 {% comment %} topic-crumbs renders Home / Tutorials / every ancestor topic /
 this chapter's own topic (all linked, link_last=true) - arbitrary nesting
-depth; only the chapter's own ▤ crumb is appended here. The include's assigns
-are all crumb_-prefixed so they can't clobber chapters/topic_doc/chapter_pos
-above. {% endcomment %}
+depth; only the chapter's own ▤ crumb is appended here. Passes the PARENT
+url, not page.url - the chapter's own slug must not become a crumb. The
+include's assigns are all crumb_-prefixed so they can't clobber
+topic_chapters/topic_doc/chapter_pos above. {% endcomment %}
 <nav class="breadcrumbs" aria-label="Breadcrumb">
-    {% include topic-crumbs.html topic=page.topic link_last=true %}
+    {% include topic-crumbs.html topic_url=chapter_parent_url link_last=true %}
     <span> / </span>
     <span><span class="crumb-icon" aria-hidden="true">▤</span>{{ page.crumb_title | default: page.title }}</span>
 </nav>
@@ -33,7 +37,7 @@ is. {% endcomment %}
 <div class="post-header chapter-header">
     <h1>{{ page.title }}</h1>
     <div class="post-meta">
-        {% include chapter-meta.html chapter=page position=chapter_pos total=chapters.size link_author=true %}
+        {% include chapter-meta.html chapter=page position=chapter_pos total=topic_chapters.size link_author=true %}
     </div>
 </div>
 
@@ -62,7 +66,7 @@ is. {% endcomment %}
                 <span>Next chapter →</span>
                 <a href="{{ next_ch.url | relative_url }}">{{ next_ch.title }}</a>
             </div>
-            {% else %}
+            {% elsif topic_doc %}
             <div>
                 <span>Series index ↩</span>
                 <a href="{{ topic_doc.url | relative_url }}">{{ topic_doc.title }}</a>

@@ -1,36 +1,41 @@
 {% comment %}
 Renders the full breadcrumb trail for a tutorials-tree page:
-  Home / Tutorials / <ancestor 1> / ... / <the topic itself>
+  Home / Tutorials / <ancestor 1> / ... / <deepest topic>
 Params:
-  topic     - the topic key (a path like "basic-skills/basic-python"; every
-              "/"-separated prefix is looked up as its own topic doc)
+  topic_url - the deepest TOPIC's URL to render crumbs for. Topic pages pass
+              their own page.url; chapter pages pass their PARENT's URL
+              (passing the chapter's own url would render the chapter's slug
+              as a bogus extra crumb - the chapter appends its own ▤ crumb
+              itself). Raw doc URL (baseurl is ""), trailing slash included.
   link_last - true renders the final (deepest) topic crumb as a link too
-              (chapter pages want this - the chapter itself is the current
-              page); false renders it as plain text (topic pages - it IS the
+              (chapter pages - the chapter itself is the current page);
+              false renders it as plain text (topic pages - it IS the
               current page). Ancestors are always linked when their doc
               exists.
-Renders only the <a>/<span> crumb items and separators for the topic chain,
-INCLUDING the leading Home / Tutorials pair - the caller supplies the
-surrounding <nav class="breadcrumbs"> and any trailing chapter crumb.
+Renders only the <a>/<span> crumb items and separators, INCLUDING the
+leading Home / Tutorials pair - the caller supplies the surrounding
+<nav class="breadcrumbs"> and any trailing chapter crumb.
+
+Each "/"-separated segment after /tutorials/ is one crumb; the accumulated
+prefix URL is both the crumb's href and the lookup key for its topic doc
+(`where: "url", ...` - url is an invokable drop property, exact match
+including the trailing slash). A missing ancestor doc (nested topic whose
+parent file doesn't exist yet) renders as plain unlinked text of the raw
+path segment rather than an empty link.
 
 Liquid scoping note: assigns inside an include write to the CALLER's scope
 (Liquid has no include-local scope), so every variable here is crumb_-prefixed
-to guarantee it can't clobber the caller's own variables (tutorial-chapter.html
-has `chapters`/`topic_doc`/`chapter_pos` live when this runs).
-
-A missing ancestor doc (nested topic whose parent file doesn't exist yet)
-renders as plain unlinked text of the raw path segment rather than an empty
-link - the page still builds, the trail stays readable, and the gap is obvious
-to the author.
+to guarantee it can't clobber the caller's own variables (the chapter page
+include has topic_chapters/topic_doc/chapter_pos live when this runs).
 {% endcomment %}
 <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
 <span> / </span>
 <a href="{{ '/tutorials/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▣</span>Tutorials</a>
-{% assign crumb_segments = include.topic | split: "/" %}
-{% assign crumb_prefix = "" %}
+{% assign crumb_segments = include.topic_url | remove_first: "/tutorials/" | split: "/" %}
+{% assign crumb_url = "/tutorials/" %}
 {% for crumb_seg in crumb_segments %}
-{% if forloop.first %}{% assign crumb_prefix = crumb_seg %}{% else %}{% assign crumb_prefix = crumb_prefix | append: "/" | append: crumb_seg %}{% endif %}
-{% assign crumb_doc = site.tutorial_topics | where: "topic", crumb_prefix | first %}
+{% assign crumb_url = crumb_url | append: crumb_seg | append: "/" %}
+{% assign crumb_doc = site.tutorials | where: "url", crumb_url | first %}
 <span> / </span>
 {% if crumb_doc == nil %}
 <span><span class="crumb-icon" aria-hidden="true">▣</span>{{ crumb_seg }}</span>

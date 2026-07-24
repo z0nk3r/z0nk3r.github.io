@@ -7,12 +7,14 @@ permalink: /tutorials/
 <main>
   <h1>Tutorials</h1>
 
-  {% comment %} Root topics only (parent="") - nested child topics render as
-  cards on their own parent's page, not here. topic-children also applies the
-  sibling sort (order:-carrying topics first, the rest alphabetically), and
-  the empty-state gate keys on the FILTERED list so a site with only nested
-  topics (no roots) still gets the empty state instead of a bare <ul>. {% endcomment %}
-  {% include topic-children.html parent="" %}
+  {% comment %} Root topics only (parent = this index's own URL - joins are
+  URL-derived, and a root topic's parent URL computes to /tutorials/ itself) -
+  nested child topics render as cards on their own parent's page, not here.
+  topic-children also applies the sibling sort (order:-carrying topics first,
+  the rest alphabetically), and the empty-state gate keys on the FILTERED
+  list so a site with only nested topics (no roots) still gets the empty
+  state instead of a bare <ul>. {% endcomment %}
+  {% include topic-children.html parent="/tutorials/" %}
   {% if topic_children.size > 0 %}
   <ul class="search-results tutorial-list">
     {% for topic in topic_children %}
