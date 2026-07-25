@@ -38,3 +38,9 @@
   excerpt: "Live compiler output — see the exact assembly/opcodes a given source line generates, across compilers and architectures."
   image: "/assets/images/references/compiler-explorer.png"
   tags: [tools]
+
+- title: "The Shellcoder's Handbook"
+  link: "/assets/pdfs/the-shellcoders-handbook.pdf"
+  excerpt: "Discovering and exploiting security holes — shellcode, buffer overflows, and exploit techniques across platforms."
+  image: "/assets/images/references/shellcoders-handbook.png"
+  tags: [pwn, exploitdev]
