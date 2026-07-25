@@ -44,3 +44,9 @@
   excerpt: "Discovering and exploiting security holes — shellcode, buffer overflows, and exploit techniques across platforms."
   image: "/assets/images/references/shellcoders-handbook.png"
   tags: [pwn, exploitdev]
+
+- title: "K&R C Book - Second Edition"
+  link: "/assets/pdfs/K&R_C_Book_2nd.pdf"
+  excerpt: "Kernighan & Ritchie on the C Programming Language - the Bible on all things C"
+  image: "/assets/images/references/k&r_c.png"
+  tags: [c]
