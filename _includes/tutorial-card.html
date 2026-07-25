@@ -42,7 +42,10 @@ parent URL, and without the unless-filter they'd inflate the series count.
          be decoded and ready when the browser captures the transition
          screenshot, which lazy loading races against. -->
     <div class="search-result__image-wrap tutorial-card__image-wrap" style="view-transition-name: tutorial-topic-{{ card_vt }};">
-      <img src="{{ include.topic.image | relative_url }}" alt="{{ include.topic.title }}">
+      {% comment %} Same optional light-theme variant as the topic hero - see the
+      image_light comment in tutorial-topic-page.html. {% endcomment %}
+      <img src="{{ include.topic.image | relative_url }}" alt="{{ include.topic.title }}"
+           {% if include.topic.image_light %}class="theme-swap" style="--img-light: url('{{ include.topic.image_light | relative_url }}');"{% endif %}>
     </div>
     {% else %}
     <div class="search-result__image-wrap tutorial-card__image-wrap search-result__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ card_vt }};">

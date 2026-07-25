@@ -1856,6 +1856,26 @@ main h1 {
   object-fit: contain;
 }
 
+/* Optional per-image light-theme variant. Content authors opt in by setting
+   image_light: alongside image: in a topic's front matter; the markup then
+   emits class="theme-swap" plus an inline --img-light custom property (see
+   tutorial-topic-page.html / tutorial-card.html).
+
+   Deliberately NOT done with <picture media="(prefers-color-scheme: dark)">:
+   this site's theme is a MANUAL toggle persisted to localStorage, so a
+   prefers-color-scheme query would follow the OS setting and desync from the
+   switch (OS-light + site-dark would show the wrong image). Keying off
+   [data-theme] is the only thing that tracks the actual toggle.
+
+   `content` on a replaced element swaps the rendered image while leaving the
+   src/alt intact, so it needs no duplicate <img> (which would also collide
+   with the single view-transition-name on the wrapper). Verified in-browser
+   that the rendered pixels really change on toggle - the img's own .currentSrc
+   does NOT update, so check pixels, not that property, if re-testing this. */
+html[data-theme="light"] img.theme-swap {
+  content: var(--img-light);
+}
+
 .post-card__image-wrap--placeholder span,
 .post-header__image-wrap--placeholder span {
   color: var(--muted-foreground);
