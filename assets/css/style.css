@@ -1409,11 +1409,118 @@ article table tbody tr:not(:first-child) td {
   }
 }
 
+/* ==========================================================================
+   Rotating glow border (card hover)
+   ========================================================================== */
+
+/* A custom property only animates if it has been registered with a type -
+   a plain --angle is an untyped token and interpolates as "swap at 50%",
+   which reads as a static border rather than a rotating one. Registration
+   fails silently, so if the ring ever stops moving, check this block exists
+   before suspecting the animation. */
+@property --card-glow-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+
+@keyframes card-glow-spin {
+  to { --card-glow-angle: 360deg; }
+}
+
+/* One injected <span> per card, not a pseudo-element: ::before and ::after
+   are both already spent on the corner-bracket hover in .post-card,
+   .tutorial-card and .author-list-item, and those brackets are deliberately
+   kept alongside this.
+
+   The element is a conic-gradient box with its own middle masked out, which
+   leaves only a rim. The outer halo comes from drop-shadow() rather than a
+   second blurred layer, because drop-shadow follows the element's alpha
+   AFTER masking - so it traces the rim instead of blooming from the full
+   box. (A blurred copy of an UNMASKED gradient box renders as a large blob
+   over the card, not a glow along its edge.) */
+.card-glow {
+  position: absolute;
+  inset: -1.5px;
+  padding: 1.5px;
+  border-radius: inherit;
+  z-index: 2;
+  opacity: 0;
+  pointer-events: none;
+  /* Governs the fade-OUT (returning to this resting state). Kept a little
+     quicker than the fade-in below so the ring clears out promptly when the
+     pointer leaves, without reading as a snap. */
+  transition: opacity 0.45s ease;
+  /* A lit arc covering 40% of the perimeter: transparent at the leading edge,
+     full brightness at its midpoint, transparent again at its trailing edge,
+     and unlit for the remaining 60%. Picked from a 10%-100% sweep. */
+  background: conic-gradient(from var(--card-glow-angle),
+    rgba(var(--foreground-rgb), 0) 0turn,
+    rgba(var(--foreground-rgb), 1) 0.20turn,
+    rgba(var(--foreground-rgb), 0) 0.40turn,
+    rgba(var(--foreground-rgb), 0) 1turn);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+          mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+          mask-composite: exclude;
+  filter: drop-shadow(0 0 5px rgba(var(--foreground-rgb), 0.4));
+}
+
+.post-card:hover .card-glow,
+.post-card:focus-within .card-glow,
+.tutorial-card:hover .card-glow,
+.tutorial-card:focus-within .card-glow,
+.search-result:hover .card-glow,
+.search-result:focus-within .card-glow,
+.author-list-item:hover .card-glow,
+.author-list-item:focus-within .card-glow {
+  opacity: 1;
+  /* Governs the fade-IN. A transition declared on the target state's own rule
+     controls the change INTO that state, which is what lets the fade in and
+     the fade out have different timings - one shared declaration on the base
+     rule would force them to match.
+
+     The curve matters more than the duration here. A decelerating ease-out
+     was tried first and still read as sudden: it front-loads the change,
+     reaching ~53% opacity within the first 100ms, so the ring effectively
+     pops in and then merely finishes slowly. This symmetric S-curve eases in
+     as well as out, so the first frames are nearly imperceptible and the ring
+     genuinely emerges. */
+  transition: opacity var(--card-glow-fade, 1s) cubic-bezier(0.45, 0, 0.55, 1);
+  /* Hover-only on purpose: a grid of a dozen cards each repainting an
+     infinite conic gradient is real compositor cost for something nobody is
+     looking at. */
+  animation: card-glow-spin 6s linear infinite;
+}
+
+/* Must follow the rule above to win the equal-specificity tie - conditional
+   at-rules do not outrank later unconditional declarations, and this file
+   has been bitten by that twice. The rim still appears, it just holds still. */
+@media (prefers-reduced-motion: reduce) {
+  .post-card:hover .card-glow,
+  .post-card:focus-within .card-glow,
+  .tutorial-card:hover .card-glow,
+  .tutorial-card:focus-within .card-glow,
+  .search-result:hover .card-glow,
+  .search-result:focus-within .card-glow,
+  .author-list-item:hover .card-glow,
+  .author-list-item:focus-within .card-glow {
+    animation: none;
+  }
+}
+
 .search-result {
+  /* position: relative anchors .card-glow - without it the absolutely
+     positioned rim resolves against the viewport and renders page-sized.
+     (.post-card, .tutorial-card and .author-list-item are already relative.) */
+  position: relative;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   background: var(--surface-1);
-  overflow: hidden;
+  /* overflow stays visible so the rim's -1.5px inset and its drop-shadow
+     halo aren't clipped away; the cover image is clipped by its own
+     .search-result__image-wrap radius, not by this box. */
+  overflow: visible;
 }
 
 .search-result a {
@@ -1515,7 +1622,10 @@ article table tbody tr:not(:first-child) td {
 .tutorial-card {
   position: relative;
   border: none;
-  overflow: hidden;
+  /* visible, not hidden, so .card-glow's -1.5px rim inset and its
+     drop-shadow halo are not clipped off; inner images are clipped by
+     their own image-wrap radius, not by this box. */
+  overflow: visible;
 }
 
 /* Same 22px corner-bracket hover language as .post-card/.author-list-item -
@@ -1770,7 +1880,10 @@ main h1 {
   display: flex;
   flex-direction: column;
   border-radius: var(--radius-xl);
-  overflow: hidden;
+  /* visible, not hidden, so .card-glow's -1.5px rim inset and its
+     drop-shadow halo are not clipped off; inner images are clipped by
+     their own image-wrap radius, not by this box. */
+  overflow: visible;
 }
 
 .post-card::before,
@@ -2076,7 +2189,10 @@ footer p {
   background: var(--surface-1);
   color: inherit;
   text-decoration: none;
-  overflow: hidden;
+  /* visible, not hidden, so .card-glow's -1.5px rim inset and its
+     drop-shadow halo are not clipped off; inner images are clipped by
+     their own image-wrap radius, not by this box. */
+  overflow: visible;
 }
 
 .author-list-item::before,

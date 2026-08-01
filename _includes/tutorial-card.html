@@ -29,6 +29,7 @@ parent URL, and without the unless-filter they'd inflate the series count.
   {% endif %}
 {% endfor %}
 <li class="search-result tutorial-card">
+  <span class="card-glow" aria-hidden="true"></span>
   <a href="{{ include.topic.url | relative_url }}">
     {% comment %} vt-name derives its slug from the URL (segments after
     /tutorials/, joined with "-") - a raw "/" inside a CSS custom-ident

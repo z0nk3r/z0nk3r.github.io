@@ -16,6 +16,7 @@ permalink: /authors/
     {% for author in site.authors %}
     <li>
       <a class="author-list-item" href="{{ author.url | relative_url }}">
+        <span class="card-glow" aria-hidden="true"></span>
         <div class="author-header__avatar">
           <img src="{{ author.avatar }}" alt="{{ author.name }}">
         </div>

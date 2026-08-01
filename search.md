@@ -67,6 +67,7 @@ permalink: /search/
           }
 
           html += '<li class="search-result">' +
+            '<span class="card-glow" aria-hidden="true"></span>' +
             '<a href="' + item.url + '">' +
             imageBlock +
             '<div class="search-result__body">' +
