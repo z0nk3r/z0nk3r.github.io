@@ -60,7 +60,25 @@ title: Home
     _data/projects.yml must render no heading and no empty <ul>, rather than a
     bare "Projects" heading with nothing under it.
   {%- endcomment -%}
-  {% assign projects = site.data.projects %}
+  {%- comment -%}
+    Entries WITH an `order:` integer come first, sorted by it; the rest follow
+    in file order. Two lists concatenated rather than `sort: "order", "last"` -
+    that is valid Liquid but compares every nil-order entry as equal under
+    Ruby's unstable sort, so their relative order changes build to build. Same
+    reasoning (and the same shape) as topic-children.html. Keep `order:` values
+    unique for that reason.
+  {%- endcomment -%}
+  {% assign pj_ordered = "" | split: "" %}
+  {% assign pj_rest = "" | split: "" %}
+  {% for pj in site.data.projects %}
+    {% if pj.order %}
+      {% assign pj_ordered = pj_ordered | push: pj %}
+    {% else %}
+      {% assign pj_rest = pj_rest | push: pj %}
+    {% endif %}
+  {% endfor %}
+  {% assign pj_ordered = pj_ordered | sort: "order" %}
+  {% assign projects = pj_ordered | concat: pj_rest %}
   {% if projects and projects.size > 0 %}
   <h2 class="section-heading">Featured Projects</h2>
   <ul class="posts projects">
@@ -70,3 +88,59 @@ title: Home
   </ul>
   {% endif %}
 </main>
+
+<script>
+    // Fills in the GitHub star count on each project card.
+    //
+    // Client-side because GitHub Pages builds with no plugins, so there is no
+    // build-time way to call an API. Unauthenticated api.github.com allows 60
+    // requests per hour PER VISITOR IP, so results are cached in localStorage
+    // and only refetched once the TTL expires - without that, a visitor who
+    // reloads a few times would exhaust their own quota and see the badges
+    // vanish.
+    //
+    // Every failure path (rate limit, offline, private or renamed repo) leaves
+    // the badge hidden rather than showing a zero or an error.
+    (function () {
+        var badges = document.querySelectorAll('.project-stars[data-repo]');
+        if (!badges.length) return;
+
+        var TTL_MS = 6 * 60 * 60 * 1000;
+
+        function reveal(el, count) {
+            el.querySelector('.project-stars__count').textContent = count;
+            el.removeAttribute('hidden');
+        }
+
+        badges.forEach(function (el) {
+            var repo = el.getAttribute('data-repo');
+            var key = 'gh-stars:' + repo;
+
+            try {
+                var cached = JSON.parse(localStorage.getItem(key) || 'null');
+                if (cached && (Date.now() - cached.t) < TTL_MS) {
+                    reveal(el, cached.n);
+                    return;
+                }
+            } catch (e) { /* unparseable or storage blocked - just refetch */ }
+
+            fetch('https://api.github.com/repos/' + repo, {
+                headers: { 'Accept': 'application/vnd.github+json' }
+            })
+                .then(function (res) {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    return res.json();
+                })
+                .then(function (data) {
+                    if (typeof data.stargazers_count !== 'number') throw new Error('no count');
+                    try {
+                        localStorage.setItem(key, JSON.stringify({
+                            n: data.stargazers_count, t: Date.now()
+                        }));
+                    } catch (e) { /* private mode - render anyway, just uncached */ }
+                    reveal(el, data.stargazers_count);
+                })
+                .catch(function () { /* leave the badge hidden */ });
+        });
+    })();
+</script>

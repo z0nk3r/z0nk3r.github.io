@@ -12,6 +12,10 @@
 #
 # Every field except `title` is optional:
 #   title    - required
+#   order    - optional integer. Entries with one are listed first, low to high;
+#              everything without keeps its file order after them. Keep the
+#              values unique - ties are resolved by an unstable sort, so equal
+#              values reorder themselves between builds.
 #   status   - short label rendered as a badge ("open source", "closed source",
 #              "community", "archived", ...)
 #   image    - thumbnail; omit it and the card renders the same "No Image Found"
@@ -25,6 +29,7 @@
 #   links    - extra action links, each { label, url }
 
 - title: "z0nk3r.github.io"
+  order: 2
   status: "open source"
   url: "https://github.com/z0nk3r/z0nk3r.github.io"
   excerpt: "This site. Jekyll with no build tooling at all - no npm, no bundler, no CSS framework - so every page is hand-authored Markdown and Liquid against a single stylesheet. Includes a canvas matrix-rain background, cross-document view transitions, and a full-text search index built at compile time."
@@ -34,6 +39,7 @@
     - { label: "visit", url: "https://z0nk3r.github.io/" }
 
 - title: "aoc"
+  order: 1
   status: "open source"
   image: "assets/images/projects/aoc.png"
   url: "https://github.com/z0nk3r/aoc"

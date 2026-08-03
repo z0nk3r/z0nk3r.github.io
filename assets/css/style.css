@@ -2894,3 +2894,40 @@ footer p {
     gap: 1rem;
   }
 }
+
+/* Star count, pinned to the tile's top-right over the thumbnail. .post-card is
+   already position: relative, so this anchors to the card. z-index 3 clears the
+   corner brackets and the glow rim, both of which sit at 2. */
+.project-stars {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.28rem 0.7rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  /* Semi-opaque so it stays readable over a light cover image. */
+  background: rgba(var(--background-rgb), 0.82);
+  backdrop-filter: blur(4px);
+  color: var(--muted-foreground);
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+
+/* Explicit, because the [hidden] UA default is display: none and the rule
+   above would otherwise override it with inline-flex. */
+.project-stars[hidden] {
+  display: none;
+}
+
+/* Icon runs larger than the number on purpose - the star is the thing that
+   reads at a glance, the count is secondary. */
+.project-stars svg {
+  width: 19px;
+  height: 19px;
+}

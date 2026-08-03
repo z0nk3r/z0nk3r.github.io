@@ -22,8 +22,47 @@
      `overflow: visible` for the glow means the surplus spills onto whatever is
      below instead of being clipped.
 {% endcomment %}
+{% comment %}
+  Star badge: use an explicit `repo: "owner/name"` if the entry has one,
+  otherwise derive it from a github.com `url`. Guarded so a non-GitHub project
+  (or one with no url at all) simply renders no badge. The count itself is
+  filled in client-side - see the script at the bottom of index.md - because
+  GitHub Pages builds with no plugins, so there is no build-time way to call
+  an API.
+{% endcomment %}
+{% assign pj_repo = include.project.repo %}
+{% unless pj_repo %}
+  {% if include.project.url contains "github.com/" %}
+    {% assign pj_tail = include.project.url | split: "github.com/" | last | split: "?" | first | split: "#" | first %}
+    {% assign pj_parts = pj_tail | split: "/" %}
+    {% if pj_parts.size >= 2 %}
+      {% assign pj_name = pj_parts[1] %}
+      {% comment %}
+        Strip a TRAILING ".git" only. A bare `replace: ".git", ""` matches
+        mid-string and turned "z0nk3r.github.io" into "z0nk3rhub.io".
+      {% endcomment %}
+      {% assign pj_suffix = pj_name | slice: -4, 4 %}
+      {% if pj_suffix == ".git" %}
+        {% assign pj_cut = pj_name.size | minus: 4 %}
+        {% assign pj_name = pj_name | slice: 0, pj_cut %}
+      {% endif %}
+      {% assign pj_repo = pj_parts[0] | append: "/" | append: pj_name %}
+    {% endif %}
+  {% endif %}
+{% endunless %}
+
 <li class="post-card project-card">
   <span class="card-glow" aria-hidden="true"></span>
+  {% if pj_repo and pj_repo != "" %}
+  {% comment %}
+    Starts hidden and is only revealed once a count actually arrives, so a rate
+    limit, a private repo or an offline visitor leaves no empty badge behind.
+  {% endcomment %}
+  <span class="project-stars" data-repo="{{ pj_repo }}" hidden>
+    {% include icon-star.html %}
+    <span class="project-stars__count"></span>
+  </span>
+  {% endif %}
   <div class="project-card__inner">
     {% if include.project.image %}
     <div class="post-card__image-wrap">
