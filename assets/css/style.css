@@ -1891,6 +1891,22 @@ main h1 {
   aspect-ratio: 0.742;
   display: flex;
   flex-direction: column;
+  /* Load-bearing, and the reason is subtle. A grid item's `min-width`/
+     `min-height: auto` resolves to its CONTENT-based minimum size - except
+     when the item is a scroll container, where the spec waives it to 0. This
+     card used to be `overflow: hidden`, so it got that waiver for free and
+     could shrink to its 1fr column. The rotating glow border needs
+     `overflow: visible` (the rim is inset -1.5px and its halo is a
+     drop-shadow, both of which a clip would eat), and removing the clip also
+     removed the waiver - so every card fell back to its content's min-content
+     width, refused to shrink into its column, and overflowed the grid to the
+     right. `aspect-ratio` then converted that surplus width into surplus
+     height, which is what pushed the bottom row down behind the footer
+     (measured: 80px past the grid's right edge, 109px past the footer's top).
+     Setting these to 0 explicitly restores the shrink behaviour without
+     needing the clip back. */
+  min-width: 0;
+  min-height: 0;
   border-radius: var(--radius-xl);
   /* visible, not hidden, so .card-glow's -1.5px rim inset and its
      drop-shadow halo are not clipped off; inner images are clipped by
@@ -2105,8 +2121,29 @@ footer {
   margin-top: 4rem;
   padding-top: 1.2rem;
   padding-bottom: 1.2rem;
-  padding-left: 20px;
-  padding-right: calc(20px + var(--scrollbar-width, 0px));
+  /* No horizontal inset here - it lives on .footer-wrapper instead, so that
+     wrapper matches `main`'s box exactly. See the comment there. */
+  padding-left: 0;
+  /* This footer is `width: 100vw`, and 100vw INCLUDES whatever the viewport
+     reserves on the right (a classic scrollbar, or the `scrollbar-gutter:
+     stable` gutter on html). So the footer is wider than the content column
+     and that overhang has to be padded back out, or its content sits further
+     right than main's.
+
+     `100vw - 100%` measures that difference directly: percentage padding
+     resolves against the containing block (body), whose width already excludes
+     the reserved space, so the subtraction is exactly the reserved amount.
+
+     This replaced `var(--scrollbar-width)`, which is measured in JS as
+     `innerWidth - documentElement.clientWidth` - that is the width of the
+     SCROLLBAR, not of the reserved GUTTER, and the two differ. On overlay-
+     scrollbar platforms (macOS, iOS, Android, modern Chrome) the gutter is
+     still reserved while the scrollbar itself measures 0, so the old formula
+     compensated by nothing and the footer content sat 10px right of the main
+     column - measured at 900px and 1280px viewports. The CSS form also needs
+     no JS and stays correct on browsers with no `scrollbar-gutter` support,
+     where a real scrollbar produces the same difference. */
+  padding-right: calc(100vw - 100%);
   width: 100vw;
   color: var(--muted-foreground);
   font-size: 0.9rem;
@@ -2117,6 +2154,15 @@ footer {
 .footer-wrapper {
   max-width: 1540px;
   margin: 0 auto;
+  /* The 20px horizontal inset lives HERE, not on `footer`, so that this
+     wrapper is dimensionally identical to `main` (same 1540px cap, same 20px
+     padding => same 1500px content column). With the inset on `footer`
+     instead, it was applied before this wrapper's max-width centring, so once
+     BOTH boxes hit the 1540px cap `main` lost 40px to its own padding and this
+     one did not - the footer's content column rendered 20px wider on each
+     side. That only showed above the 1560px nudge breakpoint; below it the
+     wrapper is not capped and the two happened to agree. */
+  padding: 0 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -2513,19 +2559,28 @@ footer p {
 /* On viewports comfortably wider than the 1540px content max-width, nudge all
    centered content a few pixels right (visually recentering after the
    permanent scrollbar gutter took space from the right side only). Scoped to
-   a width with plenty of centering slack so the margins never go negative. */
+   a width with plenty of centering slack so the margins never go negative.
+
+   The offset is HALF the reserved gutter, not the whole of it. The gutter is
+   taken off the right edge only, so the content column's own centre already
+   sits gutter/2 to the left of the viewport's centre - moving it right by the
+   full gutter overshoots by the same amount it was short. Measured before the
+   correction: 5px left of centre below the breakpoint, 5px RIGHT of centre
+   above it, i.e. the sign flipped but the error did not shrink. With 5px both
+   land on 0. If --radius/max-widths or the 10px ::-webkit-scrollbar width ever
+   change, this is gutter/2 and should be recomputed, not copied. */
 @media (min-width: 1560px) {
   .footer-wrapper,
   .post-header,
   .post-wrapper,
   .breadcrumbs,
   main {
-    margin-left: calc((100% - 1540px) / 2 + 10px);
-    margin-right: calc((100% - 1540px) / 2 - 10px);
+    margin-left: calc((100% - 1540px) / 2 + 5px);
+    margin-right: calc((100% - 1540px) / 2 - 5px);
   }
 
   header {
-    margin-left: calc((100% - 1529px) / 2 + 10px);
-    margin-right: calc((100% - 1529px) / 2 - 10px);
+    margin-left: calc((100% - 1529px) / 2 + 5px);
+    margin-right: calc((100% - 1529px) / 2 - 5px);
   }
 }
