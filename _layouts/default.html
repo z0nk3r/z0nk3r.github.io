@@ -142,19 +142,6 @@
     <meta property="og:image" content="{{ '/assets/images/social-preview.png' | absolute_url }}">
     <meta name="twitter:image" content="{{ '/assets/images/social-preview.png' | absolute_url }}">
     {% endunless %}
-    <script>
-        // Measure the real scrollbar/gutter width so header/footer can extend under it
-        // without shifting their inner content (CSS calc() alone can't be trusted here
-        // across browsers, so this is measured directly).
-        (function () {
-            function setScrollbarWidth() {
-                var width = window.innerWidth - document.documentElement.clientWidth;
-                document.documentElement.style.setProperty('--scrollbar-width', width + 'px');
-            }
-            setScrollbarWidth();
-            window.addEventListener('resize', setScrollbarWidth);
-        })();
-    </script>
 </head>
 <body>
     <canvas id="ascii-bg" aria-hidden="true"></canvas>
@@ -419,7 +406,10 @@
         // both 1rem, so it renders at the same place whether "actively stuck"
         // or at natural rest at the top of the page) but can change on resize
         // (responsive font sizes, header wrapping), so it's re-measured there
-        // too, matching the existing --scrollbar-width pattern in <head>.
+        // too. (This used to say it matched a --scrollbar-width measurement in
+        // <head>; that one was removed once `footer` switched to a pure-CSS
+        // calc(100vw - 100%) and left it with no consumers. This is now the
+        // only JS-measured-geometry-into-a-custom-property bridge on the site.)
         //
         // Dividing by the current zoom factor is required, not optional: this
         // site applies zoom: 1.1 on desktop, which scales every raw px value

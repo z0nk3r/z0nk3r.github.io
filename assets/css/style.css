@@ -110,8 +110,6 @@
   --surface-1: rgba(var(--foreground-rgb), 0.03);
   --surface-2: rgba(var(--foreground-rgb), 0.06);
 
-  --destructive: #ff6467;
-
   /* Code blocks keep a fixed dark palette regardless of page theme. */
   --code-bg: #0d0d0d;
   --code-fg: #deca9f;
@@ -131,7 +129,6 @@
   --background-rgb: 253, 246, 227;
   --foreground: #150d0f;
   --foreground-rgb: 21, 13, 15;
-  --destructive: #e7000b;
 }
 
 /* ==========================================================================
@@ -2134,7 +2131,7 @@ footer {
      resolves against the containing block (body), whose width already excludes
      the reserved space, so the subtraction is exactly the reserved amount.
 
-     This replaced `var(--scrollbar-width)`, which is measured in JS as
+     This replaced `var(--scrollbar-width)`, which was measured in JS as
      `innerWidth - documentElement.clientWidth` - that is the width of the
      SCROLLBAR, not of the reserved GUTTER, and the two differ. On overlay-
      scrollbar platforms (macOS, iOS, Android, modern Chrome) the gutter is
@@ -2142,7 +2139,9 @@ footer {
      compensated by nothing and the footer content sat 10px right of the main
      column - measured at 900px and 1280px viewports. The CSS form also needs
      no JS and stays correct on browsers with no `scrollbar-gutter` support,
-     where a real scrollbar produces the same difference. */
+     where a real scrollbar produces the same difference. That JS measurement
+     was this property's only consumer and has since been deleted from
+     `_layouts/default.html`; do not reintroduce it. */
   padding-right: calc(100vw - 100%);
   width: 100vw;
   color: var(--muted-foreground);
