@@ -1678,7 +1678,8 @@ article table tbody tr:not(:first-child) td {
   min-width: 0;
 }
 
-.search-result h2 {
+.search-result h2,
+.post-row h3 {
   font-family: var(--font-display);
   font-size: 1.2rem;
   font-weight: 400;
@@ -1733,7 +1734,9 @@ article table tbody tr:not(:first-child) td {
    here instead of .search-result's static border since search-result rows
    are JS-built /search/ results, not primary navigation cards. */
 .tutorial-card::before,
-.tutorial-card::after {
+.tutorial-card::after,
+.project-card::before,
+.project-card::after {
   content: '';
   position: absolute;
   width: 22px;
@@ -1743,7 +1746,8 @@ article table tbody tr:not(:first-child) td {
   z-index: 2;
 }
 
-.tutorial-card::before {
+.tutorial-card::before,
+.project-card::before {
   top: 0;
   left: 0;
   border-top: 1px solid var(--border-strong);
@@ -1751,7 +1755,8 @@ article table tbody tr:not(:first-child) td {
   border-top-left-radius: var(--radius-xl);
 }
 
-.tutorial-card::after {
+.tutorial-card::after,
+.project-card::after {
   bottom: 0;
   right: 0;
   border-bottom: 1px solid var(--border-strong);
@@ -1762,7 +1767,11 @@ article table tbody tr:not(:first-child) td {
 .tutorial-card:hover::before,
 .tutorial-card:hover::after,
 .tutorial-card:focus-within::before,
-.tutorial-card:focus-within::after {
+.tutorial-card:focus-within::after,
+.project-card:hover::before,
+.project-card:hover::after,
+.project-card:focus-within::before,
+.project-card:focus-within::after {
   width: 100%;
   height: 100%;
   /* Each bracket only carries the radius of the ONE corner it owns
@@ -2178,7 +2187,8 @@ html[data-theme="light"] img.theme-swap {
      container. */
 }
 
-.post-card__body h2 {
+.post-card__body h2,
+.project-card__inner h3 {
   font-family: var(--font-display);
   font-size: 1.2rem;
   line-height: 1.35;
@@ -2684,5 +2694,203 @@ footer p {
   header {
     margin-left: calc((100% - 1529px) / 2 + 5px);
     margin-right: calc((100% - 1529px) / 2 - 5px);
+  }
+}
+
+/* ==========================================================================
+   Homepage: hero, projects list
+   ========================================================================== */
+
+/* Plain-prose intro. Michroma is reserved for the title of a piece of content,
+   and the site's name IS that here, so the h1 gets it and everything else in
+   the block stays Geist Mono like the rest of the site's chrome. */
+.home-hero {
+  padding: 1rem 0 2.5rem;
+  text-align: center;
+}
+
+.home-hero h1 {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  font-weight: 400;
+  margin: 0 0 0.75rem;
+}
+
+.home-hero__role {
+  color: var(--muted-foreground);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  margin: 0 0 1.25rem;
+}
+
+.home-hero__blurb {
+  /* ~65ch keeps the measure readable; the blurb is the only running prose on
+     the page and would otherwise stretch the full 1500px content column.
+     `margin-inline: auto` is what actually centres the BLOCK - text-align on
+     the parent only centres the lines inside whatever box this ends up being,
+     and a 65ch box in a 1500px column would otherwise sit hard left. */
+  /* ch is a character count, so this holds ~60 characters per line at whatever
+     size the blurb ends up - the physical width scales with the font, which is
+     why this was tightened from 65ch when the type went up. */
+  max-width: 60ch;
+  margin: 0 auto 1.5rem;
+  font-size: 1.15rem;
+  line-height: 1.65;
+}
+
+.home-hero__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  /* flex children ignore the parent's text-align, so the row needs its own
+     centring. */
+  justify-content: center;
+}
+
+.home-hero__links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted-foreground);
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: color 0.2s ease;
+}
+
+.home-hero__links a:hover {
+  color: var(--foreground);
+}
+
+.home-hero__links svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Section headings sit between the hero and each list. Geist Mono, not
+   Michroma - these label a section, they are not the title of a piece of
+   content (same rule the year headings follow). */
+.section-heading {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 500;
+  margin: 3rem 0 1.25rem;
+}
+
+.section-more {
+  margin: 1.5rem 0 0;
+  font-size: 0.9rem;
+}
+
+.section-more a {
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.section-more a:hover {
+  color: var(--foreground);
+}
+
+/* Projects use the standard vertical tile. The section heading already
+   supplies the gap above, so the grid only needs its top margin reset. */
+.projects {
+  margin-top: 0;
+}
+
+/* Project tiles keep .post-card's aspect-ratio so they match every other card
+   on the site - no override here. That was measured, not assumed: at the 468px
+   grid width a 0.742 ratio gives a 631px tall tile while the content needs
+   about 460px, so the extra fields (status, links, tags) fit with room spare.
+   The excerpt clamp below is what keeps that true as descriptions get longer -
+   don't remove it without re-measuring, because these cards are
+   `overflow: visible` for the glow border, so anything that does not fit spills
+   onto the content below instead of being clipped. */
+
+/* Takes the layout role .post-card-link plays in a normal post tile. Not an
+   anchor here - see project-card.html for why. min-height: 0 for the same
+   reason .post-card-link has it: a flex item defaults to min-height: auto and
+   would otherwise refuse to shrink below its content. */
+.project-card__inner {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  color: inherit;
+  text-decoration: none;
+}
+
+.project-card__inner h3 a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.project-card__inner h3 a:hover {
+  color: var(--muted-foreground);
+}
+
+/* Excerpt keeps .post-card__excerpt's 3-line clamp, same as a post tile - it
+   is what guarantees the content fits the fixed-ratio box above. Write project
+   descriptions to roughly three lines; anything longer is truncated rather
+   than overflowing. */
+
+/* Status reads as state, not as a topic tag, so it drops the tag badge's
+   surface fill and hover scale and just carries a slightly stronger border. */
+.badge--status {
+  background: none;
+  border-color: var(--border-strong);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: lowercase;
+  margin-bottom: 0.75rem;
+}
+
+.badge--status:hover {
+  transform: none;
+}
+
+.project-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+  margin-top: auto;
+  padding-top: 0.9rem;
+  font-size: 0.85rem;
+}
+
+.project-links a {
+  color: var(--muted-foreground);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.project-links a:hover {
+  color: var(--foreground);
+}
+
+/* Latest-posts teaser: horizontal rows, two per row on desktop - the same
+   half-width treatment .syscalls-arch-list uses. */
+.post-rows {
+  margin-top: 0;
+}
+
+@media (min-width: 769px) {
+  .search-results.post-rows {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .home-hero h1 {
+    font-size: 1.9rem;
+  }
+
+  .home-hero__blurb {
+    max-width: 100%;
+  }
+
+  .home-hero__links {
+    gap: 1rem;
   }
 }

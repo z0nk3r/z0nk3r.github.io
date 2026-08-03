@@ -1,0 +1,34 @@
+# Homepage project list.
+#
+# A DATA FILE, not a collection - deliberately, and for the same reason
+# _data/external_references.yml is one: a Jekyll collection always writes a page
+# per document. There is no per-document `output:` override (it is silently
+# ignored), and `published: false` removes the doc from the collection array
+# entirely, so it would vanish from the list too. Projects here link outward, so
+# a data file sidesteps the whole stub-page/sitemap problem.
+#
+# If a project ever needs its own writeup page on this site, that is the one
+# thing this cannot do - it would have to become a collection.
+#
+# Every field except `title` is optional:
+#   title    - required
+#   status   - short label rendered as a badge ("open source", "closed source",
+#              "community", "archived", ...)
+#   image    - thumbnail; omit it and the card renders the same "No Image Found"
+#              placeholder every other card on this site uses
+#   excerpt  - 2-4 sentences; what it is and how it works
+#   tags     - tech stack, rendered as plain badges. Deliberately NOT wired into
+#              the tag system (same call already made for tutorial chapters), so
+#              these need no _tag_pages/<slug>.md stubs
+#   url      - the primary link the title points at (optional; without it the
+#              title renders as plain text)
+#   links    - extra action links, each { label, url }
+
+- title: "z0nk3r.github.io"
+  status: "open source"
+  url: "https://github.com/z0nk3r/z0nk3r.github.io"
+  excerpt: "This site. Jekyll with no build tooling at all - no npm, no bundler, no CSS framework - so every page is hand-authored Markdown and Liquid against a single stylesheet. Includes a canvas matrix-rain background, cross-document view transitions, and a full-text search index built at compile time."
+  tags: [jekyll, css, javascript]
+  links:
+    - { label: "source", url: "https://github.com/z0nk3r/z0nk3r.github.io" }
+    - { label: "visit", url: "https://z0nk3r.github.io/" }

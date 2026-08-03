@@ -1,0 +1,77 @@
+{% comment %}
+  Homepage project tile. Takes one entry from _data/projects.yml:
+    {% include project-card.html project=item %}
+
+  Uses the standard vertical .post-card tile (the same card the blog and
+  references grids use) so projects sit in the site's normal card language.
+
+  TWO deliberate departures from post-card.html, both load-bearing:
+
+  1. NOT wrapped in one big <a>. A project carries several action links, and an
+     <a> must never nest inside another <a> - the browser silently auto-closes
+     the outer one and the layout breaks (already hit once here). So
+     .project-card__inner takes the layout role .post-card-link normally plays,
+     the title is the primary link, and the action links get their own row.
+     The hover treatment is unaffected: .post-card's brackets and glow are keyed
+     off the <li>, not off any anchor, and :focus-within still fires from the
+     links inside.
+
+  2. The fixed aspect-ratio is released in CSS (see .project-card). A project
+     holds more than a post card does - status badge, description, action links,
+     tags - and a fixed-ratio box would overflow, which since the cards became
+     `overflow: visible` for the glow means the surplus spills onto whatever is
+     below instead of being clipped.
+{% endcomment %}
+<li class="post-card project-card">
+  <span class="card-glow" aria-hidden="true"></span>
+  <div class="project-card__inner">
+    {% if include.project.image %}
+    <div class="post-card__image-wrap">
+      <img src="{{ include.project.image | relative_url }}" alt="{{ include.project.title }}" loading="lazy">
+    </div>
+    {% else %}
+    <div class="post-card__image-wrap post-card__image-wrap--placeholder">
+      <span>No Image Found</span>
+    </div>
+    {% endif %}
+
+    <div class="post-card__body">
+      <h3>
+        {% if include.project.url %}
+        <a href="{{ include.project.url }}" target="_blank" rel="noopener">{{ include.project.title }}</a>
+        {% else %}
+        {{ include.project.title }}
+        {% endif %}
+      </h3>
+
+      {% if include.project.status %}
+      <span class="badge badge--status">{{ include.project.status }}</span>
+      {% endif %}
+
+      {% if include.project.excerpt %}
+      <p class="post-card__excerpt">{{ include.project.excerpt }}</p>
+      {% endif %}
+
+      {% if include.project.links and include.project.links.size > 0 %}
+      <div class="project-links">
+        {% for link in include.project.links %}
+        <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} <span aria-hidden="true">&#8599;</span></a>
+        {% endfor %}
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  {% comment %}
+    .badge-row stays OUTSIDE the inner wrapper, matching post-card.html - and
+    .size > 0 rather than a bare truthiness check, since an empty array is
+    TRUTHY in Liquid and would render an empty badge row.
+  {% endcomment %}
+  {% if include.project.tags and include.project.tags.size > 0 %}
+  <div class="badge-row">
+    {% for tag in include.project.tags %}
+    <span class="badge">{{ tag }}</span>
+    {% endfor %}
+  </div>
+  {% endif %}
+</li>
