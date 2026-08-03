@@ -122,6 +122,52 @@
         // (was a fresh document.querySelectorAll('#toc a') per scroll event)
         // - the TOC's own links don't change after generateTOC builds them.
         const tocLinks = toc.querySelectorAll('a');
+
+        // The sidebar is the scroll container; #toc is just the list inside it.
+        const sidebar = toc.closest('.toc-sidebar') || toc.parentElement;
+
+        // Mark the sidebar as actually overflowing so CSS can show its fade
+        // affordance only when there is something hidden. Computed once here
+        // and on resize - deliberately a static fact about the element rather
+        // than anything tied to live scroll position (see the abandoned
+        // .table-scroll edge-fade in the project notes: a JS handler reading live
+        // scroll offsets could not keep up under main-thread contention).
+        const markScrollable = () => {
+            sidebar.classList.toggle('is-scrollable', sidebar.scrollHeight > sidebar.clientHeight + 1);
+        };
+        markScrollable();
+        window.addEventListener('resize', markScrollable);
+
+        // Auto-scrolling the TOC must never fight a reader who is scrolling it
+        // themselves. Only genuine input intent starts the grace period -
+        // listening for 'scroll' instead would also catch our OWN programmatic
+        // scroll below and permanently suppress the feature.
+        let manualUntil = 0;
+        ['wheel', 'pointerdown', 'keydown'].forEach(ev => {
+            sidebar.addEventListener(ev, () => { manualUntil = performance.now() + 1500; },
+                { passive: true });
+        });
+
+        const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Keep the highlighted link inside the sidebar's visible band.
+        // NOT scrollIntoView(): that walks every scrollable ancestor including
+        // the document, so it can yank the whole page while the reader is
+        // mid-article. Assigning the sidebar's own scrollTop cannot.
+        const revealActiveLink = (link) => {
+            if (sidebar.scrollHeight <= sidebar.clientHeight) return;
+            if (performance.now() < manualUntil) return;
+            const sr = sidebar.getBoundingClientRect();
+            const lr = link.getBoundingClientRect();
+            const pad = 28;              // leave a little context either side
+            let delta = 0;
+            if (lr.top < sr.top + pad) delta = lr.top - sr.top - pad;
+            else if (lr.bottom > sr.bottom - pad) delta = lr.bottom - sr.bottom + pad;
+            if (delta === 0) return;
+            sidebar.scrollTo({ top: sidebar.scrollTop + delta,
+                               behavior: reduceMotion ? 'instant' : 'smooth' });
+        };
+
         updateActiveTocLink = () => {
             let current = '';
             headings.forEach(heading => {
@@ -142,12 +188,16 @@
                 current = headings[headings.length - 1].id;
             }
 
+            let activeLink = null;
             tocLinks.forEach(link => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === `#${current}`) {
                     link.classList.add('active');
+                    activeLink = link;
                 }
             });
+
+            if (activeLink) revealActiveLink(activeLink);
         };
     }
 

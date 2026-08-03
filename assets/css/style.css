@@ -267,8 +267,44 @@ html {
   }
 }
 
+/* Styling ANY ::-webkit-scrollbar pseudo takes that scroller out of native
+   rendering in Chromium and paints only what is declared here - so a rule
+   setting `width` alone yields a scrollbar that still reserves its 10px but
+   draws no thumb at all. That is what made the TOC sidebar look like it simply
+   cut off rather than scrolled. The page itself was unaffected because `html`
+   carries `scrollbar-width: thin` (below), which routes it through the
+   standard, natively-painted path instead; `scrollbar-width` is NOT inherited,
+   so every inner scroller (.toc-sidebar, .table-scroll) fell through to this
+   webkit path and got the invisible thumb. Always declare a thumb alongside
+   any ::-webkit-scrollbar width change. */
 ::-webkit-scrollbar {
   width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(var(--foreground-rgb), 0.22);
+  border-radius: var(--radius-full);
+  /* Inset the thumb from the track without changing the reserved width. */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(var(--foreground-rgb), 0.38);
+  background-clip: padding-box;
+}
+
+/* Firefox / standard path. Not inherited, so it has to be restated on the
+   inner scrollers rather than relying on the `html` declaration. */
+.toc-sidebar,
+.table-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(var(--foreground-rgb), 0.28) transparent;
 }
 
 body {
@@ -664,6 +700,73 @@ header {
   background: var(--background);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
+}
+
+/* Registered so the scroll-driven animation below can interpolate them; an
+   unregistered custom property is an untyped token and would jump at 50%
+   instead of easing. initial-value must be computationally independent, so
+   these are px, not rem - `rem` depends on font-size and is rejected. */
+@property --toc-fade-top {
+  syntax: "<length>";
+  initial-value: 0px;
+  inherits: false;
+}
+
+@property --toc-fade-bottom {
+  syntax: "<length>";
+  initial-value: 36px;
+  inherits: false;
+}
+
+@keyframes toc-fade-top {
+  from { --toc-fade-top: 0px; }
+  to   { --toc-fade-top: 36px; }
+}
+
+@keyframes toc-fade-bottom {
+  from { --toc-fade-bottom: 36px; }
+  to   { --toc-fade-bottom: 0px; }
+}
+
+/* Fade the cut-off edge so a long TOC reads as scrollable rather than
+   truncated. `.is-scrollable` is set by generateTOC() only when the sidebar
+   genuinely overflows, so a short TOC gets no fade at all.
+
+   The two fade depths are registered custom properties (below) purely so a
+   scroll-driven animation can interpolate them. Their INITIAL values are the
+   correct un-scrolled state - no top fade, bottom fade on - which means a
+   browser without scroll-driven animation support simply keeps that and still
+   gets a correct, if static, affordance. Nothing here reads scroll position
+   from JS; the animation is compositor-driven, which is what makes it safe
+   where the old JS-tracked .table-scroll edge-fade was not. */
+.toc-sidebar.is-scrollable {
+  -webkit-mask-image: linear-gradient(to bottom,
+      transparent 0,
+      #000 var(--toc-fade-top),
+      #000 calc(100% - var(--toc-fade-bottom)),
+      transparent 100%);
+          mask-image: linear-gradient(to bottom,
+      transparent 0,
+      #000 var(--toc-fade-top),
+      #000 calc(100% - var(--toc-fade-bottom)),
+      transparent 100%);
+}
+
+@supports (animation-timeline: scroll()) {
+  .toc-sidebar.is-scrollable {
+    /* Grow the top fade over the first 40px of scroll, and retire the bottom
+       fade over the last 40px, so each edge is only softened while there is
+       actually something hidden past it. */
+    animation: toc-fade-top linear both, toc-fade-bottom linear both;
+    animation-timeline: scroll(self block), scroll(self block);
+    animation-range: 0 40px, calc(100% - 40px) 100%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toc-sidebar.is-scrollable {
+    animation: none;
+  }
 }
 
 .toc-sidebar ul {
