@@ -32,3 +32,12 @@
   links:
     - { label: "source", url: "https://github.com/z0nk3r/z0nk3r.github.io" }
     - { label: "visit", url: "https://z0nk3r.github.io/" }
+
+- title: "aoc"
+  status: "open source"
+  image: "assets/images/projects/aoc.png"
+  url: "https://github.com/z0nk3r/aoc"
+  excerpt: "Repo for all of my Advent of Code solutions and my automated tooling and submission libraries. Solutions are  included and sorted by year and day in their respective folders."
+  tags: [python, c]
+  links:
+    - { label: "source", url: "https://github.com/z0nk3r/aoc" }
