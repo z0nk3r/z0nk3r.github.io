@@ -92,36 +92,31 @@ title: Home
 <script>
     // Fills in the GitHub star count on each project card.
     //
-    // Client-side because GitHub Pages builds with no plugins, so there is no
-    // build-time way to call an API. Unauthenticated api.github.com allows 60
-    // requests per hour PER VISITOR IP, so results are cached in localStorage
-    // and only refetched once the TTL expires - without that, a visitor who
-    // reloads a few times would exhaust their own quota and see the badges
-    // vanish.
+    // The source is shields.io, NOT api.github.com, and that is the whole point.
+    // Unauthenticated GitHub allows 60 requests per hour PER VISITOR IP, and
+    // this page spends one per project - so a handful of reloads, or a shared
+    // corporate/mobile IP, exhausted it and every badge silently vanished.
+    // Worse, GitHub returned 403 to browser requests while curl from the same
+    // IP in the same minute still got 200, so the quota arithmetic could not
+    // even be reasoned about. shields.io caches server-side, serves
+    // `access-control-allow-origin: *`, and costs the visitor no quota at all.
     //
-    // Every failure path (rate limit, offline, private or renamed repo) leaves
-    // the badge hidden rather than showing a zero or an error.
+    // Trade-off worth knowing: shields pre-formats big numbers and rounds them
+    // (115150 -> "115k", where this page previously showed "115.1k"). Below
+    // 1000 it is the exact count, so this only bites once a repo takes off. If
+    // the tenths ever matter, the fix is to bake counts at build time via an
+    // Actions workflow rather than to go back to calling GitHub from the page.
+    //
+    // Every failure path still leaves the badge hidden rather than showing a
+    // zero or a broken chip.
     (function () {
         var badges = document.querySelectorAll('.project-stars[data-repo]');
         if (!badges.length) return;
 
         var TTL_MS = 6 * 60 * 60 * 1000;
 
-        // GitHub-style short form, but TRUNCATED rather than rounded, so a
-        // count never reads higher than it is: 32760 -> "32.7k", not "32.8k".
-        // Math.floor on tenths is what does it; toFixed(1) alone would round up.
-        // The trailing .0 is kept deliberately ("1.0k", not "1k") so every
-        // abbreviated count has the same shape and the badges stay visually
-        // aligned across cards.
-        // No M suffix on purpose - the largest repo on GitHub is a few hundred
-        // thousand stars, which "404.2k" already covers.
-        function shorten(n) {
-            if (n < 1000) return String(n);
-            return (Math.floor(n / 100) / 10).toFixed(1) + 'k';
-        }
-
-        function reveal(el, count) {
-            el.querySelector('.project-stars__count').textContent = shorten(count);
+        function reveal(el, text) {
+            el.querySelector('.project-stars__count').textContent = text;
             el.removeAttribute('hidden');
         }
 
@@ -137,21 +132,19 @@ title: Home
                 }
             } catch (e) { /* unparseable or storage blocked - just refetch */ }
 
-            fetch('https://api.github.com/repos/' + repo, {
-                headers: { 'Accept': 'application/vnd.github+json' }
-            })
+            fetch('https://img.shields.io/github/stars/' + repo + '.json')
                 .then(function (res) {
                     if (!res.ok) throw new Error('HTTP ' + res.status);
                     return res.json();
                 })
                 .then(function (data) {
-                    if (typeof data.stargazers_count !== 'number') throw new Error('no count');
+                    // shields returns the already-formatted string in `value`
+                    var text = data && data.value;
+                    if (typeof text !== 'string' || !text) throw new Error('no value');
                     try {
-                        localStorage.setItem(key, JSON.stringify({
-                            n: data.stargazers_count, t: Date.now()
-                        }));
+                        localStorage.setItem(key, JSON.stringify({ n: text, t: Date.now() }));
                     } catch (e) { /* private mode - render anyway, just uncached */ }
-                    reveal(el, data.stargazers_count);
+                    reveal(el, text);
                 })
                 .catch(function () { /* leave the badge hidden */ });
         });
