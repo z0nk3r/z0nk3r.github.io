@@ -113,7 +113,14 @@ title: Home
         var badges = document.querySelectorAll('.project-stars[data-repo]');
         if (!badges.length) return;
 
-        var TTL_MS = 6 * 60 * 60 * 1000;
+        // 2h. shields serves `cache-control: max-age=1800, s-maxage=1800` from a
+        // Cloudflare edge, so its own data is never fresher than 30 minutes -
+        // a shorter TTL than that would just refetch an identical value. There
+        // is no published per-IP limit and a 15-request burst returned 200
+        // every time, so the request volume is not the constraint here; 2h is
+        // simply a sensible multiple of their cache window. The browser's own
+        // HTTP cache honours the same header underneath this.
+        var TTL_MS = 2 * 60 * 60 * 1000;
 
         function reveal(el, text) {
             el.querySelector('.project-stars__count').textContent = text;
