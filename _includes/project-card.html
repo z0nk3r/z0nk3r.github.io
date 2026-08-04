@@ -87,7 +87,15 @@
       <span class="badge badge--status">{{ include.project.status }}</span>
       {% endif %}
 
-      {% if include.project.excerpt %}
+      {% comment %}
+        Tests != "" as well as presence: an empty string is TRUTHY in Liquid,
+        so a presence-only condition on `excerpt: ""` renders an empty <p> that
+        still takes its margin. Same trap already fixed on the tutorial topic
+        page. (Do not write literal curly-percent tag delimiters in a comment
+        here - Liquid still tokenises them inside a comment block and a bare
+        conditional keyword is a syntax error. Describe the tag in words.)
+      {% endcomment %}
+      {% if include.project.excerpt and include.project.excerpt != "" %}
       <p class="post-card__excerpt">{{ include.project.excerpt }}</p>
       {% endif %}
 

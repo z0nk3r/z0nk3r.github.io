@@ -29,8 +29,9 @@
 #   links    - extra action links, each { label, url }
 
 - title: "z0nk3r.github.io"
-  order: 2
+  order: 3
   status: "open source"
+  image: "assets/images/social-preview.png"
   url: "https://github.com/z0nk3r/z0nk3r.github.io"
   excerpt: "This site. Jekyll with no build tooling at all - no npm, no bundler, no CSS framework - so every page is hand-authored Markdown and Liquid against a single stylesheet. Includes a canvas matrix-rain background, cross-document view transitions, and a full-text search index built at compile time."
   tags: [jekyll, css, javascript]
@@ -47,3 +48,13 @@
   tags: [python, c]
   links:
     - { label: "source", url: "https://github.com/z0nk3r/aoc" }
+
+- title: "pipes"
+  order: 2
+  status: "open source"
+  image: "assets/images/projects/pipes.png"
+  url: "https://github.com/z0nk3r/pipes"
+  excerpt: "2D Pipes in the Terminal just like ye olden Windows Screensavers! - Personal experimentation with C/Linux Signals and ANSI widechar drawing"
+  tags: [c]
+  links:
+    - { label: "source", url: "https://github.com/z0nk3r/pipes" }

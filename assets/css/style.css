@@ -2931,3 +2931,14 @@ footer p {
   width: 19px;
   height: 19px;
 }
+
+/* Project thumbnails fill their slot rather than letterboxing. The shared
+   default is object-fit: contain, which is right for post/reference covers
+   (never crop someone's artwork) but leaves a project screenshot floating in
+   dead space - the slot's aspect shifts with viewport width because its side
+   margins are fixed rem against a scaling card, so no single source aspect
+   can match it everywhere. cover pins the width and trims a few pixels of
+   height instead. */
+.project-card .post-card__image-wrap img {
+  object-fit: cover;
+}
