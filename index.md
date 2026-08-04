@@ -107,8 +107,21 @@ title: Home
 
         var TTL_MS = 6 * 60 * 60 * 1000;
 
+        // GitHub-style short form, but TRUNCATED rather than rounded, so a
+        // count never reads higher than it is: 32760 -> "32.7k", not "32.8k".
+        // Math.floor on tenths is what does it; toFixed(1) alone would round up.
+        // The trailing .0 is kept deliberately ("1.0k", not "1k") so every
+        // abbreviated count has the same shape and the badges stay visually
+        // aligned across cards.
+        // No M suffix on purpose - the largest repo on GitHub is a few hundred
+        // thousand stars, which "404.2k" already covers.
+        function shorten(n) {
+            if (n < 1000) return String(n);
+            return (Math.floor(n / 100) / 10).toFixed(1) + 'k';
+        }
+
         function reveal(el, count) {
-            el.querySelector('.project-stars__count').textContent = count;
+            el.querySelector('.project-stars__count').textContent = shorten(count);
             el.removeAttribute('hidden');
         }
 
