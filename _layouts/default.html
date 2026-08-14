@@ -439,6 +439,45 @@
         // <table> kept at display: table can't reliably serve as its own scroll
         // container without reintroducing the display: block fixed-layout bug this
         // project hit before. A plain wrapper div sidesteps that entirely.
+        // Send external links to a new tab. Content is authored in Markdown and
+        // kramdown emits a plain <a href> with no target, so ~7k links in the
+        // reference tables and posts would otherwise navigate the reader off the
+        // site. Done here rather than at build time because kramdown has no
+        // setting for it and GitHub Pages forbids the plugin that would - and a
+        // Liquid regex over rendered HTML would still miss the JS-built /search/
+        // results, which this sweep picks up for free.
+        //
+        // Tests use the DOM's PARSED url parts, not the raw href string: the
+        // browser resolves href to an absolute URL, so a relative link reports
+        // the page's own origin and is skipped with no string parsing at all.
+        //
+        // Two origins count as "ours". window.location.origin alone is not
+        // enough: on the dev server that is localhost:4000, which would make an
+        // absolute https://z0nk3r.github.io/... link in a post read as external
+        // and open in a new tab locally while staying in-tab once deployed.
+        // Comparing against site.url as well makes both environments behave the
+        // same way, which is what "a link to my own site is internal" means.
+        var SITE_ORIGIN = {{ site.url | default: '' | jsonify }};
+        document.querySelectorAll('a[href]').forEach((a) => {
+            // Leave anything a template already decided alone - this also keeps
+            // the sweep idempotent if it is ever run twice.
+            if (a.target) return;
+            // Skips mailto:, tel:, javascript: and bare #fragments.
+            if (!/^https?:$/.test(a.protocol)) return;
+            if (a.origin === window.location.origin) return;
+            if (SITE_ORIGIN && a.href.indexOf(SITE_ORIGIN) === 0) return;
+
+            a.target = '_blank';
+            // Append rather than assign: reference-card.html already sets
+            // rel="noopener", and any future rel="nofollow" has to survive.
+            var rel = a.getAttribute('rel');
+            if (!rel) {
+                a.setAttribute('rel', 'noopener');
+            } else if (rel.indexOf('noopener') === -1) {
+                a.setAttribute('rel', rel + ' noopener');
+            }
+        });
+
         document.querySelectorAll('article table').forEach((table) => {
             var wrapper = document.createElement('div');
             wrapper.className = 'table-scroll';
