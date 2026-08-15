@@ -16,4 +16,4 @@
 {%- endfor %}
 {%- assign tc_ordered = tc_ordered | sort: "order" %}
 {%- assign tc_unordered = tc_unordered | sort_natural: "title" %}
-{%- assign topic_children = tc_ordered | concat: tc_unordered %}
+{%- assign topic_children = tc_ordered | concat: tc_unordered -%}
