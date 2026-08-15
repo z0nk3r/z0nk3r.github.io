@@ -1,0 +1,13 @@
+{%- comment %} Responsive YouTube embed for any Markdown body. Always pass a
+real title - it is the iframe's accessible name, not the one YouTube draws
+inside the player. -> docs/templates.md#responsive-youtube-embed-callable-markdown
+{% endcomment %}
+<div class="video-embed">
+    <iframe
+        src="https://www.youtube-nocookie.com/embed/{{ include.id }}"
+        title="{{ include.title | default: 'YouTube video player' }}"
+        loading="lazy"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowfullscreen></iframe>
+</div>
