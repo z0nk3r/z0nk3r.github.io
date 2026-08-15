@@ -4,63 +4,63 @@ title: Home
 ---
 
 <main>
-  {% comment %} -> docs/templates.md#hero-s-name-page-s {% endcomment %}
-  <div class="home-hero">
-    <h1>{{ site.title }}</h1>
-    <p class="home-hero__role">Capabilities Developer &middot; Security Researcher &middot; Perpetual Student</p>
-    <p class="home-hero__blurb">
-      Reverse engineering, binary exploitation, and the notes I keep while
-      learning them. Writeups, reference tables, and long-form tutorials.
-    </p>
-    <div class="home-hero__links">
-      <a href="https://github.com/{{ site.title }}" target="_blank" rel="noopener">
-        {% include icon-github.html %}
-        <span>github.com/{{ site.title }}</span>
-      </a>
-      {% comment %} -> docs/templates.md#no-email-address-published-here {% endcomment %}
-      {% if site.email %}
-      <a href="mailto:{{ site.email }}">
-        <span>{{ site.email }}</span>
-      </a>
-      {% endif %}
+    {% comment %} -> docs/templates.md#hero-s-name-page-s {% endcomment %}
+    <div class="home-hero">
+        <h1>{{ site.title }}</h1>
+        <p class="home-hero__role">Capabilities Developer &middot; Security Researcher &middot; Perpetual Student</p>
+        <p class="home-hero__blurb">
+            Reverse engineering, binary exploitation, and the notes I keep while
+            learning them. Writeups, reference tables, and long-form tutorials.
+        </p>
+        <div class="home-hero__links">
+            <a href="https://github.com/{{ site.title }}" target="_blank" rel="noopener">
+                {% include icon-github.html %}
+                <span>github.com/{{ site.title }}</span>
+            </a>
+            {% comment %} -> docs/templates.md#no-email-address-published-here {% endcomment %}
+            {% if site.email %}
+            <a href="mailto:{{ site.email }}">
+                <span>{{ site.email }}</span>
+            </a>
+            {% endif %}
+        </div>
     </div>
-  </div>
 
-  {% comment %} -> docs/templates.md#four-most-recent-posts-looped {% endcomment %}
-  {% assign recent = site.posts | slice: 0, 4 %}
-  {% if recent.size > 0 %}
-  <h2 class="section-heading">Latest Posts</h2>
-  <ul class="search-results post-rows">
-    {% for post in recent %}
-      {% include post-card-horizontal.html post=post %}
-    {% endfor %}
-  </ul>
-  <p class="section-more">
-    <a href="{{ '/blog/' | relative_url }}">All posts &rarr;</a>
-  </p>
-  {% endif %}
-
-  {% comment %} -> docs/templates.md#gate-filtered-list-not-file {% endcomment %}
-  {% comment %} -> docs/templates.md#entries-order-integer-come-first {% endcomment %}
-  {% assign pj_ordered = "" | split: "" %}
-  {% assign pj_rest = "" | split: "" %}
-  {% for pj in site.data.projects %}
-    {% if pj.order %}
-      {% assign pj_ordered = pj_ordered | push: pj %}
-    {% else %}
-      {% assign pj_rest = pj_rest | push: pj %}
+    {% comment %} -> docs/templates.md#four-most-recent-posts-looped {% endcomment %}
+    {% assign recent = site.posts | slice: 0, 4 %}
+    {% if recent.size > 0 %}
+    <h2 class="section-heading">Latest Posts</h2>
+    <ul class="search-results post-rows">
+        {% for post in recent %}
+            {% include post-card-horizontal.html post=post %}
+        {% endfor %}
+    </ul>
+    <p class="section-more">
+        <a href="{{ '/blog/' | relative_url }}">All posts &rarr;</a>
+    </p>
     {% endif %}
-  {% endfor %}
-  {% assign pj_ordered = pj_ordered | sort: "order" %}
-  {% assign projects = pj_ordered | concat: pj_rest %}
-  {% if projects and projects.size > 0 %}
-  <h2 class="section-heading">Featured Projects</h2>
-  <ul class="posts projects">
-    {% for project in projects %}
-      {% include project-card.html project=project %}
+
+    {% comment %} -> docs/templates.md#gate-filtered-list-not-file {% endcomment %}
+    {% comment %} -> docs/templates.md#entries-order-integer-come-first {% endcomment %}
+    {% assign pj_ordered = "" | split: "" %}
+    {% assign pj_rest = "" | split: "" %}
+    {% for pj in site.data.projects %}
+        {% if pj.order %}
+            {% assign pj_ordered = pj_ordered | push: pj %}
+        {% else %}
+            {% assign pj_rest = pj_rest | push: pj %}
+        {% endif %}
     {% endfor %}
-  </ul>
-  {% endif %}
+    {% assign pj_ordered = pj_ordered | sort: "order" %}
+    {% assign projects = pj_ordered | concat: pj_rest %}
+    {% if projects and projects.size > 0 %}
+    <h2 class="section-heading">Featured Projects</h2>
+    <ul class="posts projects">
+        {% for project in projects %}
+            {% include project-card.html project=project %}
+        {% endfor %}
+    </ul>
+    {% endif %}
 </main>
 
 <script>

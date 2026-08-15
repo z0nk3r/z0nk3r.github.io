@@ -32,7 +32,7 @@ layout: default
     <ul class="posts">
         {% assign sorted_posts = matching_posts | sort: "date" | reverse %}
         {% for post in sorted_posts %}
-            {% include post-card.html post=post %}
+        {% include post-card.html post=post %}
         {% endfor %}
     </ul>
     {% endif %}
@@ -41,7 +41,7 @@ layout: default
     <h2 class="year-heading">Tutorials</h2>
     <ul class="search-results tutorial-list">
         {% for topic in matching_topics %}
-            {% include tutorial-card.html topic=topic %}
+        {% include tutorial-card.html topic=topic %}
         {% endfor %}
     </ul>
     {% endif %}
@@ -50,7 +50,7 @@ layout: default
     <h2 class="year-heading">References</h2>
     <ul class="posts">
         {% for reference in matching_references %}
-            {% include reference-card.html reference=reference %}
+        {% include reference-card.html reference=reference %}
         {% endfor %}
     </ul>
     {% endif %}

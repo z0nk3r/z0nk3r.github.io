@@ -2,82 +2,82 @@
 {% comment %} -> docs/templates.md#star-badge-use-explicit-repo {% endcomment %}
 {% assign pj_repo = include.project.repo %}
 {% unless pj_repo %}
-  {% if include.project.url contains "github.com/" %}
-    {% assign pj_tail = include.project.url | split: "github.com/" | last | split: "?" | first | split: "#" | first %}
-    {% assign pj_parts = pj_tail | split: "/" %}
-    {% if pj_parts.size >= 2 %}
-      {% assign pj_name = pj_parts[1] %}
-      {% comment %}
-        Strip a TRAILING ".git" only. A bare `replace: ".git", ""` matches
-        mid-string and turned "z0nk3r.github.io" into "z0nk3rhub.io".
-      {% endcomment %}
-      {% assign pj_suffix = pj_name | slice: -4, 4 %}
-      {% if pj_suffix == ".git" %}
-        {% assign pj_cut = pj_name.size | minus: 4 %}
-        {% assign pj_name = pj_name | slice: 0, pj_cut %}
-      {% endif %}
-      {% assign pj_repo = pj_parts[0] | append: "/" | append: pj_name %}
+    {% if include.project.url contains "github.com/" %}
+        {% assign pj_tail = include.project.url | split: "github.com/" | last | split: "?" | first | split: "#" | first %}
+        {% assign pj_parts = pj_tail | split: "/" %}
+        {% if pj_parts.size >= 2 %}
+            {% assign pj_name = pj_parts[1] %}
+            {% comment %}
+                Strip a TRAILING ".git" only. A bare `replace: ".git", ""` matches
+                mid-string and turned "z0nk3r.github.io" into "z0nk3rhub.io".
+            {% endcomment %}
+            {% assign pj_suffix = pj_name | slice: -4, 4 %}
+            {% if pj_suffix == ".git" %}
+                {% assign pj_cut = pj_name.size | minus: 4 %}
+                {% assign pj_name = pj_name | slice: 0, pj_cut %}
+            {% endif %}
+            {% assign pj_repo = pj_parts[0] | append: "/" | append: pj_name %}
+        {% endif %}
     {% endif %}
-  {% endif %}
 {% endunless %}
 
 <li class="post-card project-card">
-  <span class="card-glow" aria-hidden="true"></span>
-  {% if pj_repo and pj_repo != "" %}
-  {% comment %}
-    Starts hidden and is only revealed once a count actually arrives, so a rate
-    limit, a private repo or an offline visitor leaves no empty badge behind.
-  {% endcomment %}
-  <span class="project-stars" data-repo="{{ pj_repo }}" hidden>
-    {% include icon-star.html %}
-    <span class="project-stars__count"></span>
-  </span>
-  {% endif %}
-  <div class="project-card__inner">
-    {% if include.project.image %}
-    <div class="post-card__image-wrap">
-      <img src="{{ include.project.image | relative_url }}" alt="{{ include.project.title }}" loading="lazy">
+    <span class="card-glow" aria-hidden="true"></span>
+    {% if pj_repo and pj_repo != "" %}
+    {% comment %}
+        Starts hidden and is only revealed once a count actually arrives, so a rate
+        limit, a private repo or an offline visitor leaves no empty badge behind.
+    {% endcomment %}
+    <span class="project-stars" data-repo="{{ pj_repo }}" hidden>
+        {% include icon-star.html %}
+        <span class="project-stars__count"></span>
+    </span>
+    {% endif %}
+    <div class="project-card__inner">
+        {% if include.project.image %}
+        <div class="post-card__image-wrap">
+            <img src="{{ include.project.image | relative_url }}" alt="{{ include.project.title }}" loading="lazy">
+        </div>
+        {% else %}
+        <div class="post-card__image-wrap post-card__image-wrap--placeholder">
+            <span>No Image Found</span>
+        </div>
+        {% endif %}
+
+        <div class="post-card__body">
+            <h3>
+                {% if include.project.url %}
+                <a href="{{ include.project.url }}" target="_blank" rel="noopener">{{ include.project.title }}</a>
+                {% else %}
+                {{ include.project.title }}
+                {% endif %}
+            </h3>
+
+            {% if include.project.status %}
+            <span class="badge badge--status">{{ include.project.status }}</span>
+            {% endif %}
+
+            {% comment %} -> docs/templates.md#tests-well-presence-empty-string {% endcomment %}
+            {% if include.project.excerpt and include.project.excerpt != "" %}
+            <p class="post-card__excerpt">{{ include.project.excerpt }}</p>
+            {% endif %}
+
+            {% if include.project.links and include.project.links.size > 0 %}
+            <div class="project-links">
+                {% for link in include.project.links %}
+                <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} <span aria-hidden="true">&#8599;</span></a>
+                {% endfor %}
+            </div>
+            {% endif %}
+        </div>
     </div>
-    {% else %}
-    <div class="post-card__image-wrap post-card__image-wrap--placeholder">
-      <span>No Image Found</span>
+
+    {% comment %} -> docs/templates.md#badge-row-stays-outside-inner-wrapper {% endcomment %}
+    {% if include.project.tags and include.project.tags.size > 0 %}
+    <div class="badge-row">
+        {% for tag in include.project.tags %}
+        <span class="badge">{{ tag }}</span>
+        {% endfor %}
     </div>
     {% endif %}
-
-    <div class="post-card__body">
-      <h3>
-        {% if include.project.url %}
-        <a href="{{ include.project.url }}" target="_blank" rel="noopener">{{ include.project.title }}</a>
-        {% else %}
-        {{ include.project.title }}
-        {% endif %}
-      </h3>
-
-      {% if include.project.status %}
-      <span class="badge badge--status">{{ include.project.status }}</span>
-      {% endif %}
-
-      {% comment %} -> docs/templates.md#tests-well-presence-empty-string {% endcomment %}
-      {% if include.project.excerpt and include.project.excerpt != "" %}
-      <p class="post-card__excerpt">{{ include.project.excerpt }}</p>
-      {% endif %}
-
-      {% if include.project.links and include.project.links.size > 0 %}
-      <div class="project-links">
-        {% for link in include.project.links %}
-        <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }} <span aria-hidden="true">&#8599;</span></a>
-        {% endfor %}
-      </div>
-      {% endif %}
-    </div>
-  </div>
-
-  {% comment %} -> docs/templates.md#badge-row-stays-outside-inner-wrapper {% endcomment %}
-  {% if include.project.tags and include.project.tags.size > 0 %}
-  <div class="badge-row">
-    {% for tag in include.project.tags %}
-    <span class="badge">{{ tag }}</span>
-    {% endfor %}
-  </div>
-  {% endif %}
 </li>

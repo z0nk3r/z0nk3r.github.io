@@ -17,34 +17,34 @@ roughly a tenth of this size on the wire.
 [
 {% assign first = true %}
 {% for post in site.posts %}
-  {% unless first %},{% endunless %}{% assign first = false %}
-  {% assign result_author = post.author | default: site.author %}
-  {% assign author_doc = site.authors | where: "name", result_author | first %}
-  {
-    "type": "post",
-    "title": {{ post.title | jsonify }},
-    "url": {{ post.url | relative_url | jsonify }},
-    "date": {{ post.date | date: site.date_format | jsonify }},
-    "author": {{ result_author | jsonify }},
-    "authorAvatar": {{ author_doc.avatar | jsonify }},
-    "image": {{ post.image | relative_url | jsonify }},
-    "excerpt": {{ post.excerpt | strip_html | normalize_whitespace | jsonify }},
-    "content": {{ post.content | strip_html | normalize_whitespace | jsonify }}
-  }
+    {% unless first %},{% endunless %}{% assign first = false %}
+    {% assign result_author = post.author | default: site.author %}
+    {% assign author_doc = site.authors | where: "name", result_author | first %}
+    {
+        "type": "post",
+        "title": {{ post.title | jsonify }},
+        "url": {{ post.url | relative_url | jsonify }},
+        "date": {{ post.date | date: site.date_format | jsonify }},
+        "author": {{ result_author | jsonify }},
+        "authorAvatar": {{ author_doc.avatar | jsonify }},
+        "image": {{ post.image | relative_url | jsonify }},
+        "excerpt": {{ post.excerpt | strip_html | normalize_whitespace | jsonify }},
+        "content": {{ post.content | strip_html | normalize_whitespace | jsonify }}
+    }
 {% endfor %}
 {% for reference in site.references %}
-  {% unless first %},{% endunless %}{% assign first = false %}
-  {
-    "type": "reference",
-    "title": {{ reference.title | jsonify }},
-    "url": {{ reference.url | relative_url | jsonify }},
-    "date": null,
-    "author": null,
-    "authorAvatar": null,
-    "image": {{ reference.image | relative_url | jsonify }},
-    "excerpt": {{ reference.excerpt | strip_html | normalize_whitespace | jsonify }},
-    "content": {{ reference.content | strip_html | normalize_whitespace | jsonify }}
-  }
+    {% unless first %},{% endunless %}{% assign first = false %}
+    {
+        "type": "reference",
+        "title": {{ reference.title | jsonify }},
+        "url": {{ reference.url | relative_url | jsonify }},
+        "date": null,
+        "author": null,
+        "authorAvatar": null,
+        "image": {{ reference.image | relative_url | jsonify }},
+        "excerpt": {{ reference.excerpt | strip_html | normalize_whitespace | jsonify }},
+        "content": {{ reference.content | strip_html | normalize_whitespace | jsonify }}
+    }
 {% endfor %}
 {% comment %} One loop covers the whole tutorials collection - a doc with a
 chapter: key is a chapter, one without is a topic (same discriminator as
@@ -56,43 +56,43 @@ kinds: a topic's parent-URL chain is its ancestors (empty for roots ->
 null), a chapter's is the full chain including its own topic. Missing
 ancestor docs fall back to the raw path segment. {% endcomment %}
 {% for doc in site.tutorials %}
-  {% unless first %},{% endunless %}{% assign first = false %}
-  {% assign ctx_parent = doc.url | split: "/" | pop | join: "/" | append: "/" %}
-  {% assign ctx_segments = ctx_parent | remove_first: "/tutorials/" | split: "/" %}
-  {% assign ctx_parts = "" | split: "" %}
-  {% assign ctx_url = "/tutorials/" %}
-  {% for ctx_seg in ctx_segments %}
-    {% assign ctx_url = ctx_url | append: ctx_seg | append: "/" %}
-    {% assign ctx_doc = site.tutorials | where: "url", ctx_url | first %}
-    {% if ctx_doc %}{% assign ctx_parts = ctx_parts | push: ctx_doc.title %}{% else %}{% assign ctx_parts = ctx_parts | push: ctx_seg %}{% endif %}
-  {% endfor %}
-  {% assign ctx_joined = ctx_parts | join: " / " %}
-  {% if doc.chapter %}
-  {
-    "type": "tutorial-chapter",
-    "title": {{ doc.title | jsonify }},
-    "url": {{ doc.url | relative_url | jsonify }},
-    "date": null,
-    "author": null,
-    "authorAvatar": null,
-    "context": {{ ctx_joined | jsonify }},
-    "image": null,
-    "excerpt": {{ doc.excerpt | strip_html | normalize_whitespace | jsonify }},
-    "content": {{ doc.content | strip_html | normalize_whitespace | jsonify }}
-  }
-  {% else %}
-  {
-    "type": "tutorial-topic",
-    "title": {{ doc.title | jsonify }},
-    "url": {{ doc.url | relative_url | jsonify }},
-    "date": null,
-    "author": null,
-    "authorAvatar": null,
-    "context": {% if ctx_joined == "" %}null{% else %}{{ ctx_joined | jsonify }}{% endif %},
-    "image": {{ doc.image | relative_url | jsonify }},
-    "excerpt": {{ doc.description | strip_html | normalize_whitespace | jsonify }},
-    "content": {{ doc.content | strip_html | normalize_whitespace | jsonify }}
-  }
-  {% endif %}
+    {% unless first %},{% endunless %}{% assign first = false %}
+    {% assign ctx_parent = doc.url | split: "/" | pop | join: "/" | append: "/" %}
+    {% assign ctx_segments = ctx_parent | remove_first: "/tutorials/" | split: "/" %}
+    {% assign ctx_parts = "" | split: "" %}
+    {% assign ctx_url = "/tutorials/" %}
+    {% for ctx_seg in ctx_segments %}
+        {% assign ctx_url = ctx_url | append: ctx_seg | append: "/" %}
+        {% assign ctx_doc = site.tutorials | where: "url", ctx_url | first %}
+        {% if ctx_doc %}{% assign ctx_parts = ctx_parts | push: ctx_doc.title %}{% else %}{% assign ctx_parts = ctx_parts | push: ctx_seg %}{% endif %}
+    {% endfor %}
+    {% assign ctx_joined = ctx_parts | join: " / " %}
+    {% if doc.chapter %}
+    {
+        "type": "tutorial-chapter",
+        "title": {{ doc.title | jsonify }},
+        "url": {{ doc.url | relative_url | jsonify }},
+        "date": null,
+        "author": null,
+        "authorAvatar": null,
+        "context": {{ ctx_joined | jsonify }},
+        "image": null,
+        "excerpt": {{ doc.excerpt | strip_html | normalize_whitespace | jsonify }},
+        "content": {{ doc.content | strip_html | normalize_whitespace | jsonify }}
+    }
+    {% else %}
+    {
+        "type": "tutorial-topic",
+        "title": {{ doc.title | jsonify }},
+        "url": {{ doc.url | relative_url | jsonify }},
+        "date": null,
+        "author": null,
+        "authorAvatar": null,
+        "context": {% if ctx_joined == "" %}null{% else %}{{ ctx_joined | jsonify }}{% endif %},
+        "image": {{ doc.image | relative_url | jsonify }},
+        "excerpt": {{ doc.description | strip_html | normalize_whitespace | jsonify }},
+        "content": {{ doc.content | strip_html | normalize_whitespace | jsonify }}
+    }
+    {% endif %}
 {% endfor %}
 ]

@@ -2,11 +2,11 @@
      -> docs/templates.md#computes-sorted-chapters-directly-under {% endcomment %}
 {% assign cl_list = "" | split: "" %}
 {% for cl_doc in site.tutorials %}
-  {% if cl_doc.chapter %}
-    {% assign cl_parent = cl_doc.url | split: "/" | pop | join: "/" | append: "/" %}
-    {% if cl_parent == include.parent_url %}
-      {% assign cl_list = cl_list | push: cl_doc %}
+    {% if cl_doc.chapter %}
+        {% assign cl_parent = cl_doc.url | split: "/" | pop | join: "/" | append: "/" %}
+        {% if cl_parent == include.parent_url %}
+            {% assign cl_list = cl_list | push: cl_doc %}
+        {% endif %}
     {% endif %}
-  {% endif %}
 {% endfor %}
 {% assign topic_chapters = cl_list | sort: "chapter" %}

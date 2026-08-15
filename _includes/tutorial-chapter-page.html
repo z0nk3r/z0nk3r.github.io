@@ -6,7 +6,7 @@
 {% assign topic_doc = site.tutorials | where: "url", chapter_parent_url | first %}
 {% include chapter-list.html parent_url=chapter_parent_url %}
 {% for ch in topic_chapters %}
-  {% if ch.url == page.url %}{% assign chapter_pos = forloop.index %}{% endif %}
+    {% if ch.url == page.url %}{% assign chapter_pos = forloop.index %}{% endif %}
 {% endfor %}
 {% assign prev_index = chapter_pos | minus: 2 %}
 {% assign next_index = chapter_pos %}
@@ -21,48 +21,48 @@
 </nav>
 
 <main>
-{% comment %} -> docs/templates.md#no-hero-image-chapters {% endcomment %}
-<div class="post-header chapter-header">
-    <h1>{{ page.title }}</h1>
-    <div class="post-meta">
-        {% include chapter-meta.html chapter=page position=chapter_pos total=topic_chapters.size link_author=true %}
-    </div>
-</div>
-
-<div class="post-wrapper">
-    <aside class="toc-sidebar">
-        <nav id="toc"></nav>
-    </aside>
-
-    <div class="article-content">
-        <article>
-            {{ content }}
-        </article>
-
-        <div class="post-navigation">
-            {% if prev_ch %}
-            <div>
-                <span>← Previous chapter</span>
-                <a href="{{ prev_ch.url | relative_url }}">{{ prev_ch.title }}</a>
-            </div>
-            {% else %}
-            <div></div>
-            {% endif %}
-
-            {% if next_ch %}
-            <div>
-                <span>Next chapter →</span>
-                <a href="{{ next_ch.url | relative_url }}">{{ next_ch.title }}</a>
-            </div>
-            {% elsif topic_doc %}
-            <div>
-                <span>Series index ↩</span>
-                <a href="{{ topic_doc.url | relative_url }}">{{ topic_doc.title }}</a>
-            </div>
-            {% endif %}
+    {% comment %} -> docs/templates.md#no-hero-image-chapters {% endcomment %}
+    <div class="post-header chapter-header">
+        <h1>{{ page.title }}</h1>
+        <div class="post-meta">
+            {% include chapter-meta.html chapter=page position=chapter_pos total=topic_chapters.size link_author=true %}
         </div>
     </div>
-</div>
+
+    <div class="post-wrapper">
+        <aside class="toc-sidebar">
+            <nav id="toc"></nav>
+        </aside>
+
+        <div class="article-content">
+            <article>
+                {{ content }}
+            </article>
+
+            <div class="post-navigation">
+                {% if prev_ch %}
+                <div>
+                    <span>← Previous chapter</span>
+                    <a href="{{ prev_ch.url | relative_url }}">{{ prev_ch.title }}</a>
+                </div>
+                {% else %}
+                <div></div>
+                {% endif %}
+
+                {% if next_ch %}
+                <div>
+                    <span>Next chapter →</span>
+                    <a href="{{ next_ch.url | relative_url }}">{{ next_ch.title }}</a>
+                </div>
+                {% elsif topic_doc %}
+                <div>
+                    <span>Series index ↩</span>
+                    <a href="{{ topic_doc.url | relative_url }}">{{ topic_doc.title }}</a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
 </main>
 
 {% include article-scripts.html %}

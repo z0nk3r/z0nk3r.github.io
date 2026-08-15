@@ -5,48 +5,48 @@
 {% assign card_minutes = 0 %}
 {% assign card_child_count = 0 %}
 {% for card_doc in site.tutorials %}
-  {% assign card_head = card_doc.url | slice: 0, card_prefix.size %}
-  {% if card_head == card_prefix and card_doc.url != card_prefix %}
-    {% if card_doc.chapter %}
-      {% assign card_chapter_count = card_chapter_count | plus: 1 %}
-      {% assign card_minutes = card_minutes | plus: card_doc.read_time %}
-    {% else %}
-      {% assign card_parent = card_doc.url | split: "/" | pop | join: "/" | append: "/" %}
-      {% if card_parent == card_prefix %}
-        {% assign card_child_count = card_child_count | plus: 1 %}
-      {% endif %}
+    {% assign card_head = card_doc.url | slice: 0, card_prefix.size %}
+    {% if card_head == card_prefix and card_doc.url != card_prefix %}
+        {% if card_doc.chapter %}
+            {% assign card_chapter_count = card_chapter_count | plus: 1 %}
+            {% assign card_minutes = card_minutes | plus: card_doc.read_time %}
+        {% else %}
+            {% assign card_parent = card_doc.url | split: "/" | pop | join: "/" | append: "/" %}
+            {% if card_parent == card_prefix %}
+                {% assign card_child_count = card_child_count | plus: 1 %}
+            {% endif %}
+        {% endif %}
     {% endif %}
-  {% endif %}
 {% endfor %}
 <li class="search-result tutorial-card">
-  <span class="card-glow" aria-hidden="true"></span>
-  <a href="{{ include.topic.url | relative_url }}">
-    {% comment %} -> docs/templates.md#vt-name-derives-slug-url-segments {% endcomment %}
-    {% assign card_vt = include.topic.url | remove_first: '/tutorials/' | split: '/' | join: '-' %}
-    {% if include.topic.image %}
-    {% comment %} -> docs/templates.md#not-loading-lazy-same-2 {% endcomment %}
-    <div class="search-result__image-wrap tutorial-card__image-wrap" style="view-transition-name: tutorial-topic-{{ card_vt }};">
-      {% comment %} Same optional light-theme variant as the topic hero - see the
-      image_light comment in tutorial-topic-page.html. {% endcomment %}
-      <img src="{{ include.topic.image | relative_url }}" alt="{{ include.topic.title }}"
-           {% if include.topic.image_light %}class="theme-swap" style="--img-light: url('{{ include.topic.image_light | relative_url }}');"{% endif %}>
-    </div>
-    {% else %}
-    <div class="search-result__image-wrap tutorial-card__image-wrap search-result__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ card_vt }};">
-      <span>No Image Found</span>
-    </div>
-    {% endif %}
-    <div class="search-result__body">
-      <h2>{{ include.topic.title }}</h2>
-      <div class="byline search-result__byline">
-        {% if card_child_count > 0 %}
-        <span>{{ card_child_count }} series</span>
-        <span class="byline-sep">|</span>
+    <span class="card-glow" aria-hidden="true"></span>
+    <a href="{{ include.topic.url | relative_url }}">
+        {% comment %} -> docs/templates.md#vt-name-derives-slug-url-segments {% endcomment %}
+        {% assign card_vt = include.topic.url | remove_first: '/tutorials/' | split: '/' | join: '-' %}
+        {% if include.topic.image %}
+        {% comment %} -> docs/templates.md#not-loading-lazy-same-2 {% endcomment %}
+        <div class="search-result__image-wrap tutorial-card__image-wrap" style="view-transition-name: tutorial-topic-{{ card_vt }};">
+            {% comment %} Same optional light-theme variant as the topic hero - see the
+            image_light comment in tutorial-topic-page.html. {% endcomment %}
+            <img src="{{ include.topic.image | relative_url }}" alt="{{ include.topic.title }}"
+                 {% if include.topic.image_light %}class="theme-swap" style="--img-light: url('{{ include.topic.image_light | relative_url }}');"{% endif %}>
+        </div>
+        {% else %}
+        <div class="search-result__image-wrap tutorial-card__image-wrap search-result__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ card_vt }};">
+            <span>No Image Found</span>
+        </div>
         {% endif %}
-        <span>{{ card_chapter_count }} chapter{% unless card_chapter_count == 1 %}s{% endunless %}</span>
-        {% if card_minutes > 0 %}<span class="byline-sep">|</span><span>~{{ card_minutes }} min total</span>{% endif %}
-      </div>
-      <p>{{ include.topic.description }}</p>
-    </div>
-  </a>
+        <div class="search-result__body">
+            <h2>{{ include.topic.title }}</h2>
+            <div class="byline search-result__byline">
+                {% if card_child_count > 0 %}
+                <span>{{ card_child_count }} series</span>
+                <span class="byline-sep">|</span>
+                {% endif %}
+                <span>{{ card_chapter_count }} chapter{% unless card_chapter_count == 1 %}s{% endunless %}</span>
+                {% if card_minutes > 0 %}<span class="byline-sep">|</span><span>~{{ card_minutes }} min total</span>{% endif %}
+            </div>
+            <p>{{ include.topic.description }}</p>
+        </div>
+    </a>
 </li>

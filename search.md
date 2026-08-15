@@ -5,88 +5,88 @@ permalink: /search/
 ---
 
 <main>
-  <h1>Search</h1>
-  <div id="searchResults"></div>
+    <h1>Search</h1>
+    <div id="searchResults"></div>
 </main>
 
 <script>
-  (function () {
-    var resultsEl = document.getElementById('searchResults');
-    var params = new URLSearchParams(window.location.search);
-    var query = (params.get('q') || '').trim().toLowerCase();
+    (function () {
+        var resultsEl = document.getElementById('searchResults');
+        var params = new URLSearchParams(window.location.search);
+        var query = (params.get('q') || '').trim().toLowerCase();
 
-    if (!query) {
-      resultsEl.innerHTML = '<p class="search-empty">Enter a search term above to find posts.</p>';
-      return;
-    }
-
-    fetch('{{ "/search-index.json" | relative_url }}')
-      .then(function (r) { return r.json(); })
-      .then(function (data) {
-        var titleMatches = [];
-        var bodyMatches = [];
-
-        data.forEach(function (item) {
-          var titleHit = item.title.toLowerCase().indexOf(query) !== -1;
-          var bodyHit = item.content.toLowerCase().indexOf(query) !== -1;
-          if (titleHit) {
-            titleMatches.push(item);
-          } else if (bodyHit) {
-            bodyMatches.push(item);
-          }
-        });
-
-        var results = titleMatches.concat(bodyMatches);
-
-        if (results.length === 0) {
-          resultsEl.innerHTML = '<p class="search-empty">No results for “' + query.replace(/</g, '&lt;') + '”.</p>';
-          return;
+        if (!query) {
+            resultsEl.innerHTML = '<p class="search-empty">Enter a search term above to find posts.</p>';
+            return;
         }
 
-        var html = '<ul class="search-results">';
-        results.forEach(function (item) {
-          var imageBlock = item.image
-            ? '<div class="search-result__image-wrap"><img src="' + item.image + '" alt="' + escapeHtml(item.title) + '" loading="lazy"></div>'
-            : '<div class="search-result__image-wrap search-result__image-wrap--placeholder"><span>No Image Found</span></div>';
+        fetch('{{ "/search-index.json" | relative_url }}')
+            .then(function (r) { return r.json(); })
+            .then(function (data) {
+                var titleMatches = [];
+                var bodyMatches = [];
 
-          var bylineBlock = '';
-          if (item.type === 'post' && item.author) {
-            var avatarBlock = item.authorAvatar
-              ? '<div class="avatar avatar--photo"><img src="' + item.authorAvatar + '" alt="' + escapeHtml(item.author) + '"></div>'
-              : '<div class="avatar">' + escapeHtml(item.author.slice(0, 1).toUpperCase()) + '</div>';
-            bylineBlock = '<div class="byline search-result__byline">' + avatarBlock + '<span>' + escapeHtml(item.author) + '</span><span class="byline-sep">|</span><time>' + escapeHtml(item.date) + '</time></div>';
-          } else if (item.type === 'tutorial-topic') {
-            // -> docs/pages-and-data.md#context-parent-chain-topic-titles-nested
-            bylineBlock = '<div class="byline search-result__byline"><span>Tutorial series' + (item.context ? ' &middot; ' + escapeHtml(item.context) : '') + '</span></div>';
-          } else if (item.type === 'tutorial-chapter') {
-            bylineBlock = '<div class="byline search-result__byline"><span>Tutorial &middot; ' + escapeHtml(item.context || '') + '</span></div>';
-          } else {
-            bylineBlock = '<div class="byline search-result__byline"><span>Reference</span></div>';
-          }
+                data.forEach(function (item) {
+                    var titleHit = item.title.toLowerCase().indexOf(query) !== -1;
+                    var bodyHit = item.content.toLowerCase().indexOf(query) !== -1;
+                    if (titleHit) {
+                        titleMatches.push(item);
+                    } else if (bodyHit) {
+                        bodyMatches.push(item);
+                    }
+                });
 
-          html += '<li class="search-result">' +
-            '<span class="card-glow" aria-hidden="true"></span>' +
-            '<a href="' + item.url + '">' +
-            imageBlock +
-            '<div class="search-result__body">' +
-            '<h2>' + escapeHtml(item.title) + '</h2>' +
-            bylineBlock +
-            '<p>' + escapeHtml(item.excerpt || item.content.slice(0, 200)) + '</p>' +
-            '</div>' +
-            '</a>' +
-            '</li>';
-        });
-        html += '</ul>';
-        resultsEl.innerHTML = html;
-      })
-      .catch(function () {
-        resultsEl.innerHTML = '<p class="search-empty">Search is unavailable right now - try again later.</p>';
-      });
+                var results = titleMatches.concat(bodyMatches);
 
-    function escapeHtml(str) {
-      var div = document.createElement('div');
-      div.textContent = str;
-      return div.innerHTML;
-    }
-  })();
+                if (results.length === 0) {
+                    resultsEl.innerHTML = '<p class="search-empty">No results for “' + query.replace(/</g, '&lt;') + '”.</p>';
+                    return;
+                }
+
+                var html = '<ul class="search-results">';
+                results.forEach(function (item) {
+                    var imageBlock = item.image
+                        ? '<div class="search-result__image-wrap"><img src="' + item.image + '" alt="' + escapeHtml(item.title) + '" loading="lazy"></div>'
+                        : '<div class="search-result__image-wrap search-result__image-wrap--placeholder"><span>No Image Found</span></div>';
+
+                    var bylineBlock = '';
+                    if (item.type === 'post' && item.author) {
+                        var avatarBlock = item.authorAvatar
+                            ? '<div class="avatar avatar--photo"><img src="' + item.authorAvatar + '" alt="' + escapeHtml(item.author) + '"></div>'
+                            : '<div class="avatar">' + escapeHtml(item.author.slice(0, 1).toUpperCase()) + '</div>';
+                        bylineBlock = '<div class="byline search-result__byline">' + avatarBlock + '<span>' + escapeHtml(item.author) + '</span><span class="byline-sep">|</span><time>' + escapeHtml(item.date) + '</time></div>';
+                    } else if (item.type === 'tutorial-topic') {
+                        // -> docs/pages-and-data.md#context-parent-chain-topic-titles-nested
+                        bylineBlock = '<div class="byline search-result__byline"><span>Tutorial series' + (item.context ? ' &middot; ' + escapeHtml(item.context) : '') + '</span></div>';
+                    } else if (item.type === 'tutorial-chapter') {
+                        bylineBlock = '<div class="byline search-result__byline"><span>Tutorial &middot; ' + escapeHtml(item.context || '') + '</span></div>';
+                    } else {
+                        bylineBlock = '<div class="byline search-result__byline"><span>Reference</span></div>';
+                    }
+
+                    html += '<li class="search-result">' +
+                        '<span class="card-glow" aria-hidden="true"></span>' +
+                        '<a href="' + item.url + '">' +
+                        imageBlock +
+                        '<div class="search-result__body">' +
+                        '<h2>' + escapeHtml(item.title) + '</h2>' +
+                        bylineBlock +
+                        '<p>' + escapeHtml(item.excerpt || item.content.slice(0, 200)) + '</p>' +
+                        '</div>' +
+                        '</a>' +
+                        '</li>';
+                });
+                html += '</ul>';
+                resultsEl.innerHTML = html;
+            })
+            .catch(function () {
+                resultsEl.innerHTML = '<p class="search-empty">Search is unavailable right now - try again later.</p>';
+            });
+
+        function escapeHtml(str) {
+            var div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+    })();
 </script>

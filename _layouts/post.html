@@ -13,83 +13,83 @@ layout: default
 </nav>
 
 <main>
-<div class="post-header">
-    {% comment %} -> docs/templates.md#id-post-hero-render-blocking-anchor-link {% endcomment %}
-    {% if page.image %}
-    <div id="post-hero" class="post-header__image-wrap" style="view-transition-name: post-hero-{{ page.slug }};">
-        {% comment %} -> docs/templates.md#not-loading-lazy-same {% endcomment %}
-        <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" fetchpriority="high">
-    </div>
-    {% else %}
-    <div id="post-hero" class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: post-hero-{{ page.slug }};">
-        <span>No Image Found</span>
-    </div>
-    {% endif %}
-    <h1>{{ page.title }}</h1>
-    <div class="post-meta">
-        {% include byline.html post=page show_read_time=true link_author=true %}
-        {% if page.categories or page.tags %}
-        <div class="badge-row">
-            {% include tags.html post=page %}
+    <div class="post-header">
+        {% comment %} -> docs/templates.md#id-post-hero-render-blocking-anchor-link {% endcomment %}
+        {% if page.image %}
+        <div id="post-hero" class="post-header__image-wrap" style="view-transition-name: post-hero-{{ page.slug }};">
+            {% comment %} -> docs/templates.md#not-loading-lazy-same {% endcomment %}
+            <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" fetchpriority="high">
+        </div>
+        {% else %}
+        <div id="post-hero" class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: post-hero-{{ page.slug }};">
+            <span>No Image Found</span>
         </div>
         {% endif %}
+        <h1>{{ page.title }}</h1>
+        <div class="post-meta">
+            {% include byline.html post=page show_read_time=true link_author=true %}
+            {% if page.categories or page.tags %}
+            <div class="badge-row">
+                {% include tags.html post=page %}
+            </div>
+            {% endif %}
+        </div>
     </div>
-</div>
 
-<div class="post-wrapper">
-    <aside class="toc-sidebar">
-        <nav id="toc"></nav>
-    </aside>
+    <div class="post-wrapper">
+        <aside class="toc-sidebar">
+            <nav id="toc"></nav>
+        </aside>
 
-    <div class="article-content">
-        <article>
-            {{ content }}
+        <div class="article-content">
+            <article>
+                {{ content }}
 
-            {% if page.tags %}
-            <div class="post-tags">
-                <div class="badge-row">
-                    {% include tags.html post=page %}
+                {% if page.tags %}
+                <div class="post-tags">
+                    <div class="badge-row">
+                        {% include tags.html post=page %}
+                    </div>
                 </div>
-            </div>
-            {% endif %}
-        </article>
+                {% endif %}
+            </article>
 
-        {% assign related = "" | split: "" %}
-        {% for tag in page.tags %}
-            {% assign matches = site.posts | where_exp: "post", "post.tags contains tag" %}
-            {% assign related = related | concat: matches %}
-        {% endfor %}
-        {% assign related = related | uniq | where_exp: "post", "post.url != page.url" %}
-        {% if related.size > 0 %}
-        <div class="related-posts">
-            <h2 class="year-heading">Related posts</h2>
-            <ul class="posts">
-                {% for post in related limit:3 %}
+            {% assign related = "" | split: "" %}
+            {% for tag in page.tags %}
+                {% assign matches = site.posts | where_exp: "post", "post.tags contains tag" %}
+                {% assign related = related | concat: matches %}
+            {% endfor %}
+            {% assign related = related | uniq | where_exp: "post", "post.url != page.url" %}
+            {% if related.size > 0 %}
+            <div class="related-posts">
+                <h2 class="year-heading">Related posts</h2>
+                <ul class="posts">
+                    {% for post in related limit:3 %}
                     {% include post-card.html post=post %}
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
-
-        <div class="post-navigation">
-            {% if page.previous %}
-            <div>
-                <span>← Previous</span>
-                <a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }}</a>
-            </div>
-            {% else %}
-            <div></div>
-            {% endif %}
-
-            {% if page.next %}
-            <div>
-                <span>Next →</span>
-                <a href="{{ page.next.url | relative_url }}">{{ page.next.title }}</a>
+                    {% endfor %}
+                </ul>
             </div>
             {% endif %}
+
+            <div class="post-navigation">
+                {% if page.previous %}
+                <div>
+                    <span>← Previous</span>
+                    <a href="{{ page.previous.url | relative_url }}">{{ page.previous.title }}</a>
+                </div>
+                {% else %}
+                <div></div>
+                {% endif %}
+
+                {% if page.next %}
+                <div>
+                    <span>Next →</span>
+                    <a href="{{ page.next.url | relative_url }}">{{ page.next.title }}</a>
+                </div>
+                {% endif %}
+            </div>
         </div>
     </div>
-</div>
 </main>
 
 {% include article-scripts.html %}
