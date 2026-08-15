@@ -36,7 +36,7 @@ title: Home
         {%- endfor %}
     </ul>
     <p class="section-more">
-        <a href="{{ '/blog/' | relative_url }}">All posts &rarr;</a>
+        <a href="{{ '/writeups/' | relative_url }}">All posts &rarr;</a>
     </p>
     {%- endif %}
 

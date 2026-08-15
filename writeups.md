@@ -1,11 +1,11 @@
 ---
 layout: default
-title: Blog
-permalink: /blog/
+title: Writeups
+permalink: /writeups/
 ---
 
 <main>
-    <h1>Blog</h1>
+    <h1>Writeups</h1>
 
     {%- include posts-by-year.html posts=site.posts %}
     {%- comment %} -> docs/templates.md#render-blocking-anchor-link-rel-expect {% endcomment %}

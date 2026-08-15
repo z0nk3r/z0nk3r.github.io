@@ -8,7 +8,7 @@ logo: /assets/images/social-preview.png
 # Jekyll settings
 markdown: kramdown
 date_format: "%B %d, %Y"
-permalink: /blog/:title/
+permalink: /writeups/:title/
 
 collections:
   authors:
@@ -62,6 +62,9 @@ exclude:
   - vendor/
   - README.md
   - SETUP.md
+  # Internal project memory. Git-excluded so it never reaches GitHub, but the
+  # local build was copying it into _site while SETUP.md and README.md were not.
+  - CLAUDE.md
   # Relocated source comments (see docs/README.md). Belt-and-braces: docs/ is
   # also in .git/info/exclude, so it never reaches GitHub in the first place -
   # this entry keeps it unpublished even if someone commits it later.

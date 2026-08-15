@@ -29,7 +29,7 @@
     {%- if page.image %}
     <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
     {%- endif %}
-    {%- elsif page.url == '/blog/' %}
+    {%- elsif page.url == '/writeups/' %}
     {%- comment %} -> docs/layouts-default.md#same-reasoning-reverse-back-direction {% endcomment %}
     <link rel="expect" href="#post-list-end" blocking="render">
     {%- elsif page.layout == 'tutorial' %}
@@ -82,7 +82,7 @@
             <nav id="siteNav">
                 <a href="{{ '/tutorials/' | relative_url }}">Tutorials</a>
                 <a href="{{ '/references/' | relative_url }}">References</a>
-                <a href="{{ '/blog/' | relative_url }}">Blog</a>
+                <a href="{{ '/writeups/' | relative_url }}">Writeups</a>
             </nav>
         </div>
     </header>
@@ -165,7 +165,7 @@
             if (e.activation && e.activation.entry && e.activation.entry.url) {
                 destPath = new URL(e.activation.entry.url).pathname;
             }
-            var blogIndexPath = '{{ "/blog/" | relative_url }}';
+            var writeupsIndexPath = '{{ "/writeups/" | relative_url }}';
             document.querySelectorAll('[style*="view-transition-name"]').forEach((el) => {
                 var rect = el.getBoundingClientRect();
                 var offscreen = rect.bottom < 0 || rect.top > window.innerHeight;
@@ -174,7 +174,7 @@
                     var link = el.closest('a');
                     isTarget = link
                         ? new URL(link.href).pathname === destPath
-                        : destPath === (el.dataset.vtIndex || blogIndexPath);
+                        : destPath === (el.dataset.vtIndex || writeupsIndexPath);
                 }
                 if (offscreen || !isTarget) {
                     el.style.viewTransitionName = 'none';
