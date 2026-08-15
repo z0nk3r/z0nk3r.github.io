@@ -1,13 +1,20 @@
-{%- comment %} Responsive YouTube embed for any Markdown body. Always pass a
-real title - it is the iframe's accessible name, not the one YouTube draws
-inside the player. -> docs/templates.md#responsive-youtube-embed-callable-markdown
+{%- comment %} YouTube embed as a click-to-play facade. Always pass a real
+title - it labels the play button and becomes the iframe's accessible name.
+-> docs/templates.md#responsive-youtube-embed-callable-markdown
 {% endcomment %}
+{%- assign yt_title = include.title | default: 'YouTube video player' %}
+{%- assign yt_poster = include.poster | default: nil %}
 <div class="video-embed">
-    <iframe
-        src="https://www.youtube-nocookie.com/embed/{{ include.id }}"
-        title="{{ include.title | default: 'YouTube video player' }}"
-        loading="lazy"
-        referrerpolicy="strict-origin-when-cross-origin"
-        allow="accelerometer; encrypted-media; gyroscope; picture-in-picture; web-share"
-        allowfullscreen></iframe>
+    <button type="button" class="video-facade"
+            data-youtube="{{ include.id }}"
+            data-title="{{ yt_title }}"
+            aria-label="Play video: {{ yt_title }}">
+        {%- if yt_poster %}
+        <img src="{{ yt_poster | relative_url }}" alt="" loading="lazy">
+        {%- else %}
+        <img src="https://i.ytimg.com/vi/{{ include.id }}/maxresdefault.jpg" alt="" loading="lazy"
+             data-fallback="https://i.ytimg.com/vi/{{ include.id }}/hqdefault.jpg">
+        {%- endif %}
+        <span class="video-facade__play">{% include icon-play.html %}</span>
+    </button>
 </div>

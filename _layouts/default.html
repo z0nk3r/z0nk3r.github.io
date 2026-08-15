@@ -117,6 +117,30 @@
             };
         }
 
+        // -> docs/layouts-default.md#not-every-video-has-maxresdefault
+        document.querySelectorAll('.video-facade img[data-fallback]').forEach((img) => {
+            const useFallback = () => {
+                if (img.naturalWidth <= 120) img.src = img.dataset.fallback;
+            };
+            if (img.complete) useFallback();
+            else img.addEventListener('load', useFallback, { once: true });
+        });
+
+        // -> docs/layouts-default.md#click-to-play-swaps-facade-real
+        document.querySelectorAll('.video-facade').forEach((btn) => {
+            btn.addEventListener('click', () => {
+                const frame = document.createElement('iframe');
+                frame.src = 'https://www.youtube-nocookie.com/embed/' +
+                    btn.dataset.youtube + '?autoplay=1';
+                frame.title = btn.dataset.title;
+                frame.referrerPolicy = 'strict-origin-when-cross-origin';
+                frame.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; web-share';
+                frame.allowFullscreen = true;
+                btn.replaceWith(frame);
+                frame.focus();
+            });
+        });
+
         // -> docs/layouts-default.md#looping-clips-autoplay-like-gif
         if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
             document.querySelectorAll('video[autoplay]').forEach((v) => {
