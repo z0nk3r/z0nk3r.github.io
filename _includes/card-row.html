@@ -1,0 +1,57 @@
+{%- comment %} Horizontal card row, for the homepage's "Latest posts" teaser and
+the References hub's arch list.
+
+    {% include card-row.html item=post kind="post" %}
+    {% include card-row.html item=ref  kind="reference" %}
+
+Replaces the old post-card-horizontal.html / reference-card-horizontal.html
+pair. Same .search-result row the tutorial cards use, so it inherits the
+thumbnail/placeholder treatment, corner brackets and glow. Laid out two per row
+on desktop via .post-rows - the same trick .syscalls-arch-list already uses.
+
+Unlike project-card.html this IS wrapped in a single <a>: a post or reference
+has exactly one destination, so there is no second link to collide with. That
+is also why byline.html is called without link_author - it would render the
+author name as an <a> nested inside this row's own anchor.
+
+kind gates what differs:
+  post      - h3 (the homepage section already owns the h2), a real byline, and
+              a hard 24-word excerpt
+  reference - h2, a static "Reference" byline, and the excerpt-or-content
+              fallback at 30 words
+
+Params:
+  item - the post or reference document
+  kind - "post" or "reference"
+{% endcomment %}
+{%- assign r_item = include.item %}
+{%- comment %} Post images are site-relative; reference images may be absolute
+and must not be filtered. Resolve only when there IS one - an empty string is
+truthy in Liquid and would skip the placeholder. {% endcomment %}
+{%- assign r_image = nil %}
+{%- if r_item.image %}
+{%- if include.kind == "post" %}
+{%- assign r_image = r_item.image | relative_url %}
+{%- else %}
+{%- assign r_image = r_item.image %}
+{%- endif %}
+{%- endif %}
+<li class="search-result{% if include.kind == "post" %} post-row{% endif %}">
+    <span class="card-glow" aria-hidden="true"></span>
+    <a href="{{ r_item.url | relative_url }}">
+        {%- include card-image.html image=r_image alt=r_item.title wrap_class="search-result__image-wrap" %}
+        <div class="search-result__body">
+            {%- if include.kind == "post" %}
+            <h3>{{ r_item.title }}</h3>
+            {%- include byline.html post=r_item %}
+            <p>{{ r_item.excerpt | strip_html | truncatewords: 24 }}</p>
+            {%- else %}
+            <h2>{{ r_item.title }}</h2>
+            <div class="byline search-result__byline"><span>Reference</span></div>
+            <p>
+                {% if r_item.excerpt %}{{ r_item.excerpt | strip_html }}{% else %}{{ r_item.content | strip_html | truncatewords: 30 }}{% endif %}
+            </p>
+            {%- endif %}
+        </div>
+    </a>
+</li>

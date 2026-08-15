@@ -1,0 +1,42 @@
+{%- comment %} Image-or-placeholder block, shared by every card and article hero.
+
+The placeholder is structurally mandatory, not a nicety: the card grid assumes
+every card is the same shape, so a card without an image still needs the box.
+Before this include the whole branch was copy-pasted eight times and the
+"No Image Found" string nine, counting the hand-written copy in search.md
+(that one renders from fetched JSON and cannot use an include).
+
+Params:
+  image       - resolved src. Callers apply relative_url themselves: reference
+                and project images may be absolute and must NOT be filtered.
+  alt         - alt text.
+  wrap_class  - "post-card__image-wrap", "search-result__image-wrap" or
+                "post-header__image-wrap". The placeholder modifier is derived
+                from it.
+  extra_class - optional second class on the wrap (tutorial-card__image-wrap).
+  vt_name     - optional view-transition-name value.
+  id          - optional element id, for the render-blocking rel=expect anchors.
+  vt_index    - optional data-vt-index (the parent URL a hero morphs back to).
+  image_light - optional light-theme variant; sets --img-light on the img.
+  loading     - "lazy" (default), "priority" (fetchpriority=high, for anything
+                that is the subject of a view-transition morph and must be
+                decoded before capture), or "none".
+{% endcomment %}
+{%- assign ci_wrap = include.wrap_class %}
+{%- assign ci_extra = "" %}
+{%- if include.extra_class %}{% assign ci_extra = include.extra_class | prepend: " " %}{% endif %}
+{%- assign ci_style = "" %}
+{%- if include.vt_name %}{% assign ci_style = include.vt_name | prepend: ' style="view-transition-name: ' | append: ';"' %}{% endif %}
+{%- assign ci_id = "" %}
+{%- if include.id %}{% assign ci_id = include.id | prepend: ' id="' | append: '"' %}{% endif %}
+{%- assign ci_index = "" %}
+{%- if include.vt_index %}{% assign ci_index = include.vt_index | prepend: ' data-vt-index="' | append: '"' %}{% endif %}
+{%- if include.image %}
+<div{{ ci_id }} class="{{ ci_wrap }}{{ ci_extra }}"{{ ci_style }}{{ ci_index }}>
+    <img src="{{ include.image }}" alt="{{ include.alt }}"{% if include.loading == "priority" %} fetchpriority="high"{% elsif include.loading == "none" %}{% else %} loading="lazy"{% endif %}{% if include.image_light %} class="theme-swap" style="--img-light: url('{{ include.image_light }}');"{% endif %}>
+</div>
+{%- else %}
+<div{{ ci_id }} class="{{ ci_wrap }}{{ ci_extra }} {{ ci_wrap }}--placeholder"{{ ci_style }}{{ ci_index }}>
+    <span>No Image Found</span>
+</div>
+{%- endif %}

@@ -9,6 +9,6 @@ permalink: /references/syscalls/
 <ul class="search-results syscalls-arch-list">
 {% assign syscall_archs = site.references | where_exp: "r", "r.syscalls_arch" %}
 {% for reference in syscall_archs %}
-  {% include reference-card-horizontal.html reference=reference %}
+  {% include card-row.html item=reference kind="reference" %}
 {% endfor %}
 </ul>

@@ -94,6 +94,10 @@
     --radius-md: 0.375rem;
     --radius-xl: 0.75rem;
     --radius-full: 9999px;
+
+    /* Card hover glow fade-in. The fade-OUT is a separate, quicker declaration
+       on the base rule - docs/style.css.md#governs-fade-out-returning-resting-state */
+    --card-glow-fade: 1s;
 }
 
 [data-theme="light"] {
@@ -1357,6 +1361,82 @@ article table tbody tr:not(:first-child) td {
 }
 
 /* ==========================================================================
+   Card corner brackets (shared hover treatment)
+
+   One 22px bracket per corner, growing to cover the whole card on hover/focus -
+   the site's "this card navigates somewhere" language, used on tutorial and
+   project cards instead of .search-result's static border. Was copy-pasted
+   three times (post cards, tutorial/project cards, author list) with an
+   identical comment each time.
+
+   Position is not load-bearing: these four rules are the only ones in the
+   stylesheet that touch these pseudo-elements. .tutorial-card's own
+   `border: none` still is - see the Tutorials banner below.
+   -> docs/style.css.md#same-22px-corner-bracket-hover-language
+   ========================================================================== */
+
+.post-card::before,
+.post-card::after,
+.tutorial-card::before,
+.tutorial-card::after,
+.project-card::before,
+.project-card::after,
+.author-list-item::before,
+.author-list-item::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    pointer-events: none;
+    transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
+    z-index: 2;
+}
+
+.post-card::before,
+.tutorial-card::before,
+.project-card::before,
+.author-list-item::before {
+    top: 0;
+    left: 0;
+    border-top: 1px solid var(--border-strong);
+    border-left: 1px solid var(--border-strong);
+    border-top-left-radius: var(--radius-xl);
+}
+
+.post-card::after,
+.tutorial-card::after,
+.project-card::after,
+.author-list-item::after {
+    bottom: 0;
+    right: 0;
+    border-bottom: 1px solid var(--border-strong);
+    border-right: 1px solid var(--border-strong);
+    border-bottom-right-radius: var(--radius-xl);
+}
+
+.post-card:hover::before,
+.post-card:hover::after,
+.post-card:focus-within::before,
+.post-card:focus-within::after,
+.tutorial-card:hover::before,
+.tutorial-card:hover::after,
+.tutorial-card:focus-within::before,
+.tutorial-card:focus-within::after,
+.project-card:hover::before,
+.project-card:hover::after,
+.project-card:focus-within::before,
+.project-card:focus-within::after,
+.author-list-item:hover::before,
+.author-list-item:hover::after,
+.author-list-item:focus-within::before,
+.author-list-item:focus-within::after {
+    width: 100%;
+    height: 100%;
+    /* -> docs/style.css.md#each-bracket-carries-radius-one */
+    border-radius: var(--radius-xl);
+}
+
+/* ==========================================================================
    Tutorials (index cards, chapter list, empty state)
 
    Inserted here (after .search-empty, before "Post navigation") on purpose:
@@ -1372,52 +1452,6 @@ article table tbody tr:not(:first-child) td {
     border: none;
     /* -> docs/style.css.md#visible-not-hidden-card-glow-s */
     overflow: visible;
-}
-
-/* -> docs/style.css.md#same-22px-corner-bracket-hover-language */
-.tutorial-card::before,
-.tutorial-card::after,
-.project-card::before,
-.project-card::after {
-    content: '';
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    pointer-events: none;
-    transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
-    z-index: 2;
-}
-
-.tutorial-card::before,
-.project-card::before {
-    top: 0;
-    left: 0;
-    border-top: 1px solid var(--border-strong);
-    border-left: 1px solid var(--border-strong);
-    border-top-left-radius: var(--radius-xl);
-}
-
-.tutorial-card::after,
-.project-card::after {
-    bottom: 0;
-    right: 0;
-    border-bottom: 1px solid var(--border-strong);
-    border-right: 1px solid var(--border-strong);
-    border-bottom-right-radius: var(--radius-xl);
-}
-
-.tutorial-card:hover::before,
-.tutorial-card:hover::after,
-.tutorial-card:focus-within::before,
-.tutorial-card:focus-within::after,
-.project-card:hover::before,
-.project-card:hover::after,
-.project-card:focus-within::before,
-.project-card:focus-within::after {
-    width: 100%;
-    height: 100%;
-    /* -> docs/style.css.md#each-bracket-carries-radius-one */
-    border-radius: var(--radius-xl);
 }
 
 /* -> docs/style.css.md#larger-thumbnail-plain-search-row */
@@ -1630,43 +1664,6 @@ main h1 {
     border-radius: var(--radius-xl);
     /* -> docs/style.css.md#visible-not-hidden-card-glow-s-2 */
     overflow: visible;
-}
-
-.post-card::before,
-.post-card::after {
-    content: '';
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    pointer-events: none;
-    transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
-    z-index: 2;
-}
-
-.post-card::before {
-    top: 0;
-    left: 0;
-    border-top: 1px solid var(--border-strong);
-    border-left: 1px solid var(--border-strong);
-    border-top-left-radius: var(--radius-xl);
-}
-
-.post-card::after {
-    bottom: 0;
-    right: 0;
-    border-bottom: 1px solid var(--border-strong);
-    border-right: 1px solid var(--border-strong);
-    border-bottom-right-radius: var(--radius-xl);
-}
-
-.post-card:hover::before,
-.post-card:hover::after,
-.post-card:focus-within::before,
-.post-card:focus-within::after {
-    width: 100%;
-    height: 100%;
-    /* -> docs/style.css.md#each-bracket-carries-radius-one-2 */
-    border-radius: var(--radius-xl);
 }
 
 .post-card-link {
@@ -1910,43 +1907,6 @@ footer p {
     overflow: visible;
 }
 
-.author-list-item::before,
-.author-list-item::after {
-    content: '';
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    pointer-events: none;
-    transition: width 0.3s ease, height 0.3s ease, border-radius 0.3s ease;
-    z-index: 2;
-}
-
-.author-list-item::before {
-    top: 0;
-    left: 0;
-    border-top: 1px solid var(--border-strong);
-    border-left: 1px solid var(--border-strong);
-    border-top-left-radius: var(--radius-xl);
-}
-
-.author-list-item::after {
-    bottom: 0;
-    right: 0;
-    border-bottom: 1px solid var(--border-strong);
-    border-right: 1px solid var(--border-strong);
-    border-bottom-right-radius: var(--radius-xl);
-}
-
-.author-list-item:hover::before,
-.author-list-item:hover::after,
-.author-list-item:focus-within::before,
-.author-list-item:focus-within::after {
-    width: 100%;
-    height: 100%;
-    /* -> docs/style.css.md#each-bracket-carries-radius-one-3 */
-    border-radius: var(--radius-xl);
-}
-
 /* ==========================================================================
    Responsive
    ========================================================================== */
@@ -1991,10 +1951,6 @@ footer p {
         flex-direction: column;
         align-items: flex-start;
         text-align: left;
-    }
-
-    .author-header,
-    .author-list-item {
         width: 100%;
     }
 

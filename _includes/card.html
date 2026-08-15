@@ -1,0 +1,66 @@
+{%- comment %} Vertical card tile, for the post grid and the references grid.
+
+    {% include card.html item=post kind="post" %}
+    {% include card.html item=ref  kind="reference" %}
+
+Replaces the old post-card.html / reference-card.html pair, which were the same
+tile apart from two things, both keyed off `kind` here:
+  - a reference may live off-site, so it gets an external href, target/rel and
+    the ↗ glyph in its heading
+  - only posts carry a byline
+
+Params:
+  item - the post or reference document
+  kind - "post" or "reference"
+{% endcomment %}
+{%- assign c_item = include.item %}
+{%- assign c_external = false %}
+{%- assign c_href = c_item.url | relative_url %}
+{%- if include.kind == "reference" and c_item.link %}
+{%- assign c_external = true %}
+{%- assign c_href = c_item.link %}
+{%- endif %}
+{%- comment %} Post images are site-relative; reference images may be absolute
+and must not be filtered. Only resolve when there IS one - an empty string is
+truthy in Liquid, so a blank src would take the image branch and skip the
+placeholder the grid depends on. {% endcomment %}
+{%- comment %} Only posts morph card -> hero, so only they carry a name.
+{% endcomment %}
+{%- assign c_vt = nil %}
+{%- if include.kind == "post" %}
+{%- assign c_vt = c_item.slug | prepend: "post-hero-" %}
+{%- endif %}
+{%- assign c_image = nil %}
+{%- if c_item.image %}
+{%- if include.kind == "post" %}
+{%- assign c_image = c_item.image | relative_url %}
+{%- else %}
+{%- assign c_image = c_item.image %}
+{%- endif %}
+{%- endif %}
+<li class="post-card">
+    <span class="card-glow" aria-hidden="true"></span>
+    <a class="post-card-link" href="{{ c_href }}"{% if c_external %} target="_blank" rel="noopener"{% endif %}>
+        {%- comment %} -> docs/templates.md#loading-lazy-safe-here-despite {% endcomment %}
+        {%- include card-image.html image=c_image alt=c_item.title wrap_class="post-card__image-wrap" vt_name=c_vt %}
+        <div class="post-card__body">
+            <h2>{{ c_item.title }}{% if c_external %}<svg class="external-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 11L11 5M11 5H6M11 5V10"/>
+            </svg>{% endif %}</h2>
+            <p class="post-card__excerpt">
+                {% if c_item.excerpt %}{{ c_item.excerpt | strip_html }}{% else %}{{ c_item.content | strip_html | truncatewords: 30 }}{% endif %}
+            </p>
+            {%- if include.kind == "post" %}
+            {%- include byline.html post=c_item show_read_time=false %}
+            {%- endif %}
+        </div>
+    </a>
+    {%- comment %} .size, not bare truthiness: Jekyll gives every document an
+    empty categories/tags array, and [] is truthy in Liquid - the bare test
+    shipped an empty badge-row div on every untagged card. {% endcomment %}
+    {%- if c_item.categories.size > 0 or c_item.tags.size > 0 %}
+    <div class="badge-row">
+        {%- include tags.html post=c_item %}
+    </div>
+    {%- endif %}
+</li>

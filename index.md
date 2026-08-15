@@ -32,7 +32,7 @@ title: Home
     <h2 class="section-heading">Latest Posts</h2>
     <ul class="search-results post-rows">
         {%- for post in recent %}
-            {%- include post-card-horizontal.html post=post %}
+            {%- include card-row.html item=post kind="post" %}
         {%- endfor %}
     </ul>
     <p class="section-more">

@@ -190,16 +190,16 @@
             copyBtn.type = 'button';
             copyBtn.className = 'code-copy-btn';
             copyBtn.textContent = 'Copy';
+            const flash = (label) => {
+                copyBtn.textContent = label;
+                setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
+            };
             copyBtn.addEventListener('click', () => {
                 const codeEl = block.querySelector('pre code') || block.querySelector('pre');
                 const text = codeEl ? codeEl.innerText : '';
-                navigator.clipboard.writeText(text).then(() => {
-                    copyBtn.textContent = 'Copied!';
-                    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-                }).catch(() => {
-                    copyBtn.textContent = 'Copy failed';
-                    setTimeout(() => { copyBtn.textContent = 'Copy'; }, 1500);
-                });
+                navigator.clipboard.writeText(text)
+                    .then(() => flash('Copied!'))
+                    .catch(() => flash('Copy failed'));
             });
             bar.appendChild(copyBtn);
 

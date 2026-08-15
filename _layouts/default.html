@@ -107,6 +107,17 @@
     </footer>
 
     <script>
+        // ---- Shared helpers ------------------------------------------------
+        // Trailing-edge debounce. Both resize listeners below want the same
+        // 150ms settle before doing layout work.
+        function debounce(fn, wait) {
+            var timer = null;
+            return function () {
+                window.clearTimeout(timer);
+                timer = window.setTimeout(fn, wait);
+            };
+        }
+
         // ---- Theme toggle -------------------------------------------------
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
@@ -230,15 +241,11 @@
         });
 
         // Close the mobile menu if the viewport grows past the breakpoint (resize/rotation)
-        let navMenuResizeDebounce = null;
-        window.addEventListener('resize', () => {
-            window.clearTimeout(navMenuResizeDebounce);
-            navMenuResizeDebounce = window.setTimeout(() => {
-                if (window.innerWidth > 768 && siteNav.classList.contains('open')) {
-                    setMobileMenuOpen(false);
-                }
-            }, 150);
-        });
+        window.addEventListener('resize', debounce(() => {
+            if (window.innerWidth > 768 && siteNav.classList.contains('open')) {
+                setMobileMenuOpen(false);
+            }
+        }, 150));
 
         // ---- Sticky table header offset (--table-sticky-top) ---------------
         // -> docs/layouts-default.md#measure-site-header-s-real
@@ -265,7 +272,7 @@
             if (SITE_ORIGIN && a.href.indexOf(SITE_ORIGIN) === 0) return;
 
             a.target = '_blank';
-            // Append rather than assign: reference-card.html already sets
+            // Append rather than assign: card.html already sets
             // rel="noopener", and any future rel="nofollow" has to survive.
             var rel = a.getAttribute('rel');
             if (!rel) {
@@ -299,11 +306,7 @@
                 document.fonts.ready.then(updateScrollHint);
             }
 
-            var tableResizeDebounce = null;
-            window.addEventListener('resize', function () {
-                window.clearTimeout(tableResizeDebounce);
-                tableResizeDebounce = window.setTimeout(updateScrollHint, 150);
-            });
+            window.addEventListener('resize', debounce(updateScrollHint, 150));
 
             // -> docs/layouts-default.md#sticky-header-long-tables-past
             if (table.querySelectorAll('tbody tr').length > 10) {

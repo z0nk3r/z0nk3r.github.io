@@ -34,15 +34,11 @@
     </span>
     {%- endif %}
     <div class="project-card__inner">
+        {%- assign proj_image = nil %}
         {%- if include.project.image %}
-        <div class="post-card__image-wrap">
-            <img src="{{ include.project.image | relative_url }}" alt="{{ include.project.title }}" loading="lazy">
-        </div>
-        {%- else %}
-        <div class="post-card__image-wrap post-card__image-wrap--placeholder">
-            <span>No Image Found</span>
-        </div>
+        {%- assign proj_image = include.project.image | relative_url %}
         {%- endif %}
+        {%- include card-image.html image=proj_image alt=include.project.title wrap_class="post-card__image-wrap" %}
 
         <div class="post-card__body">
             <h3>

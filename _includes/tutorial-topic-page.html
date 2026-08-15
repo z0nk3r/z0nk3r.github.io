@@ -9,17 +9,18 @@
     <div class="post-header">
         {%- comment %} -> docs/templates.md#id-topic-hero-kept-readability-render-blocking {% endcomment %}
         {%- assign topic_vt = page.url | remove_first: '/tutorials/' | split: '/' | join: '-' %}
+        {%- comment %} -> docs/templates.md#optional-light-theme-variant-topic-may {% endcomment %}
+        {%- assign topic_image = nil %}
+        {%- assign topic_image_light = nil %}
         {%- if page.image %}
-        <div id="topic-hero" class="post-header__image-wrap" style="view-transition-name: tutorial-topic-{{ topic_vt }};" data-vt-index="{{ topic_parent_url | relative_url }}">
-            {%- comment %} -> docs/templates.md#optional-light-theme-variant-topic-may {% endcomment %}
-            <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" fetchpriority="high"
-                 {% if page.image_light %}class="theme-swap" style="--img-light: url('{{ page.image_light | relative_url }}');"{% endif %}>
-        </div>
-        {%- else %}
-        <div id="topic-hero" class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ topic_vt }};" data-vt-index="{{ topic_parent_url | relative_url }}">
-            <span>No Image Found</span>
-        </div>
+        {%- assign topic_image = page.image | relative_url %}
+        {%- if page.image_light %}
+        {%- assign topic_image_light = page.image_light | relative_url %}
         {%- endif %}
+        {%- endif %}
+        {%- assign topic_hero_vt = topic_vt | prepend: "tutorial-topic-" %}
+        {%- assign topic_index = topic_parent_url | relative_url %}
+        {%- include card-image.html image=topic_image image_light=topic_image_light alt=page.title wrap_class="post-header__image-wrap" id="topic-hero" vt_name=topic_hero_vt vt_index=topic_index loading="priority" %}
         <h1>{{ page.title }}</h1>
         {%- if page.categories.size > 0 or page.tags.size > 0 %}
         <div class="post-meta">
@@ -50,10 +51,13 @@
         </section>
         {%- endif %}
 
-        {%- if topic_chapters.size > 0 %}
+        {%- comment %} The populated list and the empty state opened with the same
+        three lines each. One section now, with the branch inside it. {% endcomment %}
+        {%- if topic_chapters.size > 0 or topic_children.size == 0 %}
         <section class="chapter-index">
             <h2 class="year-heading">Chapters</h2>
             <p class="chapter-list-head" aria-hidden="true">{{ page.url | remove_first: '/' }}</p>
+            {%- if topic_chapters.size > 0 %}
             <ol class="chapter-list">
                 {%- for ch in topic_chapters %}
                 <li>
@@ -66,14 +70,9 @@
                 </li>
                 {%- endfor %}
             </ol>
-        </section>
-        {%- endif %}
-
-        {%- if topic_children.size == 0 and topic_chapters.size == 0 %}
-        <section class="chapter-index">
-            <h2 class="year-heading">Chapters</h2>
-            <p class="chapter-list-head" aria-hidden="true">{{ page.url | remove_first: '/' }}</p>
+            {%- else %}
             <p class="chapter-list-empty"><span aria-hidden="true">└── </span>(no chapters yet &mdash; this topic is being written)</p>
+            {%- endif %}
         </section>
         {%- endif %}
 

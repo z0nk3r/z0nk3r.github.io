@@ -14,17 +14,15 @@ layout: default
 
 <main>
     <div class="post-header">
-        {%- comment %} -> docs/templates.md#id-post-hero-render-blocking-anchor-link {% endcomment %}
+        {%- comment %} -> docs/templates.md#id-post-hero-render-blocking-anchor-link
+        loading="priority" rather than lazy -> docs/templates.md#not-loading-lazy-same
+        {% endcomment %}
+        {%- assign hero_image = nil %}
         {%- if page.image %}
-        <div id="post-hero" class="post-header__image-wrap" style="view-transition-name: post-hero-{{ page.slug }};">
-            {%- comment %} -> docs/templates.md#not-loading-lazy-same {% endcomment %}
-            <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" fetchpriority="high">
-        </div>
-        {%- else %}
-        <div id="post-hero" class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: post-hero-{{ page.slug }};">
-            <span>No Image Found</span>
-        </div>
+        {%- assign hero_image = page.image | relative_url %}
         {%- endif %}
+        {%- assign hero_vt = page.slug | prepend: "post-hero-" %}
+        {%- include card-image.html image=hero_image alt=page.title wrap_class="post-header__image-wrap" id="post-hero" vt_name=hero_vt loading="priority" %}
         <h1>{{ page.title }}</h1>
         <div class="post-meta">
             {%- include byline.html post=page show_read_time=true link_author=true %}
@@ -65,7 +63,7 @@ layout: default
                 <h2 class="year-heading">Related posts</h2>
                 <ul class="posts">
                     {%- for post in related limit:3 %}
-                    {%- include post-card.html post=post %}
+                    {%- include card.html item=post kind="post" %}
                     {%- endfor %}
                 </ul>
             </div>
