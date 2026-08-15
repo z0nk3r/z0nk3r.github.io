@@ -1,31 +1,31 @@
 <div id="reading-progress"></div>
 
-{% comment %} The join IS the file placement - no topic: front-matter key exists.
+{%- comment %} The join IS the file placement - no topic: front-matter key exists.
      -> docs/templates.md#joins-url-derived-chapter-s-parent {% endcomment %}
-{% assign chapter_parent_url = page.url | split: "/" | pop | join: "/" | append: "/" %}
-{% assign topic_doc = site.tutorials | where: "url", chapter_parent_url | first %}
-{% include chapter-list.html parent_url=chapter_parent_url %}
-{% for ch in topic_chapters %}
-    {% if ch.url == page.url %}{% assign chapter_pos = forloop.index %}{% endif %}
-{% endfor %}
-{% assign prev_index = chapter_pos | minus: 2 %}
-{% assign next_index = chapter_pos %}
-{% if chapter_pos > 1 %}{% assign prev_ch = topic_chapters[prev_index] %}{% endif %}
-{% if next_index < topic_chapters.size %}{% assign next_ch = topic_chapters[next_index] %}{% endif %}
+{%- assign chapter_parent_url = page.url | split: "/" | pop | join: "/" | append: "/" %}
+{%- assign topic_doc = site.tutorials | where: "url", chapter_parent_url | first %}
+{%- include chapter-list.html parent_url=chapter_parent_url %}
+{%- for ch in topic_chapters %}
+    {%- if ch.url == page.url %}{% assign chapter_pos = forloop.index %}{% endif %}
+{%- endfor %}
+{%- assign prev_index = chapter_pos | minus: 2 %}
+{%- assign next_index = chapter_pos %}
+{%- if chapter_pos > 1 %}{% assign prev_ch = topic_chapters[prev_index] %}{% endif %}
+{%- if next_index < topic_chapters.size %}{% assign next_ch = topic_chapters[next_index] %}{% endif %}
 
-{% comment %} -> docs/templates.md#topic-crumbs-renders-home-tutorials-every {% endcomment %}
+{%- comment %} -> docs/templates.md#topic-crumbs-renders-home-tutorials-every {% endcomment %}
 <nav class="breadcrumbs" aria-label="Breadcrumb">
-    {% include topic-crumbs.html topic_url=chapter_parent_url link_last=true %}
+    {%- include topic-crumbs.html topic_url=chapter_parent_url link_last=true %}
     <span> / </span>
     <span><span class="crumb-icon" aria-hidden="true">▤</span>{{ page.crumb_title | default: page.title }}</span>
 </nav>
 
 <main>
-    {% comment %} -> docs/templates.md#no-hero-image-chapters {% endcomment %}
+    {%- comment %} -> docs/templates.md#no-hero-image-chapters {% endcomment %}
     <div class="post-header chapter-header">
         <h1>{{ page.title }}</h1>
         <div class="post-meta">
-            {% include chapter-meta.html chapter=page position=chapter_pos total=topic_chapters.size link_author=true %}
+            {%- include chapter-meta.html chapter=page position=chapter_pos total=topic_chapters.size link_author=true %}
         </div>
     </div>
 
@@ -40,29 +40,29 @@
             </article>
 
             <div class="post-navigation">
-                {% if prev_ch %}
+                {%- if prev_ch %}
                 <div>
                     <span>← Previous chapter</span>
                     <a href="{{ prev_ch.url | relative_url }}">{{ prev_ch.title }}</a>
                 </div>
-                {% else %}
+                {%- else %}
                 <div></div>
-                {% endif %}
+                {%- endif %}
 
-                {% if next_ch %}
+                {%- if next_ch %}
                 <div>
                     <span>Next chapter →</span>
                     <a href="{{ next_ch.url | relative_url }}">{{ next_ch.title }}</a>
                 </div>
-                {% elsif topic_doc %}
+                {%- elsif topic_doc %}
                 <div>
                     <span>Series index ↩</span>
                     <a href="{{ topic_doc.url | relative_url }}">{{ topic_doc.title }}</a>
                 </div>
-                {% endif %}
+                {%- endif %}
             </div>
         </div>
     </div>
 </main>
 
-{% include article-scripts.html %}
+{%- include article-scripts.html %}

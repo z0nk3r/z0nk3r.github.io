@@ -18,18 +18,18 @@ layout: default
         <div class="author-header__info">
             <h1>{{ page.name }}</h1>
             {% if page.bio %}<p>{{ page.bio }}</p>{% endif %}
-            {% if page.github %}
+            {%- if page.github %}
             <a href="{{ page.github }}" class="icon-link" target="_blank" rel="noopener" aria-label="GitHub">
-                {% include icon-github.html %}
+                {%- include icon-github.html %}
             </a>
-            {% endif %}
+            {%- endif %}
         </div>
     </div>
 
-        {% assign author_posts = site.posts | where_exp: "post", "post.author == page.name" %}
-        {% if page.name == site.author %}
-        {% assign default_author_posts = site.posts | where_exp: "post", "post.author == nil" %}
-        {% assign author_posts = author_posts | concat: default_author_posts | sort: "date" | reverse %}
-        {% endif %}
-        {% include posts-by-year.html posts=author_posts %}
+        {%- assign author_posts = site.posts | where_exp: "post", "post.author == page.name" %}
+        {%- if page.name == site.author %}
+        {%- assign default_author_posts = site.posts | where_exp: "post", "post.author == nil" %}
+        {%- assign author_posts = author_posts | concat: default_author_posts | sort: "date" | reverse %}
+        {%- endif %}
+        {%- include posts-by-year.html posts=author_posts %}
 </main>

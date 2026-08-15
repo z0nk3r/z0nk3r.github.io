@@ -7,23 +7,23 @@ layout: default
     <span> / </span>
     <a href="{{ '/references/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▧</span>References</a>
     <span> / </span>
-    {% if page.syscalls_arch %}
+    {%- if page.syscalls_arch %}
     <a href="{{ '/references/syscalls/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▧</span>Linux Syscalls</a>
     <span> / </span>
-    {% endif %}
+    {%- endif %}
     <span><span class="crumb-icon" aria-hidden="true">▧</span>{{ page.crumb_title | default: page.title }}</span>
 </nav>
 
 <main>
     <div class="post-header reference-header">
         <h1>{{ page.title }}</h1>
-        {% if page.categories or page.tags %}
+        {%- if page.categories or page.tags %}
         <div class="post-meta reference-meta">
             <div class="badge-row">
-                {% include tags.html post=page %}
+                {%- include tags.html post=page %}
             </div>
         </div>
-        {% endif %}
+        {%- endif %}
     </div>
 
     <div class="reference-content">

@@ -2,7 +2,7 @@
 layout: null
 permalink: /search-index.json
 ---
-{% comment %}
+{%- comment %}
 This file is large (the full text of every syscall reference table included
 verbatim, ~780KB raw) - by design, not an oversight. Full excerpt-only
 indexing was considered and rejected: search needs to match syscall names
@@ -13,13 +13,13 @@ zero-behavior-change shrink. Beyond that, this is fetched only when a
 search query is actually submitted (not on every page load), and GitHub
 Pages serves it gzip-compressed, which takes repetitive table text down to
 roughly a tenth of this size on the wire.
-{% endcomment %}
+{%- endcomment %}
 [
-{% assign first = true %}
-{% for post in site.posts %}
+{%- assign first = true %}
+{%- for post in site.posts %}
     {% unless first %},{% endunless %}{% assign first = false %}
-    {% assign result_author = post.author | default: site.author %}
-    {% assign author_doc = site.authors | where: "name", result_author | first %}
+    {%- assign result_author = post.author | default: site.author %}
+    {%- assign author_doc = site.authors | where: "name", result_author | first %}
     {
         "type": "post",
         "title": {{ post.title | jsonify }},
@@ -31,8 +31,8 @@ roughly a tenth of this size on the wire.
         "excerpt": {{ post.excerpt | strip_html | normalize_whitespace | jsonify }},
         "content": {{ post.content | strip_html | normalize_whitespace | jsonify }}
     }
-{% endfor %}
-{% for reference in site.references %}
+{%- endfor %}
+{%- for reference in site.references %}
     {% unless first %},{% endunless %}{% assign first = false %}
     {
         "type": "reference",
@@ -45,8 +45,8 @@ roughly a tenth of this size on the wire.
         "excerpt": {{ reference.excerpt | strip_html | normalize_whitespace | jsonify }},
         "content": {{ reference.content | strip_html | normalize_whitespace | jsonify }}
     }
-{% endfor %}
-{% comment %} One loop covers the whole tutorials collection - a doc with a
+{%- endfor %}
+{%- comment %} One loop covers the whole tutorials collection - a doc with a
 chapter: key is a chapter, one without is a topic (same discriminator as
 _layouts/tutorial.html). The two type strings are unchanged so search.md's
 JS needs no edits. "context" is a " / "-joined chain of topic titles built
@@ -55,19 +55,19 @@ last segment) and looking each prefix up by URL - the same walk for both
 kinds: a topic's parent-URL chain is its ancestors (empty for roots ->
 null), a chapter's is the full chain including its own topic. Missing
 ancestor docs fall back to the raw path segment. {% endcomment %}
-{% for doc in site.tutorials %}
+{%- for doc in site.tutorials %}
     {% unless first %},{% endunless %}{% assign first = false %}
-    {% assign ctx_parent = doc.url | split: "/" | pop | join: "/" | append: "/" %}
-    {% assign ctx_segments = ctx_parent | remove_first: "/tutorials/" | split: "/" %}
-    {% assign ctx_parts = "" | split: "" %}
-    {% assign ctx_url = "/tutorials/" %}
-    {% for ctx_seg in ctx_segments %}
-        {% assign ctx_url = ctx_url | append: ctx_seg | append: "/" %}
-        {% assign ctx_doc = site.tutorials | where: "url", ctx_url | first %}
-        {% if ctx_doc %}{% assign ctx_parts = ctx_parts | push: ctx_doc.title %}{% else %}{% assign ctx_parts = ctx_parts | push: ctx_seg %}{% endif %}
-    {% endfor %}
-    {% assign ctx_joined = ctx_parts | join: " / " %}
-    {% if doc.chapter %}
+    {%- assign ctx_parent = doc.url | split: "/" | pop | join: "/" | append: "/" %}
+    {%- assign ctx_segments = ctx_parent | remove_first: "/tutorials/" | split: "/" %}
+    {%- assign ctx_parts = "" | split: "" %}
+    {%- assign ctx_url = "/tutorials/" %}
+    {%- for ctx_seg in ctx_segments %}
+        {%- assign ctx_url = ctx_url | append: ctx_seg | append: "/" %}
+        {%- assign ctx_doc = site.tutorials | where: "url", ctx_url | first %}
+        {%- if ctx_doc %}{% assign ctx_parts = ctx_parts | push: ctx_doc.title %}{% else %}{% assign ctx_parts = ctx_parts | push: ctx_seg %}{% endif %}
+    {%- endfor %}
+    {%- assign ctx_joined = ctx_parts | join: " / " %}
+    {%- if doc.chapter %}
     {
         "type": "tutorial-chapter",
         "title": {{ doc.title | jsonify }},
@@ -80,7 +80,7 @@ ancestor docs fall back to the raw path segment. {% endcomment %}
         "excerpt": {{ doc.excerpt | strip_html | normalize_whitespace | jsonify }},
         "content": {{ doc.content | strip_html | normalize_whitespace | jsonify }}
     }
-    {% else %}
+    {%- else %}
     {
         "type": "tutorial-topic",
         "title": {{ doc.title | jsonify }},
@@ -93,6 +93,6 @@ ancestor docs fall back to the raw path segment. {% endcomment %}
         "excerpt": {{ doc.description | strip_html | normalize_whitespace | jsonify }},
         "content": {{ doc.content | strip_html | normalize_whitespace | jsonify }}
     }
-    {% endif %}
-{% endfor %}
+    {%- endif %}
+{%- endfor %}
 ]

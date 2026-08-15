@@ -1,10 +1,10 @@
-{% comment %} -> docs/templates.md#groups-include-posts-year-renders {% endcomment %}
-{% assign posts_by_year = include.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
-{% for year_group in posts_by_year %}
+{%- comment %} -> docs/templates.md#groups-include-posts-year-renders {% endcomment %}
+{%- assign posts_by_year = include.posts | group_by_exp: "post", "post.date | date: '%Y'" %}
+{%- for year_group in posts_by_year %}
 <h2 class="year-heading">{{ year_group.name }}</h2>
 <ul class="posts">
-    {% for post in year_group.items %}
-    {% include post-card.html post=post %}
-    {% endfor %}
+    {%- for post in year_group.items %}
+    {%- include post-card.html post=post %}
+    {%- endfor %}
 </ul>
-{% endfor %}
+{%- endfor %}

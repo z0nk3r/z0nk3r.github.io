@@ -1,19 +1,19 @@
-{% comment %} Returns `topic_children` by assign-leak. Parent = own URL minus last segment.
+{%- comment %} Returns `topic_children` by assign-leak. Parent = own URL minus last segment.
      -> docs/templates.md#computes-sorted-immediate-child-topics {% endcomment %}
-{% assign tc_ordered = "" | split: "" %}
-{% assign tc_unordered = "" | split: "" %}
-{% for tc_doc in site.tutorials %}
-    {% unless tc_doc.chapter %}
-        {% assign tc_parent = tc_doc.url | split: "/" | pop | join: "/" | append: "/" %}
-        {% if tc_parent == include.parent %}
-            {% if tc_doc.order %}
-                {% assign tc_ordered = tc_ordered | push: tc_doc %}
-            {% else %}
-                {% assign tc_unordered = tc_unordered | push: tc_doc %}
-            {% endif %}
-        {% endif %}
-    {% endunless %}
-{% endfor %}
-{% assign tc_ordered = tc_ordered | sort: "order" %}
-{% assign tc_unordered = tc_unordered | sort_natural: "title" %}
-{% assign topic_children = tc_ordered | concat: tc_unordered %}
+{%- assign tc_ordered = "" | split: "" %}
+{%- assign tc_unordered = "" | split: "" %}
+{%- for tc_doc in site.tutorials %}
+    {%- unless tc_doc.chapter %}
+        {%- assign tc_parent = tc_doc.url | split: "/" | pop | join: "/" | append: "/" %}
+        {%- if tc_parent == include.parent %}
+            {%- if tc_doc.order %}
+                {%- assign tc_ordered = tc_ordered | push: tc_doc %}
+            {%- else %}
+                {%- assign tc_unordered = tc_unordered | push: tc_doc %}
+            {%- endif %}
+        {%- endif %}
+    {%- endunless %}
+{%- endfor %}
+{%- assign tc_ordered = tc_ordered | sort: "order" %}
+{%- assign tc_unordered = tc_unordered | sort_natural: "title" %}
+{%- assign topic_children = tc_ordered | concat: tc_unordered %}

@@ -1,19 +1,19 @@
-{% comment %} Ancestor lookup by URL prefix. All vars are crumb_-prefixed: include assigns leak.
+{%- comment %} Ancestor lookup by URL prefix. All vars are crumb_-prefixed: include assigns leak.
      -> docs/templates.md#renders-full-breadcrumb-trail-tutorials-tree {% endcomment %}
 <a href="{{ '/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">⌂</span>Home</a>
 <span> / </span>
 <a href="{{ '/tutorials/' | relative_url }}"><span class="crumb-icon" aria-hidden="true">▣</span>Tutorials</a>
-{% assign crumb_segments = include.topic_url | remove_first: "/tutorials/" | split: "/" %}
-{% assign crumb_url = "/tutorials/" %}
-{% for crumb_seg in crumb_segments %}
-{% assign crumb_url = crumb_url | append: crumb_seg | append: "/" %}
-{% assign crumb_doc = site.tutorials | where: "url", crumb_url | first %}
+{%- assign crumb_segments = include.topic_url | remove_first: "/tutorials/" | split: "/" %}
+{%- assign crumb_url = "/tutorials/" %}
+{%- for crumb_seg in crumb_segments %}
+{%- assign crumb_url = crumb_url | append: crumb_seg | append: "/" %}
+{%- assign crumb_doc = site.tutorials | where: "url", crumb_url | first %}
 <span> / </span>
-{% if crumb_doc == nil %}
+{%- if crumb_doc == nil %}
 <span><span class="crumb-icon" aria-hidden="true">▣</span>{{ crumb_seg }}</span>
-{% elsif forloop.last and include.link_last != true %}
+{%- elsif forloop.last and include.link_last != true %}
 <span><span class="crumb-icon" aria-hidden="true">▣</span>{{ crumb_doc.title }}</span>
-{% else %}
+{%- else %}
 <a href="{{ crumb_doc.url | relative_url }}"><span class="crumb-icon" aria-hidden="true">▣</span>{{ crumb_doc.title }}</a>
-{% endif %}
-{% endfor %}
+{%- endif %}
+{%- endfor %}

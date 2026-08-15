@@ -2,10 +2,10 @@
 layout: default
 ---
 
-{% comment %} A doc WITH a chapter: key is a chapter, one without is a topic.
+{%- comment %} A doc WITH a chapter: key is a chapter, one without is a topic.
      -> docs/templates.md#single-dispatcher-layout-whole-tutorials {% endcomment %}
-{% if page.chapter %}
-{% include tutorial-chapter-page.html %}
-{% else %}
-{% include tutorial-topic-page.html %}
-{% endif %}
+{%- if page.chapter %}
+{%- include tutorial-chapter-page.html %}
+{%- else %}
+{%- include tutorial-topic-page.html %}
+{%- endif %}

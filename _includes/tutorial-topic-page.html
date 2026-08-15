@@ -1,33 +1,33 @@
 <nav class="breadcrumbs" aria-label="Breadcrumb">
-    {% include topic-crumbs.html topic_url=page.url link_last=false %}
+    {%- include topic-crumbs.html topic_url=page.url link_last=false %}
 </nav>
 
-{% comment %} -> docs/templates.md#parent-url-page-s-own {% endcomment %}
-{% assign topic_parent_url = page.url | split: "/" | pop | join: "/" | append: "/" %}
+{%- comment %} -> docs/templates.md#parent-url-page-s-own {% endcomment %}
+{%- assign topic_parent_url = page.url | split: "/" | pop | join: "/" | append: "/" %}
 
 <main>
     <div class="post-header">
-        {% comment %} -> docs/templates.md#id-topic-hero-kept-readability-render-blocking {% endcomment %}
-        {% assign topic_vt = page.url | remove_first: '/tutorials/' | split: '/' | join: '-' %}
-        {% if page.image %}
+        {%- comment %} -> docs/templates.md#id-topic-hero-kept-readability-render-blocking {% endcomment %}
+        {%- assign topic_vt = page.url | remove_first: '/tutorials/' | split: '/' | join: '-' %}
+        {%- if page.image %}
         <div id="topic-hero" class="post-header__image-wrap" style="view-transition-name: tutorial-topic-{{ topic_vt }};" data-vt-index="{{ topic_parent_url | relative_url }}">
-            {% comment %} -> docs/templates.md#optional-light-theme-variant-topic-may {% endcomment %}
+            {%- comment %} -> docs/templates.md#optional-light-theme-variant-topic-may {% endcomment %}
             <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" fetchpriority="high"
                  {% if page.image_light %}class="theme-swap" style="--img-light: url('{{ page.image_light | relative_url }}');"{% endif %}>
         </div>
-        {% else %}
+        {%- else %}
         <div id="topic-hero" class="post-header__image-wrap post-header__image-wrap--placeholder" style="view-transition-name: tutorial-topic-{{ topic_vt }};" data-vt-index="{{ topic_parent_url | relative_url }}">
             <span>No Image Found</span>
         </div>
-        {% endif %}
+        {%- endif %}
         <h1>{{ page.title }}</h1>
-        {% if page.categories.size > 0 or page.tags.size > 0 %}
+        {%- if page.categories.size > 0 or page.tags.size > 0 %}
         <div class="post-meta">
             <div class="badge-row">
-                {% include tags.html post=page %}
+                {%- include tags.html post=page %}
             </div>
         </div>
-        {% endif %}
+        {%- endif %}
     </div>
 
     <div class="reference-content">
@@ -35,27 +35,27 @@
             {{ content }}
         </article>
 
-        {% include topic-children.html parent=page.url %}
-        {% include chapter-list.html parent_url=page.url %}
+        {%- include topic-children.html parent=page.url %}
+        {%- include chapter-list.html parent_url=page.url %}
 
-        {% comment %} -> docs/templates.md#topic-can-group-child-topic-cards {% endcomment %}
-        {% if topic_children.size > 0 %}
+        {%- comment %} -> docs/templates.md#topic-can-group-child-topic-cards {% endcomment %}
+        {%- if topic_children.size > 0 %}
         <section class="chapter-index">
             <h2 class="year-heading">Series</h2>
             <ul class="search-results tutorial-list">
-                {% for child in topic_children %}
-                {% include tutorial-card.html topic=child %}
-                {% endfor %}
+                {%- for child in topic_children %}
+                {%- include tutorial-card.html topic=child %}
+                {%- endfor %}
             </ul>
         </section>
-        {% endif %}
+        {%- endif %}
 
-        {% if topic_chapters.size > 0 %}
+        {%- if topic_chapters.size > 0 %}
         <section class="chapter-index">
             <h2 class="year-heading">Chapters</h2>
             <p class="chapter-list-head" aria-hidden="true">{{ page.url | remove_first: '/' }}</p>
             <ol class="chapter-list">
-                {% for ch in topic_chapters %}
+                {%- for ch in topic_chapters %}
                 <li>
                     <a href="{{ ch.url | relative_url }}">
                         <span class="chapter-tree" aria-hidden="true">{% if forloop.last %}└──{% else %}├──{% endif %}</span>
@@ -64,20 +64,20 @@
                         {% if ch.read_time %}<span class="chapter-meta-inline">{{ ch.read_time }} min</span>{% endif %}
                     </a>
                 </li>
-                {% endfor %}
+                {%- endfor %}
             </ol>
         </section>
-        {% endif %}
+        {%- endif %}
 
-        {% if topic_children.size == 0 and topic_chapters.size == 0 %}
+        {%- if topic_children.size == 0 and topic_chapters.size == 0 %}
         <section class="chapter-index">
             <h2 class="year-heading">Chapters</h2>
             <p class="chapter-list-head" aria-hidden="true">{{ page.url | remove_first: '/' }}</p>
             <p class="chapter-list-empty"><span aria-hidden="true">└── </span>(no chapters yet &mdash; this topic is being written)</p>
         </section>
-        {% endif %}
+        {%- endif %}
 
-        {% comment %} Render-blocking anchor for default.html's rel=expect - see
+        {%- comment %} Render-blocking anchor for default.html's rel=expect - see
         the hero comment above. Unconditional so the anchor always exists. {% endcomment %}
         <span id="topic-content-end" hidden></span>
     </div>

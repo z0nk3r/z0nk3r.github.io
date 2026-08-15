@@ -21,64 +21,64 @@
             color-scheme: light;
         }
     </style>
-    {% comment %} -> docs/layouts-default.md#colors-mobile-browser-chrome-url {% endcomment %}
+    {%- comment %} -> docs/layouts-default.md#colors-mobile-browser-chrome-url {% endcomment %}
     <meta name="theme-color" content="#060000">
-    {% if page.layout == 'post' %}
-    {% comment %} -> docs/layouts-default.md#rel-expect-blocking-render-view {% endcomment %}
+    {%- if page.layout == 'post' %}
+    {%- comment %} -> docs/layouts-default.md#rel-expect-blocking-render-view {% endcomment %}
     <link rel="expect" href="#post-hero" blocking="render">
-    {% if page.image %}
+    {%- if page.image %}
     <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
-    {% endif %}
-    {% elsif page.url == '/blog/' %}
-    {% comment %} -> docs/layouts-default.md#same-reasoning-reverse-back-direction {% endcomment %}
+    {%- endif %}
+    {%- elsif page.url == '/blog/' %}
+    {%- comment %} -> docs/layouts-default.md#same-reasoning-reverse-back-direction {% endcomment %}
     <link rel="expect" href="#post-list-end" blocking="render">
-    {% elsif page.layout == 'tutorial' %}
-    {% unless page.chapter %}
-    {% comment %} -> docs/layouts-default.md#topic-pages-whole-tutorials-collection {% endcomment %}
+    {%- elsif page.layout == 'tutorial' %}
+    {%- unless page.chapter %}
+    {%- comment %} -> docs/layouts-default.md#topic-pages-whole-tutorials-collection {% endcomment %}
     <link rel="expect" href="#topic-content-end" blocking="render">
-    {% if page.image %}
+    {%- if page.image %}
     <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
-    {% endif %}
-    {% endunless %}
-    {% elsif page.url == '/tutorials/' %}
-    {% comment %} -> docs/layouts-default.md#same-reverse-direction-reasoning-blog-branch {% endcomment %}
+    {%- endif %}
+    {%- endunless %}
+    {%- elsif page.url == '/tutorials/' %}
+    {%- comment %} -> docs/layouts-default.md#same-reverse-direction-reasoning-blog-branch {% endcomment %}
     <link rel="expect" href="#topic-list-end" blocking="render">
-    {% endif %}
+    {%- endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% comment %} -> docs/layouts-default.md#title-hand-written-keeps-site-s {% endcomment %}
+    {%- comment %} -> docs/layouts-default.md#title-hand-written-keeps-site-s {% endcomment %}
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
-    {% comment %} -> docs/layouts-default.md#uses-same-icon-192-png-raster {% endcomment %}
+    {%- comment %} -> docs/layouts-default.md#uses-same-icon-192-png-raster {% endcomment %}
     <link rel="icon" type="image/png" href="{{ '/assets/images/icon-192.png' | relative_url }}">
     <link rel="apple-touch-icon" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">
     <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
-    {% comment %} -> docs/layouts-default.md#geist-geist-mono-michroma-self-hosted {% endcomment %}
+    {%- comment %} -> docs/layouts-default.md#geist-geist-mono-michroma-self-hosted {% endcomment %}
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
     <script src="{{ '/assets/js/ascii-background.js' | relative_url }}" defer></script>
-    {% feed_meta %}
-    {% seo title=false %}
-    {% unless page.image %}
+    {%- feed_meta %}
+    {%- seo title=false %}
+    {%- unless page.image %}
     <meta property="og:image" content="{{ '/assets/images/social-preview.png' | absolute_url }}">
     <meta name="twitter:image" content="{{ '/assets/images/social-preview.png' | absolute_url }}">
-    {% endunless %}
+    {%- endunless %}
 </head>
 <body>
     <canvas id="ascii-bg" aria-hidden="true"></canvas>
     <header>
         <div class="header-wrapper">
-            {% comment %} -> docs/layouts-default.md#deliberately-not-h1-site-title {% endcomment %}
+            {%- comment %} -> docs/layouts-default.md#deliberately-not-h1-site-title {% endcomment %}
             <p class="site-title"><a href="{{ '/' | relative_url }}" aria-label="{{ site.title }} home"><img src="{{ '/assets/images/icon-192.png' | relative_url }}" alt="" width="32" height="32"></a></p>
-            {% comment %} -> docs/layouts-default.md#sits-directly-header-wrapper-not-nested {% endcomment %}
+            {%- comment %} -> docs/layouts-default.md#sits-directly-header-wrapper-not-nested {% endcomment %}
             <div class="nav-search">
                 <input type="search" id="navSearchInput" class="nav-search-input" placeholder="Search…" aria-label="Search posts" autocomplete="off">
                 <button type="button" id="navSearchToggle" class="nav-search-toggle" aria-label="Search">
-                    {% include icon-search.html %}
+                    {%- include icon-search.html %}
                 </button>
             </div>
             <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">{% include icon-moon.html %}</button>
             <button type="button" id="navMenuToggle" class="nav-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="siteNav">
-                {% include icon-hamburger.html %}
+                {%- include icon-hamburger.html %}
             </button>
-            {% comment %} -> docs/layouts-default.md#no-explicit-home-link {% endcomment %}
+            {%- comment %} -> docs/layouts-default.md#no-explicit-home-link {% endcomment %}
             <nav id="siteNav">
                 <a href="{{ '/tutorials/' | relative_url }}">Tutorials</a>
                 <a href="{{ '/references/' | relative_url }}">References</a>
@@ -97,10 +97,10 @@
             <p>&copy; {{ site.time | date: "%Y" }} {{ site.title }}. All rights reserved.</p>
             <div class="footer-icons">
                 <a href="{{ '/feed.xml' | relative_url }}" class="footer-github" aria-label="RSS feed">
-                    {% include icon-rss.html %}
+                    {%- include icon-rss.html %}
                 </a>
                 <a href="https://github.com/z0nk3r" class="footer-github" target="_blank" rel="noopener" aria-label="GitHub">
-                    {% include icon-github.html %}
+                    {%- include icon-github.html %}
                 </a>
             </div>
         </div>

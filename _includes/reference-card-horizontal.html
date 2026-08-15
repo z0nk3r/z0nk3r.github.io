@@ -1,15 +1,15 @@
 <li class="search-result">
     <span class="card-glow" aria-hidden="true"></span>
     <a href="{{ include.reference.url | relative_url }}">
-        {% if include.reference.image %}
+        {%- if include.reference.image %}
         <div class="search-result__image-wrap">
             <img src="{{ include.reference.image }}" alt="{{ include.reference.title }}" loading="lazy">
         </div>
-        {% else %}
+        {%- else %}
         <div class="search-result__image-wrap search-result__image-wrap--placeholder">
             <span>No Image Found</span>
         </div>
-        {% endif %}
+        {%- endif %}
         <div class="search-result__body">
             <h2>{{ include.reference.title }}</h2>
             <div class="byline search-result__byline"><span>Reference</span></div>
