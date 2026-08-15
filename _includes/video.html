@@ -1,0 +1,18 @@
+{%- comment %} Self-hosted video, sharing the YouTube embed's wrapper. Pass
+loop=true for a silent GIF-replacement clip, otherwise it renders a controls
+player. -> docs/templates.md#self-hosted-video-sharing-youtube-embed
+{% endcomment %}
+{%- assign v_style = "" %}
+{%- if include.ratio %}{% assign v_style = include.ratio | prepend: ' style="--embed-ratio: ' | append: ';"' %}{% endif %}
+<div class="video-embed"{{ v_style }}>
+    <video
+        {% if include.title %}aria-label="{{ include.title }}"{% endif %}
+        {% if include.poster %}poster="{{ include.poster | relative_url }}"{% endif %}
+        {% if include.loop %}autoplay muted loop playsinline controls{% else %}controls preload="metadata"{% endif %}>
+        {%- if include.webm %}
+        <source src="{{ include.webm | relative_url }}" type="video/webm">
+        {%- endif %}
+        <source src="{{ include.src | relative_url }}" type="video/mp4">
+        <a href="{{ include.src | relative_url }}">Download the video</a>
+    </video>
+</div>

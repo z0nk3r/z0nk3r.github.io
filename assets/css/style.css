@@ -730,7 +730,7 @@ article a:hover,
     position: relative;
     z-index: 1;
     width: 100%;
-    aspect-ratio: 16 / 9;
+    aspect-ratio: var(--embed-ratio, 16 / 9);
     margin: 2rem 0;
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
@@ -738,11 +738,16 @@ article a:hover,
     background: var(--background);
 }
 
-.video-embed iframe {
+.video-embed iframe,
+.video-embed video {
     display: block;
     width: 100%;
     height: 100%;
     border: 0;
+}
+
+.video-embed video {
+    object-fit: contain;
 }
 
 /* ==========================================================================

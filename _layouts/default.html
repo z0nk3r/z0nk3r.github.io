@@ -117,6 +117,14 @@
             };
         }
 
+        // -> docs/layouts-default.md#looping-clips-autoplay-like-gif
+        if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            document.querySelectorAll('video[autoplay]').forEach((v) => {
+                v.removeAttribute('autoplay');
+                v.pause();
+            });
+        }
+
         // ---- Theme toggle -------------------------------------------------
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
