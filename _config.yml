@@ -32,7 +32,7 @@ collections:
 
 # Hosted references don't need `layout: reference` repeated in every file - scoped to just
 # this collection (not path: "" globally) so it can't leak into other content by accident.
-# Same reasoning for the tutorials collection below - a collection doc with no layout
+# Same reasoning for the tutorials collection above - a collection doc with no layout
 # renders with zero styling at all (see the project notes), so every new collection gets one of these.
 defaults:
   - scope:
@@ -62,3 +62,7 @@ exclude:
   - vendor/
   - README.md
   - SETUP.md
+  # Relocated source comments (see docs/README.md). Belt-and-braces: docs/ is
+  # also in .git/info/exclude, so it never reaches GitHub in the first place -
+  # this entry keeps it unpublished even if someone commits it later.
+  - docs/

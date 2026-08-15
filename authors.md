@@ -24,12 +24,7 @@ permalink: /authors/
           <h2>{{ author.name }}</h2>
           {% if author.bio %}<p>{{ author.bio }}</p>{% endif %}
           {% if author.github %}
-          {% comment %} aria-label on a plain, non-interactive span has no
-          effect for assistive tech (it only applies to focusable elements
-          or ones with an ARIA role that supports naming) - this icon is
-          purely decorative here anyway (the whole card is already one link
-          to the author's own page, not to GitHub directly), so dropped
-          rather than left as dead weight. {% endcomment %}
+          {% comment %} -> docs/templates.md#aria-label-plain-non-interactive-span-no {% endcomment %}
           <span class="icon-link">{% include icon-github.html %}</span>
           {% endif %}
         </div>

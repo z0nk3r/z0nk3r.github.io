@@ -20,12 +20,12 @@
 #              "community", "archived", ...)
 #   image    - thumbnail; omit it and the card renders the same "No Image Found"
 #              placeholder every other card on this site uses
+#   url      - the primary link the title points at (optional; without it the
+#              title renders as plain text)
 #   excerpt  - 2-4 sentences; what it is and how it works
 #   tags     - tech stack, rendered as plain badges. Deliberately NOT wired into
 #              the tag system (same call already made for tutorial chapters), so
 #              these need no _tag_pages/<slug>.md stubs
-#   url      - the primary link the title points at (optional; without it the
-#              title renders as plain text)
 #   links    - extra action links, each { label, url }
 
 - title: "z0nk3r.github.io"
@@ -44,7 +44,7 @@
   status: "open source"
   image: "assets/images/projects/aoc.png"
   url: "https://github.com/z0nk3r/aoc"
-  excerpt: "Repo for all of my Advent of Code solutions and my automated tooling and submission libraries. Solutions are  included and sorted by year and day in their respective folders."
+  excerpt: "Repo for all of my Advent of Code solutions and my automated tooling and submission libraries. Solutions are included and sorted by year and day in their respective folders."
   tags: [python, c]
   links:
     - { label: "source", url: "https://github.com/z0nk3r/aoc" }

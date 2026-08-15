@@ -1,17 +1,4 @@
-{% comment %}
-  Horizontal post row for the homepage's "Latest posts" teaser:
-    {% include post-card-horizontal.html post=post %}
-
-  Same .search-result row the References list and tutorial cards use, so it
-  inherits the thumbnail/placeholder treatment, corner brackets and glow. Laid
-  out two per row on desktop via .post-rows - the same trick
-  .syscalls-arch-list already uses.
-
-  Unlike project-card.html this IS wrapped in a single <a>: a post has exactly
-  one destination, so there is no second link to collide with.
-
-  h3, not h2 - "Latest posts" is the section's h2 on the homepage.
-{% endcomment %}
+{% comment %} -> docs/templates.md#horizontal-post-row-homepage-s {% endcomment %}
 <li class="search-result post-row">
   <span class="card-glow" aria-hidden="true"></span>
   <a href="{{ include.post.url | relative_url }}">
@@ -26,11 +13,7 @@
     {% endif %}
     <div class="search-result__body">
       <h3>{{ include.post.title }}</h3>
-      {% comment %}
-        link_author=false - byline.html renders the author name as an <a> when
-        it is true, and that would nest inside the row's own anchor. Same
-        reason post-card.html never passes it.
-      {% endcomment %}
+      {% comment %} -> docs/templates.md#link_author-false-byline-html {% endcomment %}
       {% include byline.html post=include.post %}
       <p>{{ include.post.excerpt | strip_html | truncatewords: 24 }}</p>
     </div>

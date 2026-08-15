@@ -3,15 +3,7 @@
   <a class="post-card-link" href="{{ include.post.url | relative_url }}">
     {% if include.post.image %}
     <div class="post-card__image-wrap" style="view-transition-name: post-hero-{{ include.post.slug }};">
-      <!-- loading="lazy" is safe here despite this element's
-           view-transition-name: the card a reader actually clicks is
-           onscreen by definition (they had to see it to click it), and
-           every OTHER card's name gets stripped at pageswap before capture
-           (see the pageswap handler in default.html) regardless of load
-           state, so there's no card left in a position to race the
-           transition capture. Removing lazy loading here fixed nothing and
-           just made every card on every listing page (home, author, tag,
-           related-posts, not just /blog/) load eagerly for no benefit. -->
+      {% comment %} -> docs/templates.md#loading-lazy-safe-here-despite {% endcomment %}
       <img src="{{ include.post.image | relative_url }}" alt="{{ include.post.title }}" loading="lazy">
     </div>
     {% else %}

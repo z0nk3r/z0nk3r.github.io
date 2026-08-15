@@ -1,15 +1,5 @@
-{% comment %}
-Card meta is descendant-aware: a group's card counts every chapter anywhere
-below it, not just direct ones. All joins are URL-based (the tutorials
-collection holds both topics and chapters; chapter: presence discriminates).
-The topic's own url is already the "/"-terminated descendant prefix - do NOT
-append another "/" (that would make the prefix "/tutorials/a//" and match
-nothing), and its termination makes sibling false-positives (/tutorials/a/
-vs /tutorials/ab/...) impossible. Starts-with is slice-to-prefix-length
-(Liquid has no startswith; `contains` matches anywhere). The child/"N
-series" count must exclude chapters - a group's DIRECT chapters share its
-parent URL, and without the unless-filter they'd inflate the series count.
-{% endcomment %}
+{% comment %} Descendant counts by URL prefix. The topic url is already "/"-terminated.
+     -> docs/templates.md#card-meta-descendant-aware-group-s {% endcomment %}
 {% assign card_prefix = include.topic.url %}
 {% assign card_chapter_count = 0 %}
 {% assign card_minutes = 0 %}
@@ -31,17 +21,10 @@ parent URL, and without the unless-filter they'd inflate the series count.
 <li class="search-result tutorial-card">
   <span class="card-glow" aria-hidden="true"></span>
   <a href="{{ include.topic.url | relative_url }}">
-    {% comment %} vt-name derives its slug from the URL (segments after
-    /tutorials/, joined with "-") - a raw "/" inside a CSS custom-ident
-    silently invalidates the whole view-transition-name declaration (morph
-    degrades to a plain crossfade with no error). Must match
-    tutorial-topic-page.html's hero slugification exactly. {% endcomment %}
+    {% comment %} -> docs/templates.md#vt-name-derives-slug-url-segments {% endcomment %}
     {% assign card_vt = include.topic.url | remove_first: '/tutorials/' | split: '/' | join: '-' %}
     {% if include.topic.image %}
-    <!-- Not loading="lazy" - same reasoning as post-card.html's image: this
-         is the subject of the card->hero view-transition morph and needs to
-         be decoded and ready when the browser captures the transition
-         screenshot, which lazy loading races against. -->
+    {% comment %} -> docs/templates.md#not-loading-lazy-same-2 {% endcomment %}
     <div class="search-result__image-wrap tutorial-card__image-wrap" style="view-transition-name: tutorial-topic-{{ card_vt }};">
       {% comment %} Same optional light-theme variant as the topic hero - see the
       image_light comment in tutorial-topic-page.html. {% endcomment %}

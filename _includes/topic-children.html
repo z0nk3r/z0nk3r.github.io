@@ -1,31 +1,5 @@
-{% comment %}
-Computes the sorted immediate child TOPICS of a parent URL into
-`topic_children`.
-Params:
-  parent - the parent page's URL ("/tutorials/" for the index's own card
-           list; a topic page passes its own page.url). Raw doc URLs, not
-           relative_url'd - site.baseurl is "", and doc.url is what the
-           per-doc parent computation below produces.
-Produces NO output - Liquid assigns inside an include write to the caller's
-scope (there is no include-local scope), and that leak is deliberately the
-return mechanism here: after {% include topic-children.html parent=... %},
-the caller reads `topic_children`.
-
-The tutorials collection holds BOTH topics and chapters (one folder, one
-collection - the join IS the file placement). A doc's parent URL is its own
-URL minus the last path segment (split keeps the leading "" element and
-drops trailing empties, so join reassembles the leading slash; pop is a
-Jekyll filter, non-mutating). A child topic is any doc whose parent URL
-equals `parent` AND which has no `chapter:` key - chapter: presence is the
-topic-vs-chapter discriminator collection-wide (see _layouts/tutorial.html).
-
-Sort: siblings WITH an `order:` front-matter integer come first, sorted by
-it; siblings without follow, sorted naturally by title. Two separate lists
-concatenated - deliberately NOT `sort: "order", "last"`, which is valid
-Liquid but compares all the nil-order docs as equal under Ruby's unstable
-sort, making their relative order nondeterministic build-to-build. Sibling
-`order:` values should be unique for the same reason.
-{% endcomment %}
+{% comment %} Returns `topic_children` by assign-leak. Parent = own URL minus last segment.
+     -> docs/templates.md#computes-sorted-immediate-child-topics {% endcomment %}
 {% assign tc_ordered = "" | split: "" %}
 {% assign tc_unordered = "" | split: "" %}
 {% for tc_doc in site.tutorials %}

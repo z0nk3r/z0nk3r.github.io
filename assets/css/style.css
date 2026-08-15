@@ -2,35 +2,7 @@
    Fonts (self-hosted)
    ========================================================================== */
 
-/* Geist, Geist Mono, and Michroma are all SIL Open Font License, which
-   permits redistribution - self-hosting instead of Google Fonts' CDN
-   removes two render-blocking cross-origin round trips (the
-   fonts.googleapis.com stylesheet, then fonts.gstatic.com for the actual
-   files) in exchange for maintaining the files here (assets/fonts/).
-
-   Only the latin + latin-ext subsets are kept, not the cyrillic/
-   cyrillic-ext/vietnamese ones Google also splits out - this site's
-   content is English-language technical writing; latin-ext covers the
-   common accented Latin characters (é/ü/ñ etc.) that could show up in a
-   name or foreign term. Geist Mono additionally keeps the symbols2
-   subset: verified via direct woff2 cmap inspection (fontTools) that
-   Geist Mono's box-drawing glyphs (├ └ │ ─, used by the post TOC's
-   tree-style prefixes) live specifically in that subset, not in latin.
-   The same inspection confirmed the site's other special characters
-   (breadcrumb icons ⌂ ● ▧ ▤ ◆, nav arrows → ← ↔) aren't covered by
-   Geist/Geist Mono in ANY subset Google serves - they were already
-   silently falling back to the next font in the --font-mono/--font-sans
-   stack before this change, so dropping cyrillic/vietnamese here doesn't
-   regress anything actually being rendered today.
-
-   Geist and Geist Mono are variable fonts (one file covers weight 100-900
-   via the wght axis - confirmed via fontTools' fvar table, not assumed),
-   so each gets one @font-face per subset with a font-weight RANGE, not
-   Google's own pattern of repeating the same file across several
-   fixed-weight blocks (that exists for older-browser compatibility their
-   CDN has to support broadly; this site doesn't need it). Michroma has no
-   fvar table - it's a single static weight (400), declared as a fixed
-   value like any normal font-face. */
+/* -> docs/style.css.md#geist-geist-mono-michroma-sil */
 @font-face {
   font-family: 'Geist';
   font-style: normal;
@@ -139,69 +111,18 @@
   box-sizing: border-box;
 }
 
-/* Global keyboard-focus indicator. Nav links, cards, footer icons, and the
-   theme/search toggles previously relied on the browser's own default focus
-   ring (which several UAs draw faintly or inconsistently against a
-   near-black background) - this is the one visible ring for all of them.
-   Deliberately :focus-visible, not :focus, so mouse/touch clicks don't show
-   it, only keyboard navigation. Low specificity (a bare pseudo-class, 0-1-0)
-   is intentional: .nav-search-input:focus / .tag-search:focus (0-2-0) already
-   set outline: none and indicate focus via border-color instead, and this
-   rule must lose to those on purpose rather than fighting their own
-   deliberate treatment. */
+/* -> docs/style.css.md#global-keyboard-focus-indicator */
 :focus-visible {
   outline: 2px solid var(--foreground);
   outline-offset: 2px;
 }
 
-/* Opt in to cross-document View Transitions site-wide, deliberately. Chromium-
-   only today (no flag, roughly Chrome/Edge 126+); Firefox/Safari simply
-   ignore this at-rule and every navigation stays a normal instant page load -
-   pure progressive enhancement, nothing to fall back to on purpose.
-
-   The pseudo-element rules below disable the default whole-page cross-fade
-   entirely (see their comment for why a cross-fade is unfixably flash-prone
-   here), so in practice: every navigation is an instant swap, and blog list
-   <-> post additionally gets a shared-element geometry morph via the matching
-   view-transition-name on .post-card__image-wrap / .post-header__image-wrap -
-   the only pair on the site with a name match to anchor a morph on.
-
-   An earlier version tried gating this per-page in JS (a pageswap listener
-   calling skipTransition() for non-blog navigations); with the cross-fade
-   gone the gate is pointless - navigation without a name match already has no
-   visible transition to gate. */
+/* -> docs/style.css.md#opt-cross-document-view-transitions-site-wide */
 @view-transition {
   navigation: auto;
 }
 
-/* No cross-fade, anywhere - the morph is the only animation.
-
-   Every earlier attempt tuned the cross-fade (blend modes, root animation
-   timing) and every one still flashed, because a cross-fade between two
-   non-identical captures cannot avoid flashing under EITHER blend mode:
-   - plus-lighter (Chrome's default): the thumbnail capture and the hero
-     capture are the same image at different geometry (different box, padding,
-     aspect ratio), so their bright cream content (#fdf6e3 borders/text) lands
-     at different positions and gets ADDED - cream + cream blows out to white.
-     That was the "image flashes white" report.
-   - normal: at mid-fade, new(0.5) over old(0.5) over backdrop leaves ~25% of
-     the backdrop bleeding through - a dip/flash every time instead.
-   Since both captures are the same content, the fade between them serves no
-   purpose. The clean transition is: instant page swap + a pure geometry morph
-   of the single live element. Zero blending = zero blend artifacts, and no
-   old snapshot is ever painted (which also removes any snapshot-scaling
-   artifact class entirely, e.g. the zoom: 1.1 interaction suspected below).
-
-   Cascade subtlety, load-bearing: ::view-transition-new keeps opacity pinned
-   via !important rather than animation: none. The UA's fade-in is a keyframe
-   animation, and animations beat normal author declarations - plain
-   opacity: 1 would lose. But animation: none would ALSO kill the
-   UA-generated geometry keyframes on the new pseudo (size-tracking for
-   aspect-ratio morphs), leaving the new image stuck at its final size inside
-   a still-morphing group - another overshoot artifact. opacity: 1 !important
-   beats only the fade (author !important > animations) and preserves all
-   geometry animation. display: none on old is safe as a plain rule since
-   display isn't among the UA-animated properties. */
+/* -> docs/style.css.md#no-cross-fade-anywhere-morph */
 ::view-transition-old(*) {
   display: none;
 }
@@ -217,13 +138,7 @@
 }
 
 html {
-  /* Only body had a background-color before - during a cross-document view
-     transition, the top-layer transition overlay can briefly show through
-     to whatever's painted at the very bottom canvas layer. Without this,
-     that's the browser's own raw default (white), independent of theme -
-     not a wrong-theme flash, a genuinely unstyled one. This is a
-     well-documented view-transitions gotcha: always set background-color on
-     html itself, not just body. */
+  /* -> docs/style.css.md#body-background-color-before-during */
   background-color: var(--background);
   scroll-behavior: smooth;
   overflow-x: hidden;
@@ -233,50 +148,21 @@ html {
   font-size: 14px;
 }
 
-/* Placed after the base html rule above rather than in the other
-   prefers-reduced-motion block near the top of this file, on purpose:
-   both set scroll-behavior on the same html selector (equal specificity),
-   so the later rule in source order wins the cascade tie regardless of
-   which one is conditional - an earlier override here would silently lose
-   to the base rule's scroll-behavior: smooth. */
+/* -> docs/style.css.md#placed-after-base-html-rule */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
 }
 
-/* The desktop 110% look used to be zoom: 1.1 here (added to match the user's
-   manually-set 110% browser zoom). zoom is now permanently retired from this
-   codebase: a controlled A/B test (identical view-transition fixes, local
-   without zoom vs live with it) proved zoom was the remaining cause of the
-   view-transition flash - on top of two earlier confirmed zoom bugs in this
-   repo (mobile clientWidth desync, sticky-header measurement double-scaling).
-
-   The replacement is mathematically equivalent for everything rem-based:
-   zoom 1.1 over a 14px root rendered 1rem at 15.4px, and so does a 15.4px
-   root font-size directly - same rendered size for every rem/em value on the
-   site, no buggy scaling primitive involved. The handful of absolute px
-   values that zoom used to scale (container max-widths, the TOC column,
-   avatar/thumbnail boxes, header-clearance offsets) are multiplied by 1.1
-   where they appear instead - each is marked with a "zoom-replacement"
-   comment. 1px borders deliberately stay 1px (they render crisper than the
-   old fractional 1.1px). Mobile (<769px) never had the zoom and is untouched. */
+/* -> docs/style.css.md#desktop-110-look-used-zoom */
 @media (min-width: 769px) {
   html {
     font-size: 15.4px;
   }
 }
 
-/* Styling ANY ::-webkit-scrollbar pseudo takes that scroller out of native
-   rendering in Chromium and paints only what is declared here - so a rule
-   setting `width` alone yields a scrollbar that still reserves its 10px but
-   draws no thumb at all. That is what made the TOC sidebar look like it simply
-   cut off rather than scrolled. The page itself was unaffected because `html`
-   carries `scrollbar-width: thin` (below), which routes it through the
-   standard, natively-painted path instead; `scrollbar-width` is NOT inherited,
-   so every inner scroller (.toc-sidebar, .table-scroll) fell through to this
-   webkit path and got the invisible thumb. Always declare a thumb alongside
-   any ::-webkit-scrollbar width change. */
+/* -> docs/style.css.md#styling-webkit-scrollbar-pseudo-takes-scroller */
 ::-webkit-scrollbar {
   width: 10px;
   height: 10px;
@@ -337,40 +223,10 @@ footer {
 #ascii-bg {
   position: fixed;
   inset: 0;
-  /* Was z-index: -1. Once html gained its own explicit background-color
-     (added for the view-transition white-flash fix - see html's own rule
-     below), that negative z-index put this canvas BEHIND html's own root
-     background, not just behind body's normal content - a position:fixed
-     element's stacking is resolved against the initial containing block
-     (viewport-level), not against body specifically, so html's own
-     background painted directly over it and the whole effect silently
-     stopped being visible. Confirmed empirically: getImageData() showed
-     the canvas WAS still drawing correctly (non-zero alpha, real glyph
-     shapes), but zero pixels differed from pure background color in an
-     actual page screenshot - not a drawing bug, a compositing one.
-     z-index: 0 keeps it correctly behind every other real element on the
-     page (header is explicitly z-index: 100, and ordinary content simply
-     paints after a fixed z-index: 0 sibling regardless) while staying
-     above html/body's own background layer, where it's supposed to be. */
+  /* -> docs/style.css.md#z-index-1-once-html-gained */
   z-index: 0;
   pointer-events: none;
-  /* Reverted: DO NOT give this its own view-transition-name. Tried it to fix
-     a flash (theory: transitioning from an accumulated glyph pattern to a
-     blank freshly-loaded canvas), and it made the flash worse instead.
-     Root cause of the regression: giving *any* element a view-transition-
-     name pulls it into the browser's top-layer ::view-transition pseudo-
-     element overlay for the transition's duration, where it's captured as
-     an independent, isolated box stacked among its *sibling* named groups
-     (root included) - not within the page's normal stacking context. This
-     element's z-index: -1 only means "behind everything" there; once
-     isolated into its own transition group, that no longer holds; it can
-     end up rendering above the rest of the page instead of behind it. Named
-     transition groups are for elements that are SUPPOSED to float and morph
-     independently (the blog hero image); this is a full-page background
-     decoration that was never meant to do that. Left as part of root's
-     flattened capture instead - whatever cross-fade artifact that still
-     causes is a smaller problem than a background layer briefly covering
-     the whole page. */
+  /* -> docs/style.css.md#reverted-do-not-give-own */
 }
 
 @media (max-width: 768px) {
@@ -415,42 +271,16 @@ header {
 .header-wrapper {
   max-width: 1540px;
   margin: 0 auto;
-  /* Left padding is deliberately smaller than right (was a symmetric
-     0 20px) - the header icon (.site-title) sits flush against this edge
-     with no text baseline/line-height around it the way "z0nk3r" used to
-     have, so 20px read as visibly more whitespace on the icon's left than
-     above/below it (measured: ~14.7px top/bottom on desktop, from
-     header's own 0.5rem vertical padding plus flex-centering slack for a
-     32px icon in a taller row, vs 20px+1px border on the left). 14px
-     matches that top/bottom gap closely enough to read as symmetric at
-     both the 32px desktop and 28px mobile icon size (measured 14.7px and
-     14px respectively - the ~0.7px difference isn't visible). Right stays
-     20px, matching the breadcrumbs/main/footer left-rail padding
-     elsewhere on the page - only the icon's own left edge needed this,
-     not the row as a whole. */
+  /* -> docs/style.css.md#left-padding-deliberately-smaller-right */
   padding: 0 20px 0 14px;
   display: flex;
-  /* Was space-between. #themeToggle used to live nested inside #siteNav, so
-     .header-wrapper only ever had 2 direct flex children (h1 and siteNav) -
-     space-between just split those two apart, title flush left, nav flush
-     right. Now that #themeToggle is a sibling of its own (so it can stay
-     visible on mobile without opening the hamburger menu), there are 3
-     top-level items, and space-between would spread all three out evenly
-     instead of keeping the nav and the toggle grouped together on the right
-     - #siteNav's own margin-left: auto below (desktop) restores the
-     original 2-group split instead. */
+  /* -> docs/style.css.md#space-between-themetoggle-used-live-nested */
   justify-content: flex-start;
   align-items: center;
   gap: 2rem;
 }
 
-/* Reuses icon-192.png (same asset as the browser-tab favicon and the
-   apple-touch-icon/manifest icons - see default.html's head) rather than
-   spelling out the site name in text. That image has its own fixed dark
-   badge / cream glyph baked in (hardcoded colors, not theme tokens), so
-   unlike the old text title it deliberately does NOT flip with the site
-   theme - it's a static brand mark, same as the browser tab icon it now
-   matches exactly. */
+/* -> docs/style.css.md#reuses-icon-192-png-same-asset */
 .site-title {
   margin: 0;
   flex-shrink: 0;
@@ -491,29 +321,13 @@ header {
 }
 
 @media (min-width: 769px) {
-  /* Restores the original 2-group split (title flush left, nav+toggle
-     flush right) now that .header-wrapper uses justify-content: flex-start
-     instead of space-between (see comment there) - margin-left: auto
-     consumes the row's leftover space on .nav-search's own left side,
-     pushing it and everything that follows (#siteNav, then #themeToggle via
-     order: 4, see .theme-toggle) to the right edge together as one group,
-     while h1 stays at the start. Lives on .nav-search rather than #siteNav
-     now that search sits outside siteNav in the DOM (see header markup) -
-     it's the first element of the trailing group, so it's the one that
-     needs to absorb the free space. */
+  /* -> docs/style.css.md#restores-original-2-group-split-title */
   .nav-search {
     margin-left: auto;
   }
 }
 
-/* Scoped to #siteNav specifically, not a bare `nav` element selector - the
-   site also has two other <nav>s (.breadcrumbs on post/reference/tag/author
-   pages, #toc in the sidebar) that don't want this flex row layout or gap.
-   A bare `nav { }` here used to leak onto both: #toc needed its own
-   `.toc-sidebar nav { display: block; }` override to undo it (removed now
-   that the leak's gone), and .breadcrumbs was inheriting this rule's
-   gap: 2rem instead of having a real value of its own - it now sets its
-   own display/align-items/gap below instead of relying on this selector. */
+/* -> docs/style.css.md#scoped-sitenav-specifically-not-bare */
 #siteNav {
   display: flex;
   gap: 2rem;
@@ -549,11 +363,7 @@ header {
   font-family: var(--font-mono);
   font-size: 0.85rem;
   border-radius: var(--radius-md);
-  /* flex-grow is a no-op on desktop (its open state below sets a fixed
-     width instead, never touching flex-grow) - included here rather than
-     scoped into the mobile media query so the one .nav-search-input rule
-     covers both transition lists without duplicating the other four
-     properties. */
+  /* -> docs/style.css.md#flex-grow-no-op-desktop-open-state */
   transition: width 0.25s ease, flex-grow 0.25s ease, opacity 0.2s ease, padding 0.25s ease, border-color 0.2s ease;
 }
 
@@ -598,13 +408,7 @@ header {
   justify-content: center;
   font-size: 1.2rem;
   transition: background-color 0.2s, border-color 0.2s;
-  /* #themeToggle now lives directly in .header-wrapper (see markup) instead
-     of as the last child of nav#siteNav, so it can stay visible on mobile
-     without opening the hamburger menu. On desktop, #siteNav has no order
-     override and stays at its default (0), so this pushes the toggle back
-     to the end of the row - the same visual spot it occupied as siteNav's
-     last child before. The mobile media query below overrides this again to
-     put it next to the hamburger instead. */
+  /* -> docs/style.css.md#themetoggle-now-lives-directly-header-wrapper */
   order: 4;
 }
 
@@ -702,10 +506,7 @@ header {
   border-radius: var(--radius-md);
 }
 
-/* Registered so the scroll-driven animation below can interpolate them; an
-   unregistered custom property is an untyped token and would jump at 50%
-   instead of easing. initial-value must be computationally independent, so
-   these are px, not rem - `rem` depends on font-size and is rejected. */
+/* -> docs/style.css.md#registered-scroll-driven-animation-below-can */
 @property --toc-fade-top {
   syntax: "<length>";
   initial-value: 0px;
@@ -728,17 +529,7 @@ header {
   to   { --toc-fade-bottom: 0px; }
 }
 
-/* Fade the cut-off edge so a long TOC reads as scrollable rather than
-   truncated. `.is-scrollable` is set by generateTOC() only when the sidebar
-   genuinely overflows, so a short TOC gets no fade at all.
-
-   The two fade depths are registered custom properties (below) purely so a
-   scroll-driven animation can interpolate them. Their INITIAL values are the
-   correct un-scrolled state - no top fade, bottom fade on - which means a
-   browser without scroll-driven animation support simply keeps that and still
-   gets a correct, if static, affordance. Nothing here reads scroll position
-   from JS; the animation is compositor-driven, which is what makes it safe
-   where the old JS-tracked .table-scroll edge-fade was not. */
+/* -> docs/style.css.md#fade-cut-off-edge-long-toc */
 .toc-sidebar.is-scrollable {
   -webkit-mask-image: linear-gradient(to bottom,
       transparent 0,
@@ -754,9 +545,7 @@ header {
 
 @supports (animation-timeline: scroll()) {
   .toc-sidebar.is-scrollable {
-    /* Grow the top fade over the first 40px of scroll, and retire the bottom
-       fade over the last 40px, so each edge is only softened while there is
-       actually something hidden past it. */
+    /* -> docs/style.css.md#grow-top-fade-over-first */
     animation: toc-fade-top linear both, toc-fade-bottom linear both;
     animation-timeline: scroll(self block), scroll(self block);
     animation-range: 0 40px, calc(100% - 40px) 100%;
@@ -1120,41 +909,17 @@ article div.highlighter-rouge code {
    Tables
    ========================================================================== */
 
-/* JS (default.html) wraps every article table in this at render time, since a
-   bare <table> can't reliably serve as its own horizontal-scroll container -
-   giving the table itself overflow-x: auto only has something to scroll once
-   its own rendered width is allowed to exceed its container (see the mobile
-   min-width rules below), and a plain block-level wrapper is what actually
-   catches that overflow without touching the table's own display: table
-   (switching that to display: block was tried historically and silently
-   broke the fixed-layout width algorithm in Chromium for some tables). */
+/* -> docs/style.css.md#js-default-html-wraps-every */
 .table-scroll {
   position: relative;
   overflow-x: auto;
   margin: 1.5rem 0;
-  /* touch-action: pan-x is the actual fix for a real mobile bug: without it, a
-     vertical page-scroll swipe that has any horizontal component (nearly all
-     real thumb swipes do) gets captured by this wrapper's own horizontal
-     scroll instead of the page, since it's the first scrollable ancestor in
-     that direction. Claiming only horizontal panning here means the browser
-     leaves vertical panning to bubble up to the page, as intended.
-     overscroll-behavior-x is a complementary, not equivalent, fix - it only
-     stops the scroll from chaining into e.g. a browser back/forward-swipe
-     gesture once this wrapper hits its own left/right edge. */
+  /* -> docs/style.css.md#touch-action-pan-x-actual-fix-real */
   touch-action: pan-x;
   overscroll-behavior-x: contain;
 }
 
-/* JS toggles .visible on this hint (a small text label placed right before
-   the wrapper) once, based on whether the table's scrollWidth actually
-   exceeds its clientWidth - not tied to live scroll position at all. Mobile
-   browsers commonly don't render a persistent scrollbar, so *some* affordance
-   that a table scrolls is needed before a user tries (both Wikipedia's own
-   engineering docs and Nielsen Norman Group's mobile-table UX research call
-   this out as a commonly-missing signal). A prior version tried an edge-fade
-   gradient keyed off live scrollLeft, which read well but was unreliable in
-   practice on real devices - a static hint can't lag or desync since it never
-   reacts to scroll position. */
+/* -> docs/style.css.md#js-toggles-visible-hint-small */
 .table-scroll-hint {
   display: none;
   text-align: right;
@@ -1168,13 +933,7 @@ article div.highlighter-rouge code {
 }
 
 article table {
-  /* border-collapse: separate (not the more typical collapse) plus
-     border-spacing: 0 is required for the sticky header below - collapse has
-     a real Firefox bug (Mozilla #1866715) where cell borders vanish right at
-     the sticky boundary. Every existing border rule on this table only ever
-     applies to one side of a given edge (thead's own border-bottom, tbody
-     rows' border-top starting from the second row - never both at the same
-     edge), so there's nothing for separate mode to double up visually. */
+  /* -> docs/style.css.md#border-collapse-separate-not-more-typical */
   border-collapse: separate;
   border-spacing: 0;
   width: 100%;
@@ -1182,34 +941,11 @@ article table {
   font-size: 0.95rem;
   border-top: 2px solid var(--foreground);
   border-bottom: 2px solid var(--foreground);
-  /* table-layout: fixed forces identical column widths across every table on a
-     page based on the declared widths below, instead of each table sizing its
-     columns from its own content (which made "Notes" land at a different x
-     position per table). This requires the element to stay display: table —
-     display: block (an earlier fix for page-level horizontal overflow) breaks
-     the fixed-layout algorithm's width resolution in Chromium. */
+  /* -> docs/style.css.md#table-layout-fixed-forces-identical-column */
   table-layout: fixed;
 }
 
-/* Default 3-column split (Code/Field-ish, Description, Notes), with an inert
-   4th-column rule available for tables that need one. A specific table can
-   override any of these directly from markdown via a kramdown block IAL
-   setting the custom properties inline, no CSS edit required:
-     {: style="--table-col-1: 15%; --table-col-2: 10%; --table-col-3: 75%;"}
-   placed on its own line immediately after the table. Custom properties
-   inherit from the table element down into these width rules, so the
-   override only affects that one table - every other table on the site
-   keeps the defaults below.
-
-   The 3 defaults sum to 100% on purpose, matching the site's original,
-   most common table shape - every table (3-column, or any of the wider
-   ones below) is expected to always set an explicit override IAL for
-   every column it actually has, not rely on these defaults. Columns 4
-   and up default to 0% specifically so a wide table that forgets its
-   override fails visibly (a squashed column) rather than silently
-   guessing a width that's probably wrong for unknown content. Extended
-   to 10 columns for the syscall calling-convention tables (NR, name,
-   references, %rax-equivalent, arg0-arg5). */
+/* -> docs/style.css.md#default-3-column-split-code-field-ish */
 article table th:nth-child(1),
 article table td:nth-child(1) {
   width: var(--table-col-1, 7%);
@@ -1276,44 +1012,12 @@ article table thead th {
   font-size: 0.85em;
 }
 
-/* Sticky header for long tables (JS adds has-sticky-header past ~10 rows,
-   raised specifically about the 400+ row syscall tables) - desktop only, see
-   the media query below for why. Docks right below the site's own sticky
-   header, at the same 105px offset the TOC sidebar uses to sit below it.
-   Needs a fully opaque background - var(--surface-1) (a subtle raised tint
-   used elsewhere, only ~3% alpha) was tried first for the tint, but that's
-   nowhere near opaque enough: rows scrolling underneath showed straight
-   through and visually overlapped the sticky header's own text. var(--
-   background) is the actual page background color and fully opaque, so nothing
-   shows through; the border and shadow below (not the fill) are what make it
-   read as a distinct anchor instead of blending into the page. */
+/* -> docs/style.css.md#sticky-header-long-tables-js */
 @media (min-width: 769px) {
-  /* Scoped to desktop, not just "works better here": CSS computes
-     overflow-x/overflow-y as a pair - giving one axis a non-visible value
-     forces the other to compute as auto too, even if never written. That
-     makes .table-scroll its own (never-actually-scrolling) sticky containing
-     block instead of the page. Critically, this ISN'T a harmless no-op -
-     position: sticky still applies its top offset as a static shift (the
-     same way position: relative would) since the container's scroll range
-     is zero, so on mobile (which needs overflow-x: auto for the horizontal-
-     scroll fix above, and can't drop the coupling) the header row rendered
-     shifted 105px down into the second and third body rows instead of
-     either sticking cleanly or doing nothing - a real visual regression,
-     confirmed via a real device screenshot, not just inert. Desktop tables
-     never need horizontal scroll (width: 100% always fits their container),
-     so this whole rule - position included - only ever applies there.
-     Mobile gets no sticky header at all for now, rather than a half-broken
-     one; a fully correct mobile version would need a synced dual-scroll
-     header (a separate always-visible thead outside the horizontally-
-     scrolling wrapper, its horizontal position driven by JS mirroring the
-     body's scrollLeft), which hasn't been asked for. */
+  /* -> docs/style.css.md#scoped-desktop-not-works-better */
   .table-scroll.has-sticky-header thead th {
     position: sticky;
-    /* --table-sticky-top is measured in default.html from the real site
-       header's rendered bottom edge - a hardcoded guess here previously left
-       a ~39px gap wide enough for a table row to visibly peek through while
-       scrolled. The + 8px is a small deliberate buffer so the two sticky
-       headers don't look like they're touching, not leftover slop. */
+    /* -> docs/style.css.md#table-sticky-top-measured-default-html-real */
     top: calc(var(--table-sticky-top, 116px) + 8px);
     z-index: 2;
     background: var(--background);
@@ -1321,16 +1025,7 @@ article table thead th {
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
   }
 
-  /* A fixed 8px buffer is enough for most rows, but cells with wrapped
-     multi-line content (a long arg type, for example) can still be tall
-     enough for their last line to peek into that gap while scrolling -
-     sizing the buffer for the tallest possible row would leave an
-     oversized, mostly-empty gap the rest of the time. A blurred backdrop
-     strip spanning the buffer handles any row height without needing to
-     guess one: still visible (mostly-opaque, not a hard cut), just not
-     legible. Anchored to each th (sticky already gives it a positioned
-     containing block) with a negative top so it sits in the gap above the
-     header's own box, not inside it. */
+  /* -> docs/style.css.md#fixed-8px-buffer-enough-most */
   .table-scroll.has-sticky-header thead th::before {
     content: "";
     position: absolute;
@@ -1415,11 +1110,7 @@ article table tbody tr:not(:first-child) td {
   gap: 0.5rem;
 }
 
-/* post.html / reference.html both put a badge-row directly under the post
-   meta block and want a small gap above it - was a one-off inline
-   style="margin-top: 0.75rem" on each, moved here as a real rule. Scoped to
-   .post-meta specifically so it doesn't touch card/search-result badge-rows
-   elsewhere, which already get their spacing from their own containers. */
+/* -> docs/style.css.md#post-html-reference-html-both */
 .post-meta .badge-row {
   margin-top: 0.75rem;
 }
@@ -1496,12 +1187,7 @@ article table tbody tr:not(:first-child) td {
   gap: 1.5rem;
 }
 
-/* Syscalls hub page only (not the general search-results page, which stays a
-   single full-width column) - on desktop, lay the arch list out two per row
-   instead of one. The list is already ordered 32-bit immediately before its
-   64-bit counterpart (arm, arm64, mips, mips64, ...), so filling a 2-column
-   grid left-to-right naturally pairs each pair side by side with no extra
-   sorting/grouping logic needed. */
+/* -> docs/style.css.md#syscalls-hub-page-not-general */
 @media (min-width: 769px) {
   .search-results.syscalls-arch-list {
     display: grid;
@@ -1513,11 +1199,7 @@ article table tbody tr:not(:first-child) td {
    Rotating glow border (card hover)
    ========================================================================== */
 
-/* A custom property only animates if it has been registered with a type -
-   a plain --angle is an untyped token and interpolates as "swap at 50%",
-   which reads as a static border rather than a rotating one. Registration
-   fails silently, so if the ring ever stops moving, check this block exists
-   before suspecting the animation. */
+/* -> docs/style.css.md#custom-property-animates-if-registered */
 @property --card-glow-angle {
   syntax: "<angle>";
   initial-value: 0deg;
@@ -1528,17 +1210,7 @@ article table tbody tr:not(:first-child) td {
   to { --card-glow-angle: 360deg; }
 }
 
-/* One injected <span> per card, not a pseudo-element: ::before and ::after
-   are both already spent on the corner-bracket hover in .post-card,
-   .tutorial-card and .author-list-item, and those brackets are deliberately
-   kept alongside this.
-
-   The element is a conic-gradient box with its own middle masked out, which
-   leaves only a rim. The outer halo comes from drop-shadow() rather than a
-   second blurred layer, because drop-shadow follows the element's alpha
-   AFTER masking - so it traces the rim instead of blooming from the full
-   box. (A blurred copy of an UNMASKED gradient box renders as a large blob
-   over the card, not a glow along its edge.) */
+/* -> docs/style.css.md#one-injected-span-per-card */
 .card-glow {
   position: absolute;
   inset: -1.5px;
@@ -1547,13 +1219,9 @@ article table tbody tr:not(:first-child) td {
   z-index: 2;
   opacity: 0;
   pointer-events: none;
-  /* Governs the fade-OUT (returning to this resting state). Kept a little
-     quicker than the fade-in below so the ring clears out promptly when the
-     pointer leaves, without reading as a snap. */
+  /* -> docs/style.css.md#governs-fade-out-returning-resting-state */
   transition: opacity 0.45s ease;
-  /* A lit arc covering 40% of the perimeter: transparent at the leading edge,
-     full brightness at its midpoint, transparent again at its trailing edge,
-     and unlit for the remaining 60%. Picked from a 10%-100% sweep. */
+  /* -> docs/style.css.md#lit-arc-covering-40-perimeter */
   background: conic-gradient(from var(--card-glow-angle),
     rgba(var(--foreground-rgb), 0) 0turn,
     rgba(var(--foreground-rgb), 1) 0.20turn,
@@ -1575,27 +1243,13 @@ article table tbody tr:not(:first-child) td {
 .author-list-item:hover .card-glow,
 .author-list-item:focus-within .card-glow {
   opacity: 1;
-  /* Governs the fade-IN. A transition declared on the target state's own rule
-     controls the change INTO that state, which is what lets the fade in and
-     the fade out have different timings - one shared declaration on the base
-     rule would force them to match.
-
-     The curve matters more than the duration here. A decelerating ease-out
-     was tried first and still read as sudden: it front-loads the change,
-     reaching ~53% opacity within the first 100ms, so the ring effectively
-     pops in and then merely finishes slowly. This symmetric S-curve eases in
-     as well as out, so the first frames are nearly imperceptible and the ring
-     genuinely emerges. */
+  /* -> docs/style.css.md#governs-fade-in-transition-declared-target */
   transition: opacity var(--card-glow-fade, 1s) cubic-bezier(0.45, 0, 0.55, 1);
-  /* Hover-only on purpose: a grid of a dozen cards each repainting an
-     infinite conic gradient is real compositor cost for something nobody is
-     looking at. */
+  /* -> docs/style.css.md#hover-only-purpose-grid-dozen-cards */
   animation: card-glow-spin 6s linear infinite;
 }
 
-/* Must follow the rule above to win the equal-specificity tie - conditional
-   at-rules do not outrank later unconditional declarations, and this file
-   has been bitten by that twice. The rim still appears, it just holds still. */
+/* -> docs/style.css.md#must-follow-rule-above-win */
 @media (prefers-reduced-motion: reduce) {
   .post-card:hover .card-glow,
   .post-card:focus-within .card-glow,
@@ -1610,16 +1264,12 @@ article table tbody tr:not(:first-child) td {
 }
 
 .search-result {
-  /* position: relative anchors .card-glow - without it the absolutely
-     positioned rim resolves against the viewport and renders page-sized.
-     (.post-card, .tutorial-card and .author-list-item are already relative.) */
+  /* -> docs/style.css.md#position-relative-anchors-card-glow */
   position: relative;
   border: 1px solid var(--border);
   border-radius: var(--radius-xl);
   background: var(--surface-1);
-  /* overflow stays visible so the rim's -1.5px inset and its drop-shadow
-     halo aren't clipped away; the cover image is clipped by its own
-     .search-result__image-wrap radius, not by this box. */
+  /* -> docs/style.css.md#overflow-stays-visible-rim-s */
   overflow: visible;
 }
 
@@ -1645,10 +1295,7 @@ article table tbody tr:not(:first-child) td {
   overflow: hidden;
 }
 
-/* zoom-replacement: under the old desktop zoom 1.1 this thumbnail rendered
-   at 154x110; mobile never had zoom and keeps the 140x100 base above (these
-   horizontal rows also show on narrow screens, where the extra 14px would
-   eat into the text column). */
+/* -> docs/style.css.md#zoom-replacement-under-old-desktop-zoom */
 @media (min-width: 769px) {
   .search-result__image-wrap {
     flex-basis: 154px;
@@ -1723,16 +1370,11 @@ article table tbody tr:not(:first-child) td {
 .tutorial-card {
   position: relative;
   border: none;
-  /* visible, not hidden, so .card-glow's -1.5px rim inset and its
-     drop-shadow halo are not clipped off; inner images are clipped by
-     their own image-wrap radius, not by this box. */
+  /* -> docs/style.css.md#visible-not-hidden-card-glow-s */
   overflow: visible;
 }
 
-/* Same 22px corner-bracket hover language as .post-card/.author-list-item -
-   the site's established "this card navigates somewhere" treatment, used
-   here instead of .search-result's static border since search-result rows
-   are JS-built /search/ results, not primary navigation cards. */
+/* -> docs/style.css.md#same-22px-corner-bracket-hover-language */
 .tutorial-card::before,
 .tutorial-card::after,
 .project-card::before,
@@ -1774,23 +1416,11 @@ article table tbody tr:not(:first-child) td {
 .project-card:focus-within::after {
   width: 100%;
   height: 100%;
-  /* Each bracket only carries the radius of the ONE corner it owns
-     (top-left for ::before, bottom-right for ::after). At rest that is
-     correct - they are 22px corner ticks. Once grown to the full box they
-     form a complete outline, and the two corners neither of them owns
-     rendered square, which reads as wrong against the fully-rounded glow
-     ring sweeping past them. Giving both all four radii lets ::before draw
-     its half of the top-right/bottom-left arcs (it owns the top and left
-     borders) and ::after draw the other half (bottom and right), which
-     meet to complete each arc. Applied only in the expanded state so the
-     resting ticks stay crisp, and transitioned so the corners round off as
-     the brackets grow rather than snapping. */
+  /* -> docs/style.css.md#each-bracket-carries-radius-one */
   border-radius: var(--radius-xl);
 }
 
-/* Larger thumbnail than a plain search row, desktop only - mobile keeps the
-   .search-result__image-wrap base (140x100) so the text column survives;
-   same scoping pattern as that class's own 154x110 desktop override. */
+/* -> docs/style.css.md#larger-thumbnail-plain-search-row */
 @media (min-width: 769px) {
   .tutorial-card .search-result__image-wrap {
     flex-basis: 220px;
@@ -1855,10 +1485,7 @@ article table tbody tr:not(:first-child) td {
   color: var(--muted-foreground);
 }
 
-/* No hero above the h1 on a chapter page (see the project notes - chapters are
-   deliberately imageless), so it needs its own top breathing room the way
-   .reference-header does rather than inheriting .post-header's spacing,
-   which assumes a hero image sits above it. */
+/* -> docs/style.css.md#no-hero-above-h1-chapter */
 .chapter-header {
   padding-top: 4rem;
 }
@@ -1897,10 +1524,7 @@ article table tbody tr:not(:first-child) td {
   }
 }
 
-/* Placed immediately after the animation rule it overrides - ties at equal
-   specificity resolve by source order regardless of the media condition
-   being true, the same cascade gotcha documented elsewhere in this file for
-   the other prefers-reduced-motion overrides. */
+/* -> docs/style.css.md#placed-immediately-after-animation-rule */
 @media (prefers-reduced-motion: reduce) {
   .terminal-empty__cursor {
     animation: none;
@@ -2000,26 +1624,11 @@ main h1 {
   aspect-ratio: 0.742;
   display: flex;
   flex-direction: column;
-  /* Load-bearing, and the reason is subtle. A grid item's `min-width`/
-     `min-height: auto` resolves to its CONTENT-based minimum size - except
-     when the item is a scroll container, where the spec waives it to 0. This
-     card used to be `overflow: hidden`, so it got that waiver for free and
-     could shrink to its 1fr column. The rotating glow border needs
-     `overflow: visible` (the rim is inset -1.5px and its halo is a
-     drop-shadow, both of which a clip would eat), and removing the clip also
-     removed the waiver - so every card fell back to its content's min-content
-     width, refused to shrink into its column, and overflowed the grid to the
-     right. `aspect-ratio` then converted that surplus width into surplus
-     height, which is what pushed the bottom row down behind the footer
-     (measured: 80px past the grid's right edge, 109px past the footer's top).
-     Setting these to 0 explicitly restores the shrink behaviour without
-     needing the clip back. */
+  /* -> docs/style.css.md#load-bearing-reason-subtle */
   min-width: 0;
   min-height: 0;
   border-radius: var(--radius-xl);
-  /* visible, not hidden, so .card-glow's -1.5px rim inset and its
-     drop-shadow halo are not clipped off; inner images are clipped by
-     their own image-wrap radius, not by this box. */
+  /* -> docs/style.css.md#visible-not-hidden-card-glow-s-2 */
   overflow: visible;
 }
 
@@ -2056,17 +1665,7 @@ main h1 {
 .post-card:focus-within::after {
   width: 100%;
   height: 100%;
-  /* Each bracket only carries the radius of the ONE corner it owns
-     (top-left for ::before, bottom-right for ::after). At rest that is
-     correct - they are 22px corner ticks. Once grown to the full box they
-     form a complete outline, and the two corners neither of them owns
-     rendered square, which reads as wrong against the fully-rounded glow
-     ring sweeping past them. Giving both all four radii lets ::before draw
-     its half of the top-right/bottom-left arcs (it owns the top and left
-     borders) and ::after draw the other half (bottom and right), which
-     meet to complete each arc. Applied only in the expanded state so the
-     resting ticks stay crisp, and transitioned so the corners round off as
-     the brackets grow rather than snapping. */
+  /* -> docs/style.css.md#each-bracket-carries-radius-one-2 */
   border-radius: var(--radius-xl);
 }
 
@@ -2074,15 +1673,7 @@ main h1 {
   display: flex;
   flex-direction: column;
   flex: 1 1 auto;
-  /* Flex items default to min-height: auto, which lets a flex item refuse
-     to shrink below its own content's natural height even when flex-shrink
-     would otherwise fit it into the space .post-card's fixed aspect-ratio
-     height actually allows (after subtracting .badge-row's own height,
-     which is a sibling of this element, not a descendant). Without this,
-     a card whose image + title + excerpt naturally wanted more room than
-     that budget would push .badge-row down past .post-card's bottom edge -
-     confirmed as the root cause of tags rendering cut off/overlapping the
-     card boundary on longer-excerpt reference cards. */
+  /* -> docs/style.css.md#flex-items-default-min-height-auto */
   min-height: 0;
   color: inherit;
   text-decoration: none;
@@ -2118,22 +1709,7 @@ main h1 {
   object-fit: contain;
 }
 
-/* Optional per-image light-theme variant. Content authors opt in by setting
-   image_light: alongside image: in a topic's front matter; the markup then
-   emits class="theme-swap" plus an inline --img-light custom property (see
-   tutorial-topic-page.html / tutorial-card.html).
-
-   Deliberately NOT done with <picture media="(prefers-color-scheme: dark)">:
-   this site's theme is a MANUAL toggle persisted to localStorage, so a
-   prefers-color-scheme query would follow the OS setting and desync from the
-   switch (OS-light + site-dark would show the wrong image). Keying off
-   [data-theme] is the only thing that tracks the actual toggle.
-
-   `content` on a replaced element swaps the rendered image while leaving the
-   src/alt intact, so it needs no duplicate <img> (which would also collide
-   with the single view-transition-name on the wrapper). Verified in-browser
-   that the rendered pixels really change on toggle - the img's own .currentSrc
-   does NOT update, so check pixels, not that property, if re-testing this. */
+/* -> docs/style.css.md#optional-per-image-light-theme-variant */
 html[data-theme="light"] img.theme-swap {
   content: var(--img-light);
 }
@@ -2170,21 +1746,7 @@ html[data-theme="light"] img.theme-swap {
   flex: 1 1 auto;
   overflow: hidden;
   padding: 1.25rem 1.5rem 1.5rem;
-  /* Deliberately NOT display: flex - its only children (h2, .post-card__excerpt)
-     just need to stack top to bottom, which normal block flow already does.
-     Making them flex items here was actively harmful: a flex item's display
-     value gets "blockified" per spec, which silently turns each child's own
-     display: -webkit-box (the mechanism -webkit-line-clamp depends on) into
-     flow-root - disabling line-clamping entirely with no visual warning.
-     Every card's excerpt was rendering fully untruncated as a result; short
-     excerpts happened to still fit their allotted space by coincidence,
-     longer ones (mostly on hand-written external reference cards) didn't,
-     and pushed .badge-row down past the card's bottom edge. Confirmed via
-     getComputedStyle before/after: display read back as "flow-root" either
-     way (an existing Chromium quirk for this legacy property, not a useful
-     signal), but the excerpt's actual rendered height only matched its
-     intended 3-line cap once .post-card__body stopped being a flex
-     container. */
+  /* -> docs/style.css.md#deliberately-not-display-flex */
 }
 
 .post-card__body h2,
@@ -2234,27 +1796,7 @@ footer {
   /* No horizontal inset here - it lives on .footer-wrapper instead, so that
      wrapper matches `main`'s box exactly. See the comment there. */
   padding-left: 0;
-  /* This footer is `width: 100vw`, and 100vw INCLUDES whatever the viewport
-     reserves on the right (a classic scrollbar, or the `scrollbar-gutter:
-     stable` gutter on html). So the footer is wider than the content column
-     and that overhang has to be padded back out, or its content sits further
-     right than main's.
-
-     `100vw - 100%` measures that difference directly: percentage padding
-     resolves against the containing block (body), whose width already excludes
-     the reserved space, so the subtraction is exactly the reserved amount.
-
-     This replaced `var(--scrollbar-width)`, which was measured in JS as
-     `innerWidth - documentElement.clientWidth` - that is the width of the
-     SCROLLBAR, not of the reserved GUTTER, and the two differ. On overlay-
-     scrollbar platforms (macOS, iOS, Android, modern Chrome) the gutter is
-     still reserved while the scrollbar itself measures 0, so the old formula
-     compensated by nothing and the footer content sat 10px right of the main
-     column - measured at 900px and 1280px viewports. The CSS form also needs
-     no JS and stays correct on browsers with no `scrollbar-gutter` support,
-     where a real scrollbar produces the same difference. That JS measurement
-     was this property's only consumer and has since been deleted from
-     `_layouts/default.html`; do not reintroduce it. */
+  /* -> docs/style.css.md#footer-width-100vw-100vw-includes */
   padding-right: calc(100vw - 100%);
   width: 100vw;
   color: var(--muted-foreground);
@@ -2266,14 +1808,7 @@ footer {
 .footer-wrapper {
   max-width: 1540px;
   margin: 0 auto;
-  /* The 20px horizontal inset lives HERE, not on `footer`, so that this
-     wrapper is dimensionally identical to `main` (same 1540px cap, same 20px
-     padding => same 1500px content column). With the inset on `footer`
-     instead, it was applied before this wrapper's max-width centring, so once
-     BOTH boxes hit the 1540px cap `main` lost 40px to its own padding and this
-     one did not - the footer's content column rendered 20px wider on each
-     side. That only showed above the 1560px nudge breakpoint; below it the
-     wrapper is not capped and the two happened to agree. */
+  /* -> docs/style.css.md#20px-horizontal-inset-lives-here */
   padding: 0 20px;
   display: flex;
   align-items: center;
@@ -2371,9 +1906,7 @@ footer p {
   background: var(--surface-1);
   color: inherit;
   text-decoration: none;
-  /* visible, not hidden, so .card-glow's -1.5px rim inset and its
-     drop-shadow halo are not clipped off; inner images are clipped by
-     their own image-wrap radius, not by this box. */
+  /* -> docs/style.css.md#visible-not-hidden-card-glow-s-3 */
   overflow: visible;
 }
 
@@ -2410,17 +1943,7 @@ footer p {
 .author-list-item:focus-within::after {
   width: 100%;
   height: 100%;
-  /* Each bracket only carries the radius of the ONE corner it owns
-     (top-left for ::before, bottom-right for ::after). At rest that is
-     correct - they are 22px corner ticks. Once grown to the full box they
-     form a complete outline, and the two corners neither of them owns
-     rendered square, which reads as wrong against the fully-rounded glow
-     ring sweeping past them. Giving both all four radii lets ::before draw
-     its half of the top-right/bottom-left arcs (it owns the top and left
-     borders) and ::after draw the other half (bottom and right), which
-     meet to complete each arc. Applied only in the expanded state so the
-     resting ticks stay crisp, and transitioned so the corners round off as
-     the brackets grow rather than snapping. */
+  /* -> docs/style.css.md#each-bracket-carries-radius-one-3 */
   border-radius: var(--radius-xl);
 }
 
@@ -2448,19 +1971,7 @@ footer p {
     font-size: 13px;
   }
 
-  /* With table-layout: fixed and width: 100%, a table's own box is always
-     exactly the container's width, so the overflow-x: auto declared on
-     article table (above) never has anything to actually scroll - percentage
-     columns just get crushed down to fit instead, and overflow-wrap forces
-     every word onto its own line once a column is a handful of px wide,
-     reading as vertical letter-soup on narrow screens. Giving the table a
-     real min-width wider than the viewport gives table-layout: fixed a
-     bigger basis to distribute the declared percentages against, so each
-     column gets a real, readable pixel width and the table becomes
-     genuinely wider than its container - which is what makes the existing
-     overflow-x: auto finally have something to do (scrolls inside the
-     table's own box, not the page - overflow-x: hidden on html/body still
-     prevents any page-level horizontal scrollbar). */
+  /* -> docs/style.css.md#table-layout-fixed-width-100-table */
   article table {
     width: max-content;
     min-width: 100%;
@@ -2496,36 +2007,11 @@ footer p {
   .header-wrapper {
     flex-wrap: wrap;
     gap: 0;
-    /* Base rule uses space-between, which worked when h1 and #navMenuToggle
-       were the only two items on this line - with #themeToggle now also
-       visible here, space-between would spread all three evenly instead of
-       keeping the two icons snug together on the right. flex-start plus
-       #themeToggle's own margin-left: auto below does that job instead. */
+    /* -> docs/style.css.md#base-rule-uses-space-between-which */
     justify-content: flex-start;
   }
 
-  /* Moved out of siteNav to the same trailing header group as #themeToggle
-     (see header markup comment) so it stays usable on mobile without
-     opening the hamburger menu. flex: 1 1 0% (instead of a fixed content
-     width + margin-left: auto, which #themeToggle still uses) makes
-     nav-search's own box exactly as wide as the leftover space between
-     .site-title and #themeToggle, not just its own icon-sized content
-     width - this is what lets the search input below actually have real
-     room to grow into. Flex-basis must be 0%, not auto (the first attempt
-     at this used auto and it looked right when closed but grew way past
-     the available header width once opened): auto bases nav-search's own
-     size on its CONTENT's natural size, but its content (the input) is
-     itself trying to grow to fill "however much space nav-search has" -
-     a circular dependency where the input's animating flex-grow inflates
-     nav-search's own auto-basis in real time, letting it balloon past the
-     actual free space in .header-wrapper. flex-basis: 0% breaks that
-     loop - nav-search's size is then purely "this container's share of
-     .header-wrapper's free space," independent of what's rendered inside
-     it. justify-content: flex-end keeps the search icon pinned to the
-     right edge of that box (adjacent to #themeToggle) whether the input
-     is open or closed. min-width: 0 overrides the flex-item default of
-     min-width: auto, which would otherwise stop this from shrinking back
-     down to icon-only size when closed. */
+  /* -> docs/style.css.md#moved-out-sitenav-same-trailing */
   .nav-search {
     order: 1;
     flex: 1 1 0%;
@@ -2533,18 +2019,7 @@ footer p {
     justify-content: flex-end;
   }
 
-  /* Overrides the desktop open state's fixed width: 176px just below -
-     a fixed pixel value doesn't know how much room is actually free next
-     to the icon on any given phone, and silently wrapped the header onto
-     two lines on a real device once the input pushed past the leftover
-     space (flex-wrap: wrap absorbs overflow as wrapping, not horizontal
-     scroll - a scrollWidth-based overflow check doesn't catch that, only
-     a real device did). flex: 1 1 0% makes the input grow to consume
-     exactly whatever space .nav-search's own box has left after the icon
-     button's fixed size (.nav-search-toggle has flex-shrink: 0) is
-     subtracted - i.e. exactly the gap between the site title and the
-     search icon, by construction, at any viewport width. min-width: 0
-     stops the input's own intrinsic minimum size from flooring that. */
+  /* -> docs/style.css.md#overrides-desktop-open-state-s */
   .nav-search.open .nav-search-input {
     flex: 1 1 0%;
     width: auto;
@@ -2552,15 +2027,7 @@ footer p {
   }
 
   #themeToggle {
-    /* Overrides the desktop order: 4 (see .theme-toggle) - on mobile this
-       needs to stay ahead of #siteNav's order: 4 so it renders on the
-       first, always-visible line instead of getting wrapped away with the
-       collapsed nav. margin-left: auto used to live here, consuming the
-       rest of this flex line's free space to push itself + everything
-       after it (search used to not exist as a separate element, then
-       #navMenuToggle) to the right edge - now that .nav-search is ordered
-       ahead of this and does that job instead, this only needs a small
-       fixed gap after it. */
+    /* -> docs/style.css.md#overrides-desktop-order-4-see */
     order: 2;
     margin-left: 0.75rem;
   }
@@ -2587,13 +2054,7 @@ footer p {
     margin-top: 1rem;
   }
 
-  /* Blur everything except the header (which holds the open menu itself and
-     already reads as its own layer via its own backdrop-filter + z-index)
-     while the mobile menu is open, so the menu is what's in focus instead of
-     competing with the page behind it. pointer-events: none stops taps from
-     reaching blurred-out content, matching standard overlay/modal behavior.
-     The transition duration matches #siteNav.open's own above so the blur
-     fades in/out in sync with the menu's own animation. */
+  /* -> docs/style.css.md#blur-everything-except-header-which */
   #ascii-bg,
   .page-content,
   footer {
@@ -2607,9 +2068,7 @@ footer p {
     pointer-events: none;
   }
 
-  /* Was font-size (the old text title's sizing knob) - .site-title's
-     content is an image now, so the equivalent mobile-scoped-down
-     adjustment lives on the image's own size instead. */
+  /* -> docs/style.css.md#font-size-old-text-title-s */
   .site-title img {
     width: 28px;
     height: 28px;
@@ -2641,24 +2100,13 @@ footer p {
     text-align: left;
   }
 
-  /* Minute counts crowd a narrow row - the larger desktop-only thumbnail
-     override above already keeps the tutorial card itself readable here,
-     so this only trims the chapter-list row, not the card. */
+  /* -> docs/style.css.md#minute-counts-crowd-narrow-row */
   .chapter-meta-inline {
     display: none;
   }
 }
 
-/* Placed after the mobile block above rather than in the other
-   prefers-reduced-motion block near the top of this file, on purpose:
-   #siteNav / #ascii-bg / .page-content / footer there set transition with
-   equal selector specificity, so for the same media condition (mobile) the
-   later rule in source order wins the cascade tie regardless of where a
-   media block sits in the file - an earlier override would silently lose
-   to those. The ASCII canvas effect's own reduced-motion handling already
-   lives in JS (ascii-background.js renders one static frame and starts no
-   timer at all), so #ascii-bg needs no drawing-side change here, only its
-   blur transition. */
+/* -> docs/style.css.md#placed-after-mobile-block-above */
 @media (max-width: 768px) and (prefers-reduced-motion: reduce) {
   #siteNav,
   #ascii-bg,
@@ -2668,19 +2116,7 @@ footer p {
   }
 }
 
-/* On viewports comfortably wider than the 1540px content max-width, nudge all
-   centered content a few pixels right (visually recentering after the
-   permanent scrollbar gutter took space from the right side only). Scoped to
-   a width with plenty of centering slack so the margins never go negative.
-
-   The offset is HALF the reserved gutter, not the whole of it. The gutter is
-   taken off the right edge only, so the content column's own centre already
-   sits gutter/2 to the left of the viewport's centre - moving it right by the
-   full gutter overshoots by the same amount it was short. Measured before the
-   correction: 5px left of centre below the breakpoint, 5px RIGHT of centre
-   above it, i.e. the sign flipped but the error did not shrink. With 5px both
-   land on 0. If --radius/max-widths or the 10px ::-webkit-scrollbar width ever
-   change, this is gutter/2 and should be recomputed, not copied. */
+/* -> docs/style.css.md#viewports-comfortably-wider-1540px-content */
 @media (min-width: 1560px) {
   .footer-wrapper,
   .post-header,
@@ -2701,9 +2137,7 @@ footer p {
    Homepage: hero, projects list
    ========================================================================== */
 
-/* Plain-prose intro. Michroma is reserved for the title of a piece of content,
-   and the site's name IS that here, so the h1 gets it and everything else in
-   the block stays Geist Mono like the rest of the site's chrome. */
+/* -> docs/style.css.md#plain-prose-intro-michroma-reserved-title */
 .home-hero {
   padding: 1rem 0 2.5rem;
   text-align: center;
@@ -2724,14 +2158,8 @@ footer p {
 }
 
 .home-hero__blurb {
-  /* ~65ch keeps the measure readable; the blurb is the only running prose on
-     the page and would otherwise stretch the full 1500px content column.
-     `margin-inline: auto` is what actually centres the BLOCK - text-align on
-     the parent only centres the lines inside whatever box this ends up being,
-     and a 65ch box in a 1500px column would otherwise sit hard left. */
-  /* ch is a character count, so this holds ~60 characters per line at whatever
-     size the blurb ends up - the physical width scales with the font, which is
-     why this was tightened from 65ch when the type went up. */
+  /* -> docs/style.css.md#65ch-keeps-measure-readable-blurb */
+  /* -> docs/style.css.md#ch-character-count-holds-60 */
   max-width: 60ch;
   margin: 0 auto 1.5rem;
   font-size: 1.15rem;
@@ -2766,9 +2194,7 @@ footer p {
   height: 18px;
 }
 
-/* Section headings sit between the hero and each list. Geist Mono, not
-   Michroma - these label a section, they are not the title of a piece of
-   content (same rule the year headings follow). */
+/* -> docs/style.css.md#section-headings-sit-between-hero */
 .section-heading {
   font-family: var(--font-mono);
   font-size: 1.15rem;
@@ -2797,19 +2223,9 @@ footer p {
   margin-top: 0;
 }
 
-/* Project tiles keep .post-card's aspect-ratio so they match every other card
-   on the site - no override here. That was measured, not assumed: at the 468px
-   grid width a 0.742 ratio gives a 631px tall tile while the content needs
-   about 460px, so the extra fields (status, links, tags) fit with room spare.
-   The excerpt clamp below is what keeps that true as descriptions get longer -
-   don't remove it without re-measuring, because these cards are
-   `overflow: visible` for the glow border, so anything that does not fit spills
-   onto the content below instead of being clipped. */
+/* -> docs/style.css.md#project-tiles-keep-post-card-s */
 
-/* Takes the layout role .post-card-link plays in a normal post tile. Not an
-   anchor here - see project-card.html for why. min-height: 0 for the same
-   reason .post-card-link has it: a flex item defaults to min-height: auto and
-   would otherwise refuse to shrink below its content. */
+/* -> docs/style.css.md#takes-layout-role-post-card-link-plays */
 .project-card__inner {
   display: flex;
   flex-direction: column;
@@ -2829,10 +2245,7 @@ footer p {
   color: var(--muted-foreground);
 }
 
-/* Excerpt keeps .post-card__excerpt's 3-line clamp, same as a post tile - it
-   is what guarantees the content fits the fixed-ratio box above. Write project
-   descriptions to roughly three lines; anything longer is truncated rather
-   than overflowing. */
+/* -> docs/style.css.md#excerpt-keeps-post-card__excerpt-s-3-line */
 
 /* Status reads as state, not as a topic tag, so it drops the tag badge's
    surface fill and hover scale and just carries a slightly stronger border. */
@@ -2895,9 +2308,7 @@ footer p {
   }
 }
 
-/* Star count, pinned to the tile's top-right over the thumbnail. .post-card is
-   already position: relative, so this anchors to the card. z-index 3 clears the
-   corner brackets and the glow rim, both of which sit at 2. */
+/* -> docs/style.css.md#star-count-pinned-tile-s */
 .project-stars {
   position: absolute;
   top: 1rem;
@@ -2932,13 +2343,7 @@ footer p {
   height: 19px;
 }
 
-/* Project thumbnails fill their slot rather than letterboxing. The shared
-   default is object-fit: contain, which is right for post/reference covers
-   (never crop someone's artwork) but leaves a project screenshot floating in
-   dead space - the slot's aspect shifts with viewport width because its side
-   margins are fixed rem against a scaling card, so no single source aspect
-   can match it everywhere. cover pins the width and trims a few pixels of
-   height instead. */
+/* -> docs/style.css.md#project-thumbnails-fill-their-slot */
 .project-card .post-card__image-wrap img {
   object-fit: cover;
 }

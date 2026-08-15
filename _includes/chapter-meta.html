@@ -1,10 +1,4 @@
-{% comment %}
-Purpose-built sibling of byline.html, not a reuse of it directly - byline.html
-renders include.post.date unconditionally, and chapters have no date field
-(they carry last_modified_at instead, which is optional). Reuses the same
-author-resolution lines and the same .byline/.avatar/.byline-sep classes so
-existing CSS applies for free.
-{% endcomment %}
+{% comment %} -> docs/templates.md#purpose-built-sibling-byline-html-not {% endcomment %}
 {% assign byline_author = include.chapter.author | default: site.author %}
 {% assign author_doc = site.authors | where: "name", byline_author | first %}
 <div class="byline chapter-meta">

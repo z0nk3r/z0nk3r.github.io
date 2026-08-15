@@ -33,13 +33,7 @@
             stack.push(node);
         });
 
-        // Render as a flat list of plain, pre-formatted text - the same
-        // approach `tree(1)` itself uses, just with word-wrapping added
-        // since `tree` never has to fit a sidebar. Wrap points are computed
-        // by hand (not left to the browser) so every wrapped line can start
-        // with the correct literal '│'/space prefix characters, the only
-        // way to keep continuation lines looking like real tree output
-        // instead of floating disconnected text.
+        // -> docs/article-scripts.md#render-flat-list-plain-pre-formatted
         const ul = document.createElement('ul');
 
         function measureCharWidth() {
@@ -80,12 +74,7 @@
         }
 
         const charWidth = measureCharWidth();
-        // Floor of 1, not some larger "reasonable minimum" - a bigger floor
-        // would force more characters onto a line than actually measured to
-        // fit (overflowing the sidebar at larger browser/OS text-size
-        // settings, where the real available width can legitimately be this
-        // small). Wrapping into more, shorter lines is correct behavior;
-        // silently overflowing the container is not.
+        // -> docs/article-scripts.md#floor-1-not-some-larger
         const availableChars = Math.max(Math.floor(toc.clientWidth / charWidth), 1);
 
         function renderNode(node, ancestorPrefix, isLast) {
@@ -118,30 +107,20 @@
         renderNode(root, '', true);
         toc.appendChild(ul);
 
-        // Highlight active TOC link on scroll. Link list cached once here
-        // (was a fresh document.querySelectorAll('#toc a') per scroll event)
-        // - the TOC's own links don't change after generateTOC builds them.
+        // -> docs/article-scripts.md#highlight-active-toc-link-scroll
         const tocLinks = toc.querySelectorAll('a');
 
         // The sidebar is the scroll container; #toc is just the list inside it.
         const sidebar = toc.closest('.toc-sidebar') || toc.parentElement;
 
-        // Mark the sidebar as actually overflowing so CSS can show its fade
-        // affordance only when there is something hidden. Computed once here
-        // and on resize - deliberately a static fact about the element rather
-        // than anything tied to live scroll position (see the abandoned
-        // .table-scroll edge-fade in the project notes: a JS handler reading live
-        // scroll offsets could not keep up under main-thread contention).
+        // -> docs/article-scripts.md#mark-sidebar-actually-overflowing-css
         const markScrollable = () => {
             sidebar.classList.toggle('is-scrollable', sidebar.scrollHeight > sidebar.clientHeight + 1);
         };
         markScrollable();
         window.addEventListener('resize', markScrollable);
 
-        // Auto-scrolling the TOC must never fight a reader who is scrolling it
-        // themselves. Only genuine input intent starts the grace period -
-        // listening for 'scroll' instead would also catch our OWN programmatic
-        // scroll below and permanently suppress the feature.
+        // -> docs/article-scripts.md#auto-scrolling-toc-must-never-fight
         let manualUntil = 0;
         ['wheel', 'pointerdown', 'keydown'].forEach(ev => {
             sidebar.addEventListener(ev, () => { manualUntil = performance.now() + 1500; },
@@ -150,10 +129,7 @@
 
         const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-        // Keep the highlighted link inside the sidebar's visible band.
-        // NOT scrollIntoView(): that walks every scrollable ancestor including
-        // the document, so it can yank the whole page while the reader is
-        // mid-article. Assigning the sidebar's own scrollTop cannot.
+        // -> docs/article-scripts.md#keep-highlighted-link-inside-sidebar
         const revealActiveLink = (link) => {
             if (sidebar.scrollHeight <= sidebar.clientHeight) return;
             if (performance.now() < manualUntil) return;
@@ -177,12 +153,7 @@
                 }
             });
 
-            // A short final section's heading may never cross the 150px threshold
-            // above on its own (its rect.top never gets that low if there isn't
-            // enough remaining scroll distance to push it there), which would
-            // leave an earlier heading stuck active even once the reader has
-            // scrolled all the way to the bottom of the page. Force the last
-            // heading active once we're at (or within a couple px of) max scroll.
+            // -> docs/article-scripts.md#short-final-section-s-heading
             const atBottom = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
             if (atBottom && headings.length > 0) {
                 current = headings[headings.length - 1].id;
@@ -245,11 +216,7 @@
         const rect = article.getBoundingClientRect();
         const articleTop = rect.top + window.scrollY;
         const articleHeight = rect.height;
-        // 0% when the article's top edge reaches the viewport's top edge, 100%
-        // when its bottom edge reaches the viewport's bottom edge - i.e. progress
-        // through the *scrollable distance* of the article, not the raw scroll
-        // position (which would never reach 0% for any article shorter than one
-        // viewport height above the fold).
+        // -> docs/article-scripts.md#0-when-article-s-top
         const scrollableDistance = articleHeight - window.innerHeight;
         if (scrollableDistance <= 0) {
             bar.style.width = (window.scrollY > articleTop ? 100 : 0) + '%';
@@ -260,20 +227,12 @@
         bar.style.width = percent + '%';
     }
 
-    // Wait for webfonts before measuring character width for the TOC's
-    // word-wrap - Geist Mono loads with `display: swap`, so measuring
-    // immediately on load can hit the wider fallback font instead and
-    // under-count how many characters actually fit per line, wrapping
-    // words that would have fit once the real font renders.
+    // -> docs/article-scripts.md#wait-webfonts-before-measuring-character
     document.fonts.ready.then(generateTOC);
     annotateCodeBlocks();
     updateReadingProgress();
 
-    // Both updateReadingProgress and updateActiveTocLink do layout reads
-    // (getBoundingClientRect) on every call; batching them behind one
-    // requestAnimationFrame per scroll burst (instead of each running once
-    // per raw scroll event, which can fire many times per frame) avoids
-    // redundant forced-layout work without changing what either does.
+    // -> docs/article-scripts.md#both-updatereadingprogress-updateactivetoclink-do-layout
     let scrollTicking = false;
     window.addEventListener('scroll', () => {
         if (scrollTicking) return;

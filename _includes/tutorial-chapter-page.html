@@ -1,11 +1,7 @@
 <div id="reading-progress"></div>
 
-{% comment %} All joins are URL-derived: the chapter's parent topic is
-simply its own URL minus the last segment (the join IS the file placement -
-no topic: front-matter key exists anymore). topic_doc lookup is by exact
-URL match (url is an invokable drop property, trailing slash included).
-chapter-list.html returns this topic's sorted chapters as topic_chapters
-via the assign-leak convention. {% endcomment %}
+{% comment %} The join IS the file placement - no topic: front-matter key exists.
+     -> docs/templates.md#joins-url-derived-chapter-s-parent {% endcomment %}
 {% assign chapter_parent_url = page.url | split: "/" | pop | join: "/" | append: "/" %}
 {% assign topic_doc = site.tutorials | where: "url", chapter_parent_url | first %}
 {% include chapter-list.html parent_url=chapter_parent_url %}
@@ -17,12 +13,7 @@ via the assign-leak convention. {% endcomment %}
 {% if chapter_pos > 1 %}{% assign prev_ch = topic_chapters[prev_index] %}{% endif %}
 {% if next_index < topic_chapters.size %}{% assign next_ch = topic_chapters[next_index] %}{% endif %}
 
-{% comment %} topic-crumbs renders Home / Tutorials / every ancestor topic /
-this chapter's own topic (all linked, link_last=true) - arbitrary nesting
-depth; only the chapter's own ▤ crumb is appended here. Passes the PARENT
-url, not page.url - the chapter's own slug must not become a crumb. The
-include's assigns are all crumb_-prefixed so they can't clobber
-topic_chapters/topic_doc/chapter_pos above. {% endcomment %}
+{% comment %} -> docs/templates.md#topic-crumbs-renders-home-tutorials-every {% endcomment %}
 <nav class="breadcrumbs" aria-label="Breadcrumb">
     {% include topic-crumbs.html topic_url=chapter_parent_url link_last=true %}
     <span> / </span>
@@ -30,10 +21,7 @@ topic_chapters/topic_doc/chapter_pos above. {% endcomment %}
 </nav>
 
 <main>
-{% comment %} No hero image on chapters - the topic owns imagery and the
-view-transition morph (see the project notes); .chapter-header gives this its own
-top padding since it isn't following a hero the way .post-header usually
-is. {% endcomment %}
+{% comment %} -> docs/templates.md#no-hero-image-chapters {% endcomment %}
 <div class="post-header chapter-header">
     <h1>{{ page.title }}</h1>
     <div class="post-meta">

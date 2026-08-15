@@ -1,35 +1,5 @@
-{% comment %}
-  Homepage project tile. Takes one entry from _data/projects.yml:
-    {% include project-card.html project=item %}
-
-  Uses the standard vertical .post-card tile (the same card the blog and
-  references grids use) so projects sit in the site's normal card language.
-
-  TWO deliberate departures from post-card.html, both load-bearing:
-
-  1. NOT wrapped in one big <a>. A project carries several action links, and an
-     <a> must never nest inside another <a> - the browser silently auto-closes
-     the outer one and the layout breaks (already hit once here). So
-     .project-card__inner takes the layout role .post-card-link normally plays,
-     the title is the primary link, and the action links get their own row.
-     The hover treatment is unaffected: .post-card's brackets and glow are keyed
-     off the <li>, not off any anchor, and :focus-within still fires from the
-     links inside.
-
-  2. The fixed aspect-ratio is released in CSS (see .project-card). A project
-     holds more than a post card does - status badge, description, action links,
-     tags - and a fixed-ratio box would overflow, which since the cards became
-     `overflow: visible` for the glow means the surplus spills onto whatever is
-     below instead of being clipped.
-{% endcomment %}
-{% comment %}
-  Star badge: use an explicit `repo: "owner/name"` if the entry has one,
-  otherwise derive it from a github.com `url`. Guarded so a non-GitHub project
-  (or one with no url at all) simply renders no badge. The count itself is
-  filled in client-side - see the script at the bottom of index.md - because
-  GitHub Pages builds with no plugins, so there is no build-time way to call
-  an API.
-{% endcomment %}
+{% comment %} -> docs/templates.md#homepage-project-tile-takes-one {% endcomment %}
+{% comment %} -> docs/templates.md#star-badge-use-explicit-repo {% endcomment %}
 {% assign pj_repo = include.project.repo %}
 {% unless pj_repo %}
   {% if include.project.url contains "github.com/" %}
@@ -87,14 +57,7 @@
       <span class="badge badge--status">{{ include.project.status }}</span>
       {% endif %}
 
-      {% comment %}
-        Tests != "" as well as presence: an empty string is TRUTHY in Liquid,
-        so a presence-only condition on `excerpt: ""` renders an empty <p> that
-        still takes its margin. Same trap already fixed on the tutorial topic
-        page. (Do not write literal curly-percent tag delimiters in a comment
-        here - Liquid still tokenises them inside a comment block and a bare
-        conditional keyword is a syntax error. Describe the tag in words.)
-      {% endcomment %}
+      {% comment %} -> docs/templates.md#tests-well-presence-empty-string {% endcomment %}
       {% if include.project.excerpt and include.project.excerpt != "" %}
       <p class="post-card__excerpt">{{ include.project.excerpt }}</p>
       {% endif %}
@@ -109,11 +72,7 @@
     </div>
   </div>
 
-  {% comment %}
-    .badge-row stays OUTSIDE the inner wrapper, matching post-card.html - and
-    .size > 0 rather than a bare truthiness check, since an empty array is
-    TRUTHY in Liquid and would render an empty badge row.
-  {% endcomment %}
+  {% comment %} -> docs/templates.md#badge-row-stays-outside-inner-wrapper {% endcomment %}
   {% if include.project.tags and include.project.tags.size > 0 %}
   <div class="badge-row">
     {% for tag in include.project.tags %}

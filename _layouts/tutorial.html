@@ -2,13 +2,8 @@
 layout: default
 ---
 
-{% comment %} Single dispatcher layout for the whole tutorials collection -
-a doc WITH a `chapter:` front-matter key is a chapter, one without is a
-topic (group and/or leaf). chapter: is therefore the discriminator, not
-just the sort key: a chapter file that forgets it silently renders as a
-topic page instead of failing the build (documented in SETUP.md). The two
-page bodies live in _includes/ because a layout file cannot include
-another layout. {% endcomment %}
+{% comment %} A doc WITH a chapter: key is a chapter, one without is a topic.
+     -> docs/templates.md#single-dispatcher-layout-whole-tutorials {% endcomment %}
 {% if page.chapter %}
 {% include tutorial-chapter-page.html %}
 {% else %}

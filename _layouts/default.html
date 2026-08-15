@@ -3,41 +3,15 @@
 <head>
     <meta charset="utf-8">
     <script>
-        // Sets data-theme before anything paints, so there's never a window where
-        // the wrong theme is visible - not even briefly. <html> above hardcodes
-        // data-theme="dark" as its static default; without this, the correction
-        // only happened in the bottom <script> block, after the entire page had
-        // already parsed. That's a real flash-of-wrong-theme on every normal
-        // load, just too brief to consciously notice - but a cross-document view
-        // transition (see the blog thumbnail -> hero morph) captures and holds
-        // that transitional moment for ~250ms instead of snapping instantly,
-        // turning an imperceptible flash into a highly visible one. Must stay a
-        // plain synchronous script (no defer/async) to actually block parsing
-        // until it runs.
+        // -> docs/layouts-default.md#sets-data-theme-before-anything-paints
         (function () {
             var theme = localStorage.getItem('theme') || 'dark';
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
     <style>
-        /* Critical theme paint, inline and hardcoded on purpose - not a
-           duplicate of the --background/--foreground tokens in style.css.
-           The script above sets data-theme correctly before anything paints,
-           but the CSS that makes that attribute visually matter
-           ([data-theme="light"] { --background: ...; } etc.) lives in the
-           external style.css, which a cross-document view transition can
-           capture its screenshot *before* has finished loading and applying
-           - the attribute was already right, but nothing had painted it yet,
-           so the transition captured :root's bare dark default, or in the
-           worst case the browser's own raw unstyled white before even that.
-           This has zero network/parse dependency - it applies the instant
-           it's parsed, same frame as the script above sets the attribute -
-           so there's no gap left for a transition to capture mid-flash.
-           Values are hardcoded (not var(--background)) deliberately: those
-           custom properties are ALSO defined in style.css, so referencing
-           them here would just move the same dependency, not remove it.
-           Mirror any theme color changes here manually - see --background /
-           [data-theme="light"] --background in style.css. */
+        /* Hardcoded on purpose; mirror theme color changes here manually.
+           -> docs/layouts-default.md#critical-theme-paint-inline-hardcoded */
         html {
             background-color: #060000;
             color-scheme: dark;
@@ -47,93 +21,37 @@
             color-scheme: light;
         }
     </style>
-    <!-- Colors mobile browser chrome (URL bar, task switcher card) to match
-         the theme instead of showing a generic default. Hardcoded to the
-         dark default here for the same reason the critical-paint <style>
-         above is hardcoded (no external-stylesheet dependency at initial
-         paint); updateThemeButton() below keeps it in sync on every toggle,
-         bfcache restore, and init. -->
+    {% comment %} -> docs/layouts-default.md#colors-mobile-browser-chrome-url {% endcomment %}
     <meta name="theme-color" content="#060000">
     {% if page.layout == 'post' %}
-    <!-- rel="expect" blocking="render" is the View Transitions spec's own
-         companion feature for cross-document morphs: the incoming page's
-         transition capture happens at its FIRST rendering opportunity, which
-         with incremental HTML parsing can land before the hero element has
-         even been parsed - the morph then randomly has no destination
-         ("sometimes" flashes, network-chunking dependent). This blocks first
-         render until #post-hero is parsed; it sits at the top of <body>, so
-         the delay is negligible. Non-supporting browsers ignore the link.
-         The preload starts the hero image fetch during head parse instead of
-         waiting for the <img> tag to be discovered mid-body - the other
-         race: a capture of a not-yet-decoded image. -->
+    {% comment %} -> docs/layouts-default.md#rel-expect-blocking-render-view {% endcomment %}
     <link rel="expect" href="#post-hero" blocking="render">
     {% if page.image %}
     <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
     {% endif %}
     {% elsif page.url == '/blog/' %}
-    <!-- Same reasoning for the reverse (Back) direction: block the list
-         page's first render until every card is parsed, so the returning
-         morph always finds its destination card. The marker span sits right
-         after the post list in blog.md; the page is small enough that
-         blocking until it parses costs nothing meaningful. -->
+    {% comment %} -> docs/layouts-default.md#same-reasoning-reverse-back-direction {% endcomment %}
     <link rel="expect" href="#post-list-end" blocking="render">
     {% elsif page.layout == 'tutorial' %}
     {% unless page.chapter %}
-    <!-- Topic pages only (the whole tutorials collection shares one layout;
-         a doc with `chapter:` is a chapter and gets no expect, as before).
-         Same anti-flash reasoning as the post-hero branch above, but anchored
-         at the END of the topic page's content (not the hero) because a topic
-         page is BOTH a morph destination (its hero, forward direction)
-         AND a list of child-topic cards (reverse direction, morphing back
-         into a child's card - nested tutorials). Parsing is sequential, so
-         one blocker on the last element covers the hero and every card above
-         it; an earlier #topic-hero anchor wouldn't guarantee the cards are
-         parsed. Topic pages are small - the extra blocking cost is the same
-         tradeoff /blog/'s #post-list-end already accepts. -->
+    {% comment %} -> docs/layouts-default.md#topic-pages-whole-tutorials-collection {% endcomment %}
     <link rel="expect" href="#topic-content-end" blocking="render">
     {% if page.image %}
     <link rel="preload" as="image" href="{{ page.image | relative_url }}" fetchpriority="high">
     {% endif %}
     {% endunless %}
     {% elsif page.url == '/tutorials/' %}
-    <!-- Same reverse-direction reasoning as the /blog/ branch above, for
-         navigating back from a topic page to the tutorials index. -->
+    {% comment %} -> docs/layouts-default.md#same-reverse-direction-reasoning-blog-branch {% endcomment %}
     <link rel="expect" href="#topic-list-end" blocking="render">
     {% endif %}
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- The title is hand-written (keeps the site's own "Title - z0nk3r"
-         format); the seo include below runs with its title output turned
-         off - the meta description is NOT hand-written, that one comes
-         straight from the seo include, sourced from the same front matter.
-         Both used to be duplicated (two title tags with different
-         separators, two descriptions - invalid HTML): NOT from the include
-         call itself, but from an earlier version of THIS comment, which
-         wrote the include's own curly-brace syntax as plain prose - Liquid
-         has no concept of HTML comments and parses any {curly-percent} tag
-         syntax it finds in the raw template text regardless of surrounding
-         markup, so that earlier comment was itself a second, silent,
-         argument-less invocation. Do not write the literal tag delimiters
-         in a comment again - describe the tag in words instead. -->
+    {% comment %} -> docs/layouts-default.md#title-hand-written-keeps-site-s {% endcomment %}
     <title>{% if page.title %}{{ page.title }} – {% endif %}{{ site.title }}</title>
-    <!-- Uses the same icon-192.png raster asset as .site-title in the
-         header (see body markup) and apple-touch-icon.png/icon-512.png
-         below, rather than the original hand-written assets/favicon.svg -
-         keeps the browser-tab icon, header mark, and home-screen icons all
-         visually identical instead of two slightly different renders of
-         the same design. favicon.svg still exists on disk (PIL's icon-*.png
-         renders were generated from the same self-hosted Geist Mono font,
-         not from this file, so nothing depends on it) but is no longer
-         referenced anywhere. -->
+    {% comment %} -> docs/layouts-default.md#uses-same-icon-192-png-raster {% endcomment %}
     <link rel="icon" type="image/png" href="{{ '/assets/images/icon-192.png' | relative_url }}">
     <link rel="apple-touch-icon" href="{{ '/assets/images/apple-touch-icon.png' | relative_url }}">
     <link rel="manifest" href="{{ '/site.webmanifest' | relative_url }}">
-    <!-- Geist/Geist Mono/Michroma are self-hosted (assets/fonts/, @font-face
-         rules at the top of style.css) rather than loaded from Google
-         Fonts' CDN - removes two render-blocking cross-origin round trips
-         (fonts.googleapis.com for the stylesheet, then fonts.gstatic.com
-         for the actual files) in exchange for maintaining the font files
-         here. See the "Fonts (self-hosted)" comment in style.css for which
-         subsets are kept and why. -->
+    {% comment %} -> docs/layouts-default.md#geist-geist-mono-michroma-self-hosted {% endcomment %}
     <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
     <script src="{{ '/assets/js/ascii-background.js' | relative_url }}" defer></script>
     {% feed_meta %}
@@ -147,21 +65,9 @@
     <canvas id="ascii-bg" aria-hidden="true"></canvas>
     <header>
         <div class="header-wrapper">
-            {% comment %} Deliberately not an <h1>: the site title renders in
-            the header of every page, and each page already has its own real
-            h1 - two h1s per page is an a11y/SEO anti-pattern. Styled via
-            .site-title. Reuses the same ">_ " mark as the favicon, via the
-            icon-192.png raster asset (already generated for the web
-            manifest/apple-touch-icon - see the project notes) rather than the SVG
-            favicon itself - aria-label carries the accessible name; the
-            img's own alt is empty since it's now decorative relative to
-            the link's label. {% endcomment %}
+            {% comment %} -> docs/layouts-default.md#deliberately-not-h1-site-title {% endcomment %}
             <p class="site-title"><a href="{{ '/' | relative_url }}" aria-label="{{ site.title }} home"><img src="{{ '/assets/images/icon-192.png' | relative_url }}" alt="" width="32" height="32"></a></p>
-            {% comment %} Sits directly in .header-wrapper, not nested inside
-            #siteNav, for the same reason #themeToggle does: it needs to stay
-            visible and usable on mobile without opening the hamburger menu.
-            CSS order (see .nav-search / #themeToggle rules) positions it to
-            the left of the theme toggle on both mobile and desktop. {% endcomment %}
+            {% comment %} -> docs/layouts-default.md#sits-directly-header-wrapper-not-nested {% endcomment %}
             <div class="nav-search">
                 <input type="search" id="navSearchInput" class="nav-search-input" placeholder="Search…" aria-label="Search posts" autocomplete="off">
                 <button type="button" id="navSearchToggle" class="nav-search-toggle" aria-label="Search">
@@ -172,10 +78,7 @@
             <button type="button" id="navMenuToggle" class="nav-menu-toggle" aria-label="Menu" aria-expanded="false" aria-controls="siteNav">
                 {% include icon-hamburger.html %}
             </button>
-            {% comment %} No explicit "Home" link - the header icon
-            (.site-title above) already links there with an accessible
-            "z0nk3r home" label, matching the standard clickable-logo
-            convention; a separate text link would just duplicate it. {% endcomment %}
+            {% comment %} -> docs/layouts-default.md#no-explicit-home-link {% endcomment %}
             <nav id="siteNav">
                 <a href="{{ '/tutorials/' | relative_url }}">Tutorials</a>
                 <a href="{{ '/references/' | relative_url }}">References</a>
@@ -204,21 +107,14 @@
     </footer>
 
     <script>
-        // Theme toggle
+        // ---- Theme toggle -------------------------------------------------
         const themeToggle = document.getElementById('themeToggle');
         const html = document.documentElement;
-        // Rendered at build time via Liquid include, then swapped in via JS at
-        // runtime - keeps a single source of truth for each icon's markup
-        // (also used for the button's initial static content above) instead of
-        // duplicating the SVG paths here. currentColor means both automatically
-        // pick up the theme's --foreground instead of platform emoji's own
-        // fixed (and inconsistent across OS/browser) colors.
+        // -> docs/layouts-default.md#rendered-build-time-via-liquid
         const moonIcon = `{% include icon-moon.html %}`;
         const sunIcon = `{% include icon-sun.html %}`;
 
-        // data-theme is already correct by now - set synchronously in <head>
-        // before this script ever runs (see comment there) - this just needs
-        // to sync the button's icon to whatever that already set.
+        // -> docs/layouts-default.md#data-theme-already-correct-now
         updateThemeButton();
 
         themeToggle.addEventListener('click', () => {
@@ -233,22 +129,15 @@
         function updateThemeButton() {
             const theme = html.getAttribute('data-theme');
             themeToggle.innerHTML = theme === 'dark' ? moonIcon : sunIcon;
-            // Same hardcoded hex pair as the <meta name="theme-color"> tag
-            // and the critical-paint <style> in <head> - keep all three in
-            // sync by hand if the theme colors ever change.
+            // -> docs/layouts-default.md#same-hardcoded-hex-pair-meta
             const themeColorMeta = document.querySelector('meta[name="theme-color"]');
             if (themeColorMeta) {
                 themeColorMeta.setAttribute('content', theme === 'dark' ? '#060000' : '#fdf6e3');
             }
         }
 
-        // bfcache restores skip every script on the page - including the head
-        // theme bootstrap - so a page restored via Back/Forward still wears
-        // whatever theme it was showing when it was frozen. If the theme was
-        // toggled on another page in between, the restored page is stale, and
-        // the view transition navigating into it makes that stale frame
-        // visible ("the theme changes when going back and forth"). Re-sync
-        // from localStorage whenever a page comes back from the cache.
+        // ---- Theme re-sync after a bfcache restore ------------------------
+        // -> docs/layouts-default.md#bfcache-restores-skip-every-script
         window.addEventListener('pageshow', (e) => {
             if (!e.persisted) return;
             const storedTheme = localStorage.getItem('theme') || 'dark';
@@ -259,30 +148,8 @@
             }
         });
 
-        // pageswap fires on the outgoing page right before the browser
-        // captures its view-transition snapshots - the spec's designated
-        // last-chance hook to mutate the page before old-state capture. A
-        // named element should only participate in the transition when it is
-        // BOTH onscreen and actually involved in this specific navigation:
-        //
-        // - Offscreen (the post hero after scrolling down a long article,
-        //   then pressing Back): the morph would animate from an offscreen
-        //   rect and streak across the entire viewport.
-        // - Not the navigation target (every OTHER card on /blog/ when one
-        //   card is clicked): each card carries a unique name with no match
-        //   on the destination page, so Chrome gives each an exit-only
-        //   transition group - observed visibly "flying to the bottom
-        //   offscreen" during the transition rather than staying inert.
-        //
-        // Stripping the name means that element simply doesn't participate.
-        // Target resolution: a card's name is kept only when the navigation
-        // goes to that card's own link; a non-link named element (the post
-        // hero, the tutorial topic hero) is kept only when navigating to the
-        // index page it morphs back into - the post hero has no
-        // data-vt-index and falls back to the blog index unchanged, while
-        // the topic hero opts into /tutorials/ via that attribute. If the
-        // destination isn't available (activation null, or a manually
-        // dispatched event in tests), fall back to offscreen-stripping only.
+        // ---- Cross-document view transitions ------------------------------
+        // -> docs/layouts-default.md#pageswap-fires-outgoing-page-right
         window.addEventListener('pageswap', (e) => {
             var destPath = null;
             if (e.activation && e.activation.entry && e.activation.entry.url) {
@@ -305,7 +172,7 @@
             });
         });
 
-        // Header search toggle
+        // ---- Header search -------------------------------------------------
         const navSearch = document.querySelector('.nav-search');
         const navSearchToggle = document.getElementById('navSearchToggle');
         const navSearchInput = document.getElementById('navSearchInput');
@@ -333,16 +200,11 @@
             }
         });
 
-        // Mobile hamburger menu toggle
+        // ---- Mobile hamburger menu -----------------------------------------
         const navMenuToggle = document.getElementById('navMenuToggle');
         const siteNav = document.getElementById('siteNav');
 
-        // Single source of truth for open/close, since it's triggered from 4
-        // separate places below (toggle click, outside click, Escape, resize
-        // past the breakpoint) - also toggles body.menu-open, which blurs the
-        // rest of the page behind the open menu (see the mobile media query
-        // in style.css) so it reads as a clear background layer instead of
-        // competing with the menu for attention.
+        // -> docs/layouts-default.md#single-source-truth-open-close
         function setMobileMenuOpen(isOpen) {
             siteNav.classList.toggle('open', isOpen);
             navMenuToggle.setAttribute('aria-expanded', isOpen);
@@ -354,24 +216,7 @@
         });
 
         document.addEventListener('click', (e) => {
-            // themeToggle and navSearch now both sit outside siteNav (see header
-            // markup), so without this exemption they'd newly count as an
-            // "outside" click and the menu would snap shut every time someone
-            // tapped either while open - same as it never did back when both
-            // were still nested inside siteNav.
-            //
-            // Uses composedPath() instead of themeToggle.contains(e.target)
-            // specifically for this check: the click lands on the SVG icon's own
-            // <path>/<circle> (a child of themeToggle), and themeToggle's own
-            // click handler above replaces its innerHTML - including that exact
-            // child - synchronously, before this handler runs (click listeners
-            // fire in DOM order during bubbling, target-first). By the time this
-            // runs, e.target is a node that's already been detached from the
-            // document, so .contains() on it incorrectly returns false.
-            // composedPath() captures the full path at dispatch time, unaffected
-            // by DOM mutations that happen while the event is still bubbling.
-            // navSearch doesn't mutate its own innerHTML the same way, but is
-            // checked via composedPath() too for consistency/simplicity.
+            // -> docs/layouts-default.md#themetoggle-navsearch-now-both-sit
             const path = e.composedPath();
             if (siteNav.classList.contains('open') && !siteNav.contains(e.target) && !navMenuToggle.contains(e.target) && !path.includes(themeToggle) && !path.includes(navSearch)) {
                 setMobileMenuOpen(false);
@@ -395,31 +240,8 @@
             }, 150);
         });
 
-        // Measure the site header's real bottom edge for the sticky table-header
-        // offset below, instead of guessing a fixed pixel value. A hardcoded
-        // 105px (copied from the TOC sidebar's own offset) turned out to not
-        // match this header's actual rendered height at all - measured at
-        // ~77px in testing, a ~39px gap wide enough for a real table row to
-        // show through while scrolled, right above the sticky table header.
-        // header.getBoundingClientRect().bottom is stable across scroll
-        // position (the header's margin-top and its own sticky top offset are
-        // both 1rem, so it renders at the same place whether "actively stuck"
-        // or at natural rest at the top of the page) but can change on resize
-        // (responsive font sizes, header wrapping), so it's re-measured there
-        // too. (This used to say it matched a --scrollbar-width measurement in
-        // <head>; that one was removed once `footer` switched to a pure-CSS
-        // calc(100vw - 100%) and left it with no consumers. This is now the
-        // only JS-measured-geometry-into-a-custom-property bridge on the site.)
-        //
-        // Dividing by the current zoom factor is required, not optional: this
-        // site applies zoom: 1.1 on desktop, which scales every raw px value
-        // written in the stylesheet at render time - but getBoundingClientRect
-        // already returns post-zoom pixels. Storing that measurement directly
-        // and using it inside a CSS calc() double-applies the zoom (measured
-        // ~77px real became ~93.5px rendered instead of the intended ~85px).
-        // Dividing back out here keeps the stored custom property in the same
-        // pre-zoom "logical px" space every other hardcoded value in the
-        // stylesheet is already written in, so it only gets zoomed once.
+        // ---- Sticky table header offset (--table-sticky-top) ---------------
+        // -> docs/layouts-default.md#measure-site-header-s-real
         function setStickyTableHeaderOffset() {
             var header = document.querySelector('header');
             if (!header) return;
@@ -430,33 +252,8 @@
         setStickyTableHeaderOffset();
         window.addEventListener('resize', setStickyTableHeaderOffset);
 
-        // Wrap every table in article content with a scrollable container. Kramdown
-        // emits bare <table> elements with no wrapper, and article table itself can't
-        // become a real horizontal-scroll box on its own: giving it overflow-x: auto
-        // only does something once its own rendered width is allowed to exceed its
-        // container (see the mobile min-width rules in style.css), and at that point
-        // the overflow has to be caught by an ordinary block-level ancestor - a
-        // <table> kept at display: table can't reliably serve as its own scroll
-        // container without reintroducing the display: block fixed-layout bug this
-        // project hit before. A plain wrapper div sidesteps that entirely.
-        // Send external links to a new tab. Content is authored in Markdown and
-        // kramdown emits a plain <a href> with no target, so ~7k links in the
-        // reference tables and posts would otherwise navigate the reader off the
-        // site. Done here rather than at build time because kramdown has no
-        // setting for it and GitHub Pages forbids the plugin that would - and a
-        // Liquid regex over rendered HTML would still miss the JS-built /search/
-        // results, which this sweep picks up for free.
-        //
-        // Tests use the DOM's PARSED url parts, not the raw href string: the
-        // browser resolves href to an absolute URL, so a relative link reports
-        // the page's own origin and is skipped with no string parsing at all.
-        //
-        // Two origins count as "ours". window.location.origin alone is not
-        // enough: on the dev server that is localhost:4000, which would make an
-        // absolute https://z0nk3r.github.io/... link in a post read as external
-        // and open in a new tab locally while staying in-tab once deployed.
-        // Comparing against site.url as well makes both environments behave the
-        // same way, which is what "a link to my own site is internal" means.
+        // ---- External links open in a new tab ------------------------------
+        // -> docs/layouts-default.md#send-external-links-new-tab
         var SITE_ORIGIN = {{ site.url | default: '' | jsonify }};
         document.querySelectorAll('a[href]').forEach((a) => {
             // Leave anything a template already decided alone - this also keeps
@@ -478,21 +275,15 @@
             }
         });
 
+        // ---- Article table scroll wrapper ----------------------------------
+        // -> docs/layouts-default.md#wrap-every-table-article-content
         document.querySelectorAll('article table').forEach((table) => {
             var wrapper = document.createElement('div');
             wrapper.className = 'table-scroll';
             table.parentNode.insertBefore(wrapper, table);
             wrapper.appendChild(table);
 
-            // Scroll hint: a static "more content this way" label shown whenever
-            // the table genuinely overflows its wrapper - computed once from
-            // scrollWidth/clientWidth, not tied to live scroll position. An
-            // earlier version tried to track real scroll position (edge-fade
-            // gradients toggled on the wrapper's own scroll event) and it was
-            // unreliable on real devices - main-thread contention during a fast
-            // swipe left it visibly stuck for seconds even after throttling to
-            // one update per animation frame. A static hint can't desync from
-            // anything because it never reacts to scroll position at all.
+            // -> docs/layouts-default.md#scroll-hint-static-more-content
             var hint = document.createElement('div');
             hint.className = 'table-scroll-hint';
             hint.textContent = 'scroll for more ↔';
@@ -503,10 +294,7 @@
                 hint.classList.toggle('visible', needsScroll);
             }
             updateScrollHint();
-            // Geist Mono loads async and can swap in after this initial check,
-            // changing measured text/column widths (the same font-load race this
-            // project's TOC-builder already had to account for) - re-check once
-            // fonts are actually settled so the initial hint state is correct.
+            // -> docs/layouts-default.md#geist-mono-loads-async-can
             if (document.fonts && document.fonts.ready) {
                 document.fonts.ready.then(updateScrollHint);
             }
@@ -517,45 +305,12 @@
                 tableResizeDebounce = window.setTimeout(updateScrollHint, 150);
             });
 
-            // Sticky header for long tables: past ~10 rows, scrolling down loses
-            // track of which column is which (raised specifically about the
-            // syscall tables, some of which run 400+ rows). Only enabled past a
-            // row-count threshold so short reference tables don't get a sticky
-            // header they don't need.
+            // -> docs/layouts-default.md#sticky-header-long-tables-past
             if (table.querySelectorAll('tbody tr').length > 10) {
                 wrapper.classList.add('has-sticky-header');
             }
 
-            // touch-action: pan-x (in style.css) is the spec-correct way to let a
-            // vertical page-scroll swipe bubble past this wrapper instead of being
-            // captured for horizontal scrolling, but it wasn't enough in practice on
-            // real Android Chrome (confirmed by user testing after shipping it
-            // alone) - Chrome resolves which element owns a touch gesture on the
-            // compositor thread, synchronously, from touch-action alone, precisely
-            // so scrolling doesn't have to wait on main-thread JS. A *passive*
-            // touchmove handler that reacts after the fact can't retroactively
-            // redirect a gesture the compositor already committed elsewhere (an
-            // earlier version of this fix tried exactly that and didn't work). The
-            // only reliable way to override native routing is to take the gesture
-            // over directly: a non-passive touchmove that calls preventDefault() to
-            // block the wrapper's own handling, then drives the page scroll
-            // manually. behavior: 'instant' is required on the scrollBy call -
-            // without it, the site's scroll-behavior: smooth on <html> would queue
-            // every per-frame increment as its own competing animation instead of
-            // tracking the finger directly.
-            //
-            // Registering touchmove as { passive: false } forces every event on it
-            // to round-trip through this main-thread handler before the browser can
-            // proceed, even on gestures where preventDefault never actually gets
-            // called - which knocked horizontal scrolling off the compositor fast
-            // path for its *entire* duration and visibly desynced the scroll-fade
-            // affordance from a fast real swipe (reported after shipping the first
-            // version of this fix). Fix: only pay that cost for the ~10px needed to
-            // determine gesture direction. The moment it's confirmed horizontal,
-            // this listener removes itself for the rest of that touch, handing the
-            // remainder back to native touch-action: pan-x at full speed. Vertical
-            // gestures keep it attached, since preventDefault is needed every frame
-            // to keep driving the manual scroll.
+            // -> docs/layouts-default.md#touch-action-pan-x-style-css-spec-correct
             var touchStartX = 0;
             var touchStartY = 0;
             var touchAxisLocked = false;

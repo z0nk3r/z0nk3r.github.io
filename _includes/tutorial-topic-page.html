@@ -2,31 +2,16 @@
     {% include topic-crumbs.html topic_url=page.url link_last=false %}
 </nav>
 
-{% comment %} Parent URL: this page's own URL minus its last segment - the
-page this hero morphs BACK into a card on. Uniform at every level: a nested
-topic's parent is its group's page, a root topic's parent computes to
-/tutorials/ (the index) with no special case. Feeds data-vt-index only. {% endcomment %}
+{% comment %} -> docs/templates.md#parent-url-page-s-own {% endcomment %}
 {% assign topic_parent_url = page.url | split: "/" | pop | join: "/" | append: "/" %}
 
 <main>
 <div class="post-header">
-    {% comment %} id="topic-hero" is kept for readability; the render-blocking
-    <link rel="expect"> in default.html's head anchors on #topic-content-end
-    at the bottom of this include instead (parsing is sequential, so blocking
-    on the LAST element also guarantees this hero and every child card above
-    it are parsed - covers both the forward morph into this hero and the
-    reverse morph back into a child topic's card).
-    view-transition-name derives its slug from the URL - a raw "/" in a CSS
-    custom-ident silently kills the morph; must match tutorial-card.html's
-    slugification exactly. {% endcomment %}
+    {% comment %} -> docs/templates.md#id-topic-hero-kept-readability-render-blocking {% endcomment %}
     {% assign topic_vt = page.url | remove_first: '/tutorials/' | split: '/' | join: '-' %}
     {% if page.image %}
     <div id="topic-hero" class="post-header__image-wrap" style="view-transition-name: tutorial-topic-{{ topic_vt }};" data-vt-index="{{ topic_parent_url | relative_url }}">
-        {% comment %} Optional light-theme variant: a topic may set image_light:
-        alongside image:. The swap is pure CSS (see .theme-swap in style.css) so it
-        follows the site's own data-theme toggle rather than the OS-level
-        prefers-color-scheme, which would desync from the manual switch. image:
-        stays the canonical one for og:image/social previews. {% endcomment %}
+        {% comment %} -> docs/templates.md#optional-light-theme-variant-topic-may {% endcomment %}
         <img src="{{ page.image | relative_url }}" alt="{{ page.title }}" fetchpriority="high"
              {% if page.image_light %}class="theme-swap" style="--img-light: url('{{ page.image_light | relative_url }}');"{% endif %}>
     </div>
@@ -53,9 +38,7 @@ topic's parent is its group's page, a root topic's parent computes to
     {% include topic-children.html parent=page.url %}
     {% include chapter-list.html parent_url=page.url %}
 
-    {% comment %} A topic can be a group (child-topic cards), a leaf (its own
-    chapter list), or both - each section renders only when non-empty, and the
-    terminal empty state only when BOTH are. {% endcomment %}
+    {% comment %} -> docs/templates.md#topic-can-group-child-topic-cards {% endcomment %}
     {% if topic_children.size > 0 %}
     <section class="chapter-index">
         <h2 class="year-heading">Series</h2>
