@@ -620,11 +620,15 @@ article {
     font-family: var(--font-mono);
 }
 
+/* Lifted above #ascii-bg for the same reason .video-embed is, and centred:
+   kramdown wraps a body image in a full-width <p>, so auto margins do it. */
 article img {
+    position: relative;
+    z-index: 1;
     max-width: 100%;
     height: auto;
     display: block;
-    margin: 2rem 0;
+    margin: 2rem auto;
     border-radius: var(--radius-md);
     border: 1px solid var(--border);
 }
