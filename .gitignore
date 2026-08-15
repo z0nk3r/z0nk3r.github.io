@@ -8,6 +8,10 @@ vendor/
 
 # Internal-only (kept local, not published)
 SETUP.md
+# Source-comment prose lifted out of the shipped files - reference material,
+# never deployed. Also in .git/info/exclude and in _config.yml's exclude: list,
+# so it cannot be committed by accident and Jekyll would not copy it anyway.
+docs/
 
 # OS/editor cruft
 .DS_Store
