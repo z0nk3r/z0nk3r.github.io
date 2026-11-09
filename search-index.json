@@ -26,7 +26,7 @@ roughly a tenth of this size on the wire.
         "url": {{ post.url | relative_url | jsonify }},
         "date": {{ post.date | date: site.date_format | jsonify }},
         "author": {{ result_author | jsonify }},
-        "authorAvatar": {{ author_doc.avatar | jsonify }},
+        "authorAvatar": {% if author_doc.avatar %}{{ author_doc.avatar | append: '?size=96' | jsonify }}{% else %}null{% endif %},
         "image": {{ post.image | relative_url | jsonify }},
         "excerpt": {{ post.excerpt | strip_html | normalize_whitespace | jsonify }},
         "content": {{ post.content | strip_html | normalize_whitespace | jsonify }}

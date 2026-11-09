@@ -276,7 +276,7 @@ header {
     max-width: 1540px;
     margin: 0 auto;
     /* -> docs/style.css.md#left-padding-deliberately-smaller-right */
-    padding: 0 20px 0 14px;
+    padding: 0 14px;
     display: flex;
     /* -> docs/style.css.md#space-between-themetoggle-used-live-nested */
     justify-content: flex-start;
@@ -313,6 +313,7 @@ header {
     justify-content: center;
     background: none;
     border: none;
+    border-radius: 50%;
     padding: 0;
     color: var(--muted-foreground);
     cursor: pointer;
@@ -367,6 +368,7 @@ header {
     font-family: var(--font-mono);
     font-size: 0.85rem;
     border-radius: var(--radius-md);
+    visibility: hidden; /* not a Tab stop while collapsed */
     /* -> docs/style.css.md#flex-grow-no-op-desktop-open-state */
     transition: width 0.25s ease, flex-grow 0.25s ease, opacity 0.2s ease, padding 0.25s ease, border-color 0.2s ease;
 }
@@ -374,6 +376,7 @@ header {
 .nav-search.open .nav-search-input {
     width: 176px; /* zoom-replacement: was 160px under zoom 1.1 */
     opacity: 1;
+    visibility: visible;
     padding: 0.4rem 0.7rem;
     border-color: var(--border);
 }
@@ -386,8 +389,10 @@ header {
 .nav-search-toggle {
     display: flex;
     align-items: center;
+    justify-content: center;
     background: none;
     border: none;
+    border-radius: 50%;
     padding: 0;
     color: var(--muted-foreground);
     cursor: pointer;
@@ -397,6 +402,11 @@ header {
 
 .nav-search-toggle:hover {
     color: var(--foreground);
+}
+
+/* Ring the 18px icon at the same 52px diameter as the 44px theme toggle's ring. */
+.nav-search-toggle:focus-visible {
+    outline-offset: 15px;
 }
 
 .theme-toggle {
@@ -470,7 +480,7 @@ header {
 .post-header {
     max-width: 1540px;
     margin: 0 auto;
-    padding: 2rem 20px 0;
+    padding: 2rem 0 0;
     text-align: center;
 }
 
@@ -490,7 +500,7 @@ header {
 .post-wrapper {
     max-width: 1540px;
     margin: 0 auto;
-    padding: 2rem 20px;
+    padding: 2rem 0;
     display: grid;
     grid-template-columns: 330px 1fr; /* zoom-replacement: was 300px under zoom 1.1 */
     gap: 3rem;
@@ -607,7 +617,7 @@ header {
 .reference-content {
     max-width: 1395px; /* zoom-replacement: was 1268px under zoom 1.1 */
     margin: 0 auto;
-    padding: 1rem 20px 4rem;
+    padding: 1rem 0 4rem;
     background: var(--background);
 }
 
@@ -702,6 +712,10 @@ article hr {
 
 article blockquote p:last-child {
     margin-bottom: 0;
+}
+
+article > :is(p, ul, ol, blockquote) {
+    max-width: 80ch;
 }
 
 article a,
@@ -1248,7 +1262,6 @@ article table tbody tr:not(:first-child) td {
 .tag-count {
     margin-left: 0.4em;
     color: var(--muted-foreground);
-    opacity: 0.7;
     font-size: 0.9em;
 }
 
@@ -1806,6 +1819,10 @@ main h1 {
     margin: 0 auto 2rem;
 }
 
+.post-header__image-wrap--placeholder {
+    aspect-ratio: 4 / 1;
+}
+
 .post-card__image-wrap img,
 .post-header__image-wrap img {
     width: 100%;
@@ -2024,6 +2041,11 @@ footer p {
         gap: 2rem;
     }
 
+    .article-content {
+        padding-left: 0;
+        padding-right: 0;
+    }
+
     .toc-sidebar {
         display: none;
     }
@@ -2034,8 +2056,15 @@ footer p {
 }
 
 @media (max-width: 768px) {
-    body {
-        font-size: 13px;
+    .search-result a {
+        gap: 1rem;
+        padding: 1rem;
+    }
+
+    .search-result__image-wrap {
+        flex-basis: 88px;
+        width: 88px;
+        height: 63px;
     }
 
     /* -> docs/style.css.md#table-layout-fixed-width-100-table */
@@ -2065,6 +2094,18 @@ footer p {
         display: flex;
         order: 3;
         margin-left: 0.75rem;
+    }
+
+    .nav-search-toggle,
+    .nav-menu-toggle {
+        min-width: 44px;
+        min-height: 44px;
+    }
+
+    /* 44px box + 0 offset = the 40px theme toggle's ring (44-48px). */
+    .nav-search-toggle:focus-visible,
+    .nav-menu-toggle:focus-visible {
+        outline-offset: 0;
     }
 
     .header-wrapper {
@@ -2182,8 +2223,6 @@ footer p {
 /* -> docs/style.css.md#viewports-comfortably-wider-1540px-content */
 @media (min-width: 1560px) {
     .footer-wrapper,
-    .post-header,
-    .post-wrapper,
     .breadcrumbs,
     main {
         margin-left: calc((100% - 1540px) / 2 + 5px);
@@ -2409,4 +2448,20 @@ footer p {
 /* -> docs/style.css.md#project-thumbnails-fill-their-slot */
 .project-card .post-card__image-wrap img {
     object-fit: cover;
+}
+
+/* Last in the file so it wins every equal-specificity tie on source order. */
+@media (prefers-reduced-motion: reduce) {
+    .post-card::before,
+    .post-card::after,
+    .tutorial-card::before,
+    .tutorial-card::after,
+    .project-card::before,
+    .project-card::after,
+    .author-list-item::before,
+    .author-list-item::after,
+    .nav-search-input,
+    .badge {
+        transition: none;
+    }
 }

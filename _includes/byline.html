@@ -3,7 +3,7 @@
 <div class="byline">
     {%- if author_doc.avatar %}
     <div class="avatar avatar--photo">
-        <img src="{{ author_doc.avatar }}" alt="{{ byline_author }}">
+        <img src="{{ author_doc.avatar | append: '?size=96' }}" alt="{{ byline_author }}">
     </div>
     {%- else %}
     <div class="avatar">{{ byline_author | slice: 0, 1 | upcase }}</div>
