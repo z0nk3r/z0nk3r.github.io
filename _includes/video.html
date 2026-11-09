@@ -6,7 +6,7 @@ player. -> docs/templates.md#self-hosted-video-sharing-youtube-embed
 {%- if include.ratio %}{% assign v_style = include.ratio | prepend: ' style="--embed-ratio: ' | append: ';"' %}{% endif %}
 <div class="video-embed"{{ v_style }}>
     <video
-        {% if include.title %}aria-label="{{ include.title }}"{% endif %}
+        {% if include.title %}aria-label="{{ include.title | escape }}"{% endif %}
         {% if include.poster %}poster="{{ include.poster | relative_url }}"{% endif %}
         {% if include.loop %}autoplay muted loop playsinline controls{% else %}controls preload="metadata"{% endif %}>
         {%- if include.webm %}

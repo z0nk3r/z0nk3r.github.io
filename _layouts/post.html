@@ -26,7 +26,7 @@ layout: default
         <h1>{{ page.title }}</h1>
         <div class="post-meta">
             {%- include byline.html post=page show_read_time=true link_author=true %}
-            {%- if page.categories or page.tags %}
+            {%- if page.categories.size > 0 or page.tags.size > 0 %}
             <div class="badge-row">
                 {%- include tags.html post=page %}
             </div>
@@ -43,7 +43,7 @@ layout: default
             <article>
                 {{ content }}
 
-                {%- if page.tags %}
+                {%- if page.tags.size > 0 %}
                 <div class="post-tags">
                     <div class="badge-row">
                         {%- include tags.html post=page %}

@@ -5,7 +5,8 @@
     <script>
         // -> docs/layouts-default.md#sets-data-theme-before-anything-paints
         (function () {
-            var theme = localStorage.getItem('theme') || 'dark';
+            var theme = 'dark';
+            try { theme = localStorage.getItem('theme') || 'dark'; } catch (e) {}
             document.documentElement.setAttribute('data-theme', theme);
         })();
     </script>
@@ -128,7 +129,8 @@
 
         // -> docs/layouts-default.md#click-to-play-swaps-facade-real
         document.querySelectorAll('.video-facade').forEach((btn) => {
-            btn.addEventListener('click', () => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
                 const frame = document.createElement('iframe');
                 frame.src = 'https://www.youtube-nocookie.com/embed/' +
                     btn.dataset.youtube + '?autoplay=1';
@@ -163,7 +165,7 @@
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
+            try { localStorage.setItem('theme', newTheme); } catch (e) {}
             updateThemeButton();
             window.dispatchEvent(new Event('themechange'));
         });
@@ -182,7 +184,8 @@
         // -> docs/layouts-default.md#bfcache-restores-skip-every-script
         window.addEventListener('pageshow', (e) => {
             if (!e.persisted) return;
-            const storedTheme = localStorage.getItem('theme') || 'dark';
+            let storedTheme = 'dark';
+            try { storedTheme = localStorage.getItem('theme') || 'dark'; } catch (err) {}
             if (html.getAttribute('data-theme') !== storedTheme) {
                 html.setAttribute('data-theme', storedTheme);
                 updateThemeButton();

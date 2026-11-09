@@ -93,6 +93,7 @@
         ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
         ctx.font = CELL_SIZE + 'px ' + resolveMonoFontFamily();
         ctx.textBaseline = 'top';
+        readThemeColors();
 
         cols = Math.ceil(cssWidth / CELL_SIZE);
         rows = Math.ceil(cssHeight / CELL_SIZE);
@@ -102,7 +103,6 @@
     }
 
     function tick() {
-        readThemeColors();
         var now = performance.now();
 
         // -> docs/ascii-background.md#fade-previous-frame-eroding-own
@@ -185,6 +185,7 @@
             drawStaticFrame();
             return;
         }
+        readThemeColors();
         // -> docs/ascii-background.md#existing-glyphs-canvas-still-painted
         ctx.clearRect(0, 0, cssWidth, cssHeight);
     });

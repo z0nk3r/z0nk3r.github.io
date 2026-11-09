@@ -765,6 +765,11 @@ article a:hover,
     cursor: pointer;
 }
 
+/* .video-embed clips overflow, so the global outward ring would be cut off. */
+.video-facade:focus-visible {
+    outline-offset: -4px;
+}
+
 /* The poster is an `article img`, so it arrives carrying that rule's 2rem auto
    margin, 1px border, radius and z-index: 1. Inside a fixed-ratio box the
    margin pushed it down and the overflow clipped the bottom off. Reset all of

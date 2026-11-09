@@ -17,7 +17,7 @@ layout: default
 <main>
     <div class="post-header reference-header">
         <h1>{{ page.title }}</h1>
-        {%- if page.categories or page.tags %}
+        {%- if page.categories.size > 0 or page.tags.size > 0 %}
         <div class="post-meta reference-meta">
             <div class="badge-row">
                 {%- include tags.html post=page %}

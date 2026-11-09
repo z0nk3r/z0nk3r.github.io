@@ -5,6 +5,12 @@
 
     // Generate table of contents from headings
     function generateTOC() {
+        // The sidebar is display:none at <=1024px, so wrapping would measure 0; build on first widen.
+        const wide = window.matchMedia('(min-width: 1025px)');
+        if (!wide.matches) {
+            wide.addEventListener('change', generateTOC, { once: true });
+            return;
+        }
         const toc = document.getElementById('toc');
         const article = document.querySelector('article');
         const headings = article.querySelectorAll('h2, h3, h4');
